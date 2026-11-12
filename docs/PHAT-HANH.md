@@ -46,6 +46,12 @@ Thử thủ công trước mỗi lần phát hành (bắt buộc, máy tự đ�
 
 Quy ước phiên bản: `X.Y.Z`; `X.Y` luôn bằng phiên bản giao diện KiotLabel; `Z` tăng khi chỉ sửa phần desktop (máy chủ, trình khởi chạy, đóng gói).
 
+Bài học khi dựng trên GitHub Actions (đã gặp ở v3.5.0 và v3.5.1, phát hành thành công ở v3.5.2):
+- `tar` trong PATH của máy chủ Windows có thể là GNU tar của Git, không tạo/đọc được zip: luôn gọi `System32\tar.exe` (đã làm trong script).
+- Gọi `powershell.exe` từ `pwsh` thừa kế `PSModulePath` của bản 7 nên `Get-AuthenticodeSignature` trả về rỗng: script bỏ biến này.
+- Log chi tiết của Actions cần quyền admin repo; bước đóng gói in phần cuối log thành chú thích lỗi để xem được từ ngoài.
+- Một nhãn đã chạy thất bại không nên xóa/gắn lại: nâng số cuối (`Z`) rồi gắn nhãn mới.
+
 ## 4. Đồng bộ khi bản web có phiên bản mới
 
 Bản web (repo website HUB DRIVER, thư mục `tools/kiotlabel`) là nơi phát triển giao diện. `ui/` ở repo này là bản sao, chỉ nhận **phần thay đổi**:
