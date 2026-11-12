@@ -1,0 +1,30 @@
+KIOTLABEL BẢN OFFLINE (PORTABLE) - Windows 10/11 64-bit
+=======================================================
+
+CÁCH DÙNG
+1. Giải nén ĐẦY ĐỦ tệp .zip ra một thư mục (không chạy trực tiếp trong tệp nén).
+2. Bấm đúp KiotLabel.exe. Không cần cài đặt, không cần quyền quản trị, không cần Internet.
+3. Chọn máy in ở mục "In trực tiếp ra máy in" rồi bấm "In ngay": lệnh ZPL/TSPL được gửi thẳng tới máy in tem,
+   không qua PDF. Muốn lưu tệp PDF thì chọn "Lưu thành PDF".
+4. Đóng cửa sổ KiotLabel là ứng dụng tự tắt hoàn toàn.
+
+BẢN OFFLINE KHÔNG CÓ (cần Internet): nhận diện tem bằng AI, chèn ảnh từ Google Drive hoặc đường dẫn web. Vẫn chèn ảnh từ máy tính.
+
+DỮ LIỆU
+- Mẫu tem đã lưu và cài đặt nằm trong thư mục "Data" cạnh KiotLabel.exe. Sao chép cả thư mục để mang sang máy khác.
+- Mẫu tem lưu trên bản web không tự sang đây: dùng "Lưu tệp .kvl" ở bản web rồi "Mở" trong bản này.
+
+YÊU CẦU
+- Có Microsoft Edge (có sẵn trong Windows 10/11) hoặc Google Chrome. Ứng dụng dùng cửa sổ trình duyệt ở chế độ ứng dụng.
+- Máy in tem (TSC, Zebra, Xprinter, Godex...) cài driver bình thường. Ứng dụng gửi dữ liệu thô (RAW) qua hàng đợi in của Windows.
+- In giấy văn phòng (A4/A5): chọn "Lưu thành PDF" rồi in tệp PDF.
+
+AN TOÀN
+- Ứng dụng không cài dịch vụ, không ghi registry, không tự khởi động cùng Windows, không tải gì từ Internet.
+- Máy chủ cục bộ chỉ nghe ở 127.0.0.1 (không ra mạng), có mã xác thực ngẫu nhiên mỗi lần chạy.
+- KiotLabel.exe là tệp .NET tự chứa, không nén, không tự giải nén. runtime\node.exe là bản chính thức của Node.js,
+  có chữ ký số của OpenJS Foundation (bấm phải > Properties > Digital Signatures để kiểm tra).
+- Kiểm tra tệp tải về: so mã SHA-256 của tệp .zip với tệp .sha256 đi kèm (PowerShell: Get-FileHash tệp.zip).
+  Từng tệp bên trong có mã ở SHA256SUMS.txt.
+- Hiện chưa có chữ ký số cho KiotLabel.exe: Windows SmartScreen có thể hiện "Windows protected your PC"; chọn
+  "More info" > "Run anyway" nếu mã SHA-256 khớp. Nếu trình diệt virus báo nhầm, hãy gửi tệp về cho hãng để họ xác nhận.

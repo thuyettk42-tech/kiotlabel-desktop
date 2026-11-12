@@ -1,0 +1,8 @@
+# Kết quả biên dịch/đóng gói (tạo lại bằng scripts/build-desktop.mjs)
+launcher/bin/
+launcher/obj/
+dist-desktop/
+ui/dist/
+node_modules/
+*.log
+.env*

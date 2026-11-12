@@ -1,0 +1,310 @@
+@import "tailwindcss";
+
+/* High-precision text and image rendering styles for crisp printing and offscreen capturing */
+#thermal-label-canvas, .batch-print-page, .office-print-page, .object-print-class {
+  text-rendering: geometricPrecision !important;
+  image-rendering: pixelated !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+@theme {
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier New, monospace;
+  --color-kiot-navy: #002248;
+  --color-kiot-cyan: #0EA5E9;
+  --color-kiot-cyan-accent: #3AE3FF;
+  --color-kiot-green: #54B200;
+  --color-kiot-bg: #F4F6F8;
+  --color-kiot-slate: #334155;
+  --color-kiot-charcoal: #1E293B;
+  --color-kiot-border: #E2E8F0;
+}
+
+/* Base Scrollbar custom styles */
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+::-webkit-scrollbar-track {
+  background-color: #f8fafc;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 8px;
+  border: 2px solid #f8fafc;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
+::-webkit-scrollbar-thumb:active {
+  background-color: #64748b;
+}
+
+/* Scrollbar Buttons (Arrows) */
+::-webkit-scrollbar-button {
+  display: none;
+}
+::-webkit-scrollbar-button:single-button {
+  display: block;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 8px 8px;
+  background-color: #e2e8f0;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-button:single-button:hover {
+  background-color: #cbd5e1;
+}
+::-webkit-scrollbar-button:single-button:active {
+  background-color: #94a3b8;
+}
+
+/* Up arrow (Vertical decrement) */
+::-webkit-scrollbar-button:single-button:vertical:decrement {
+  height: 16px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2500/svg' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'><polyline points='18 15 12 9 6 15'></polyline></svg>");
+}
+
+/* Down arrow (Vertical increment) */
+::-webkit-scrollbar-button:single-button:vertical:increment {
+  height: 16px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+}
+
+/* Left arrow (Horizontal decrement) */
+::-webkit-scrollbar-button:single-button:horizontal:decrement {
+  width: 16px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'><polyline points='15 18 9 12 15 6'></polyline></svg>");
+}
+
+/* Right arrow (Horizontal increment) */
+::-webkit-scrollbar-button:single-button:horizontal:increment {
+  width: 16px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'><polyline points='9 18 15 12 9 6'></polyline></svg>");
+}
+
+/* Print Overrides and Engine positioning */
+@media print {
+  html,
+  body,
+  #root,
+  #root > div,
+  main,
+  .h-screen,
+  .w-screen,
+  .flex-1 {
+    display: block !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide entire UI layout chrome */
+  header,
+  aside,
+  #sidebar-ui,
+  #workspace-toolbar,
+  #template-selector,
+  [id*="tick"],
+  [class*="Ruler"],
+  .no-print {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Keep ONLY the main editor container with print constraints */
+  #label-editor-workspace {
+    display: block !important;
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Redefine the thermal canvas in exact mm coordinates */
+  #thermal-label-canvas {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    background-image: none !important;
+    width: var(--print-width, 100mm) !important;
+    height: var(--print-height, 75mm) !important;
+    page-break-inside: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  /* Support multiple pages during batch thermal prints of spreadsheet rows */
+  .batch-print-page {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: var(--print-col-gap, 0mm) !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    margin: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: var(--print-padding-left, 0mm) !important;
+    padding-right: var(--print-padding-right, 0mm) !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    width: var(--print-width, 100mm) !important;
+    height: var(--print-height, 75mm) !important;
+    overflow: hidden !important;
+    page-break-inside: avoid !important;
+    page-break-after: always !important;
+  }
+
+  .batch-print-page:last-child {
+    page-break-after: avoid !important;
+  }
+
+  /* Each thermal cell inside the roll print page */
+  .batch-print-cell {
+    position: relative !important;
+    box-sizing: border-box !important;
+    width: var(--cell-w, 50mm) !important;
+    height: var(--cell-h, 30mm) !important;
+    overflow: visible !important;
+    background: transparent !important;
+  }
+
+  /* Support multi-label sheet grid prints */
+  .office-print-page {
+    display: grid !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    
+    width: var(--print-width, 210mm) !important;
+    height: var(--print-height, 297mm) !important;
+    overflow: hidden !important;
+    
+    padding-top: var(--sheet-m-top, 10mm) !important;
+    padding-bottom: var(--sheet-m-bottom, 10mm) !important;
+    padding-left: var(--sheet-m-left, 10mm) !important;
+    padding-right: var(--sheet-m-right, 10mm) !important;
+    
+    grid-template-columns: var(--sheet-grid-cols) !important;
+    grid-template-rows: var(--sheet-grid-rows) !important;
+    column-gap: var(--sheet-col-gap, 2mm) !important;
+    row-gap: var(--sheet-row-gap, 2mm) !important;
+    
+    page-break-inside: avoid !important;
+    page-break-after: always !important;
+  }
+  
+  .office-print-page:last-child {
+    page-break-after: avoid !important;
+  }
+  
+  /* Each label box inside the print sheet */
+  .office-print-cell {
+    position: relative !important;
+    box-sizing: border-box !important;
+    width: var(--cell-w, 50mm) !important;
+    height: var(--cell-h, 30mm) !important;
+    overflow: visible !important;
+    background: transparent !important;
+    
+    border: var(--cell-border, none) !important;
+    border-radius: var(--cell-radius, 0mm) !important;
+  }
+
+  /* Force thermal items to precise millimeter positions for printing machinery */
+  .object-print-class {
+    position: absolute !important;
+    left: var(--o-x) !important;
+    top: var(--o-y) !important;
+    width: var(--o-w) !important;
+    height: var(--o-print-height, var(--o-h)) !important;
+    min-height: var(--o-print-min-height, 0mm) !important;
+    transform: var(--o-transform, none) !important;
+    transform-origin: var(--o-transform-origin, top left) !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .object-print-class > div {
+    padding: 0 !important;
+  }
+
+  /* Dynamic page configuration */
+  @page {
+    size: var(--print-width, 100mm) var(--print-height, 75mm);
+    margin: 0 !important;
+  }
+}
+
+@media screen {
+  .app-scale-wrapper {
+    /* Dynamic scaling controlled by React state inline styles */
+  }
+
+  /* Tăng các kích thước chữ tùy biến của Tailwind thêm 1pt (khoảng 1.33px) */
+  .no-print .text-\[9px\] { font-size: 10.33px !important; }
+  .no-print .text-\[9\.5px\] { font-size: 10.83px !important; }
+  .no-print .text-\[10px\] { font-size: 11.33px !important; }
+  .no-print .text-\[10\.5px\] { font-size: 11.83px !important; }
+  .no-print .text-\[11px\] { font-size: 12.33px !important; }
+  .no-print .text-\[11\.5px\] { font-size: 12.83px !important; }
+  .no-print .text-\[12px\] { font-size: 13.33px !important; }
+  .no-print .text-\[12\.5px\] { font-size: 13.83px !important; }
+  .no-print .text-\[13px\] { font-size: 14.33px !important; }
+  .no-print .text-\[14px\] { font-size: 15.33px !important; }
+  .no-print .text-\[14\.5px\] { font-size: 15.83px !important; }
+  .no-print .text-\[15px\] { font-size: 16.33px !important; }
+  .no-print .text-\[16px\] { font-size: 17.33px !important; }
+
+  /* Tăng các kích thước chữ mặc định của Tailwind thêm 1pt */
+  .no-print .text-xs { font-size: 13.33px !important; }
+  .no-print .text-sm { font-size: 15.33px !important; }
+  .no-print .text-base { font-size: 17.33px !important; }
+  .no-print .text-lg { font-size: 19.33px !important; }
+  .no-print .text-xl { font-size: 21.33px !important; }
+  .no-print .text-2xl { font-size: 25.33px !important; }
+  .no-print .text-3xl { font-size: 31.33px !important; }
+
+  /* Đảm bảo chiều cao của dòng hiển thị rộng rãi, cân đối khi cỡ chữ được nâng lên */
+  .no-print select,
+  .no-print input,
+  .no-print button {
+    line-height: inherit !important;
+  }
+}
+
+

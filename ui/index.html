@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KiotLabel V3.5 - Thiết kế và in tem mã vạch</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='28' fill='white'/%3E%3Cg opacity='0.18'%3E%3Crect x='14' y='16' width='3' height='52' fill='%23000000'/%3E%3Crect x='20' y='16' width='7' height='52' fill='%23000000'/%3E%3Crect x='31' y='16' width='2' height='52' fill='%23000000'/%3E%3Crect x='37' y='16' width='4' height='52' fill='%23000000'/%3E%3Crect x='45' y='16' width='2' height='52' fill='%23000000'/%3E%3Crect x='51' y='16' width='7' height='52' fill='%23000000'/%3E%3Crect x='62' y='16' width='3' height='52' fill='%23000000'/%3E%3Crect x='69' y='16' width='2' height='52' fill='%23000000'/%3E%3Crect x='75' y='16' width='4' height='52' fill='%23000000'/%3E%3Crect x='83' y='16' width='7' height='52' fill='%23000000'/%3E%3Crect x='94' y='16' width='2' height='52' fill='%23000000'/%3E%3Crect x='100' y='16' width='4' height='52' fill='%23000000'/%3E%3Crect x='108' y='16' width='3' height='52' fill='%23000000'/%3E%3C/g%3E%3Cg transform='translate(18, 10)'%3E%3Cpath fill-rule='evenodd' clipRule='evenodd' d='M28.2727 2.98791C11.8294 10.3389 0.371094 26.8343 0.371094 46.003C0.371094 65.1691 11.8294 81.6619 28.2727 89.0142C32.3642 90.8114 34.8979 91.2578 37.0608 91.2578C45.2554 91.2578 49.0083 65.0212 49.0083 46.0017C49.0083 26.9797 45.2567 0.741699 37.0608 0.741699C34.8979 0.741699 32.3642 1.19068 28.2727 2.98533V2.98791Z' fill='url(%23fav_paint0_radial)'/%3E%3Cpath fill-rule='evenodd' clipRule='evenodd' d='M76.5424 20.3537L55.1653 41.7134C53.7733 43.1044 52.8599 44.462 52.8599 46.0564C52.8599 47.6523 53.7733 49.0068 55.1653 50.3978L76.5424 71.7576C77.8777 73.0962 79.0747 73.6689 80.698 73.6689C86.4346 73.6689 92.3952 59.4251 92.3952 46.0564C92.3952 32.6862 86.4361 18.4453 80.698 18.4453C79.0733 18.4453 77.8777 19.018 76.5424 20.3552V20.3537Z' fill='url(%23fav_paint1_radial)'/%3E%3C/g%3E%3Ctext x='64' y='115' font-family='sans-serif' font-weight='900' font-size='18' fill='%23002248' text-anchor='middle' letter-spacing='-0.3'%3EKiotLabel%3C/text%3E%3Cdefs%3E%3CradialGradient id='fav_paint0_radial' cx='0' cy='0' r='1' gradientUnits='userSpaceOnUse' gradientTransform='translate(-11.3026 46.014) scale(66.031 95.596)'%3E%3Cstop stop-color='%233AE3FF'/%3E%3Cstop offset='1' stop-color='%230070F4'/%3E%3C/radialGradient%3E%3CradialGradient id='fav_paint1_radial' cx='0' cy='0' r='1' gradientUnits='userSpaceOnUse' gradientTransform='translate(51.3029 45.7941) scale(41.2594 67.9409)'%3E%3Cstop stop-color='%235BE92A'/%3E%3Cstop offset='0.39166' stop-color='%232DCF34'/%3E%3Cstop offset='1' stop-color='%2300B63E'/%3E%3C/radialGradient%3E%3C/defs%3E%3C/svg%3E" />
+    <link rel="icon" type="image/svg+xml" href="./logo.svg" />
+    <script>
+      // Safe logging for diagnostics
+      window.addEventListener('error', function(e) {
+        console.warn("Caught application error:", e.message);
+      });
+      window.addEventListener('unhandledrejection', function(e) {
+        console.warn("Caught unhandled rejection:", e.reason);
+      });
+    </script>
+    <style>
+      /* Smooth spin and bounce styles for startup splash screen */
+      .spin-loader {
+        border: 3.5px solid #e2e8f0;
+        border-top: 3.5px solid #54B200;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        animation: loader-spin 0.7s linear infinite;
+        margin: 0 auto 16px;
+      }
+      @keyframes loader-spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <!-- Pure CSS high-performance startup loader splash screen -->
+      <div id="startup-loader" style="position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; z-index: 999999;">
+        <div style="text-align: center; max-width: 320px; padding: 20px;">
+          <div class="spin-loader"></div>
+          <h2 style="margin: 0 0 4px; color: #002248; font-size: 16px; font-weight: 800; letter-spacing: -0.3px;">KiotLabel V3.5</h2>
+          <p style="margin: 0 0 20px; color: #54B200; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;">Đang tải gói offline...</p>
+          <div style="height: 3px; background-color: #edf2f7; border-radius: 2px; width: 140px; margin: 0 auto; overflow: hidden; position: relative;">
+            <div style="position: absolute; left: -100px; width: 100px; height: 100%; background: linear-gradient(90deg, transparent, #54B200, transparent); animation: loading-progress 1.5s linear infinite;"></div>
+          </div>
+          <style>
+            @keyframes loading-progress {
+              0% { left: -100px; }
+              100% { left: 140px; }
+            }
+          </style>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
