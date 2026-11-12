@@ -1,7 +1,8 @@
 name: Release
 
-# Dựng gói portable trên máy chủ GitHub từ chính mã nguồn công khai, kiểm tra, tạo chứng thực nguồn gốc rồi đưa lên GitHub Releases.
-# Phát hành: git tag v3.5.2 && git push origin v3.5.2   (X.Y của nhãn phải trùng phiên bản giao diện, xem docs/PHAT-HANH.md)
+# Dựng KiotLabel.exe (một tệp, giao diện nhúng sẵn) trên máy chủ GitHub từ chính mã nguồn công khai, kiểm tra, tạo chứng thực nguồn gốc
+# rồi đưa lên GitHub Releases.
+# Phát hành: git tag v3.5.3 && git push origin v3.5.3   (số nhãn phải trùng Version trong launcher/AppInfo.cs, xem docs/PHAT-HANH.md)
 # Chạy thủ công (workflow_dispatch) chỉ dựng và lưu artifact, không tạo Release.
 on:
   push:
@@ -20,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # node.exe chính thức (chữ ký OpenJS Foundation) được đóng gói nguyên vẹn; script đóng gói kiểm tra chữ ký
+      # Node chỉ để build giao diện (không được đóng gói vào KiotLabel.exe)
       - uses: actions/setup-node@v7
         with:
           node-version: 22
@@ -34,8 +35,8 @@ jobs:
         shell: pwsh
         run: |
           $tag = '${{ github.ref_name }}'.TrimStart('v')
-          $ver = (Select-String -Path server/server.mjs -Pattern "const VERSION = '([\d.]+)'").Matches[0].Groups[1].Value
-          if ($tag -ne $ver) { throw "Nhãn v$tag không khớp VERSION trong server.mjs ($ver)" }
+          $ver = (Select-String -Path launcher/AppInfo.cs -Pattern 'Version = "([\d.]+)"').Matches[0].Groups[1].Value
+          if ($tag -ne $ver) { throw "Nhãn v$tag không khớp Version trong launcher/AppInfo.cs ($ver)" }
 
       - name: Đóng gói và kiểm tra
         shell: pwsh
@@ -51,14 +52,14 @@ jobs:
       - name: Chứng thực nguồn gốc bản dựng
         uses: actions/attest-build-provenance@v2
         with:
-          subject-path: ${{ runner.temp }}\kl-desktop\KiotLabel-portable-win-x64.zip
+          subject-path: ${{ runner.temp }}\kl-desktop\KiotLabel.exe
 
       - uses: actions/upload-artifact@v4
         with:
-          name: KiotLabel-portable-win-x64
+          name: KiotLabel-exe
           path: |
-            ${{ runner.temp }}\kl-desktop\KiotLabel-portable-win-x64.zip
-            ${{ runner.temp }}\kl-desktop\KiotLabel-portable-win-x64.zip.sha256
+            ${{ runner.temp }}\kl-desktop\KiotLabel.exe
+            ${{ runner.temp }}\kl-desktop\KiotLabel.exe.sha256
 
       - name: Tạo Release
         if: startsWith(github.ref, 'refs/tags/v')
@@ -67,12 +68,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $dir = "${{ runner.temp }}\kl-desktop"
-          $sha = (Get-Content "$dir\KiotLabel-portable-win-x64.zip.sha256").Split(' ')[0]
+          $sha = (Get-Content "$dir\KiotLabel.exe.sha256").Split(' ')[0]
           $notes = @(
-            'KiotLabel bản offline (portable) cho Windows 10/11 64-bit. Giải nén đầy đủ rồi bấm KiotLabel.exe. Xem docs/UNG-DUNG-OFFLINE.md.',
+            'KiotLabel bản offline cho Windows 10/11 64-bit: tải KiotLabel.exe rồi bấm đúp, không cần cài đặt hay giải nén. Xem docs/UNG-DUNG-OFFLINE.md.',
             '',
             "SHA-256: $sha",
             '',
-            'Xác nhận nguồn gốc: gh attestation verify KiotLabel-portable-win-x64.zip --repo ${{ github.repository }}'
+            'Xác nhận nguồn gốc: gh attestation verify KiotLabel.exe --repo ${{ github.repository }}'
           ) -join "`n"
-          gh release create "${{ github.ref_name }}" "$dir\KiotLabel-portable-win-x64.zip" "$dir\KiotLabel-portable-win-x64.zip.sha256" --title "KiotLabel ${{ github.ref_name }} (offline)" --notes "$notes"
+          gh release create "${{ github.ref_name }}" "$dir\KiotLabel.exe" "$dir\KiotLabel.exe.sha256" --title "KiotLabel ${{ github.ref_name }} (offline)" --notes "$notes"

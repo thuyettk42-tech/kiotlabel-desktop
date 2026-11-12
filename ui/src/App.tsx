@@ -15,8 +15,8 @@ import { detectDesktop, listDesktopPrinters, printRawDesktop, startDesktopHeartb
 // Giá trị "máy in" nghĩa là xuất tệp PDF thay vì gửi lệnh ra máy in (bản desktop)
 const PDF_TARGET = "__pdf__";
 
-// Bản offline (portable, Windows) đặt trên website chính; dùng địa chỉ đầy đủ để cả bản web độc lập cũng tải được
-const OFFLINE_DOWNLOAD_URL = "https://www.dvkhkiotviet.com/downloads/KiotLabel-portable-win-x64.zip";
+// Bản offline (portable, Windows) phát hành ở GitHub Releases của repo kiotlabel-desktop (công khai); liên kết "latest" luôn trỏ bản mới nhất
+const OFFLINE_DOWNLOAD_URL = "https://github.com/thuyettk42-tech/kiotlabel-desktop/releases/latest/download/KiotLabel.exe";
 import { prepareObjectBitmaps, rasterizeBackground } from "./utils/printerRaster";
 import type { MonoBitmap } from "./utils/printerBitmap";
 import { buildPages, totalLabelCount, type PageSpec } from "./utils/vectorPdf/pages";
@@ -7599,7 +7599,7 @@ export default function App() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-[11px] font-black uppercase tracking-wide shadow-sm cursor-pointer transition-all active:scale-[0.98]"
-                      title="Tải KiotLabel bản offline cho Windows (khoảng 40 MB): giải nén rồi bấm KiotLabel.exe, chạy không cần Internet và in thẳng ra máy in tem"
+                      title="Tải KiotLabel bản offline cho Windows (một tệp KiotLabel.exe, khoảng 16 MB): bấm đúp là chạy, không cần cài đặt hay giải nén, không cần Internet và in thẳng ra máy in tem"
                     >
                       <Download className="w-3.5 h-3.5 stroke-[2.5]" />
                       <span>Tải bản offline</span>

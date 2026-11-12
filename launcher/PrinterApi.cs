@@ -99,24 +99,6 @@ internal static class PrinterApi
         return 0;
     }
 
-    public static int PrintRawCli(string[] args)
-    {
-        string? printer = Arg(args, "--printer");
-        string? file = Arg(args, "--file");
-        string doc = Arg(args, "--doc") ?? "KiotLabel";
-        if (string.IsNullOrEmpty(printer) || string.IsNullOrEmpty(file))
-            return Fail("Thiếu tham số --printer hoặc --file.");
-        byte[] data;
-        try { data = File.ReadAllBytes(file); }
-        catch (Exception e) { return Fail("Không đọc được dữ liệu in: " + e.Message); }
-        if (data.Length == 0) return Fail("Không có dữ liệu để in.");
-
-        string? error = PrintRaw(printer, doc, data, out int written);
-        if (error != null) return Fail(error);
-        Program.Out("{\"ok\":true,\"bytes\":" + written + "}\n");
-        return 0;
-    }
-
     /// <summary>Trả về null nếu thành công, ngược lại là thông báo lỗi tiếng Việt.</summary>
     public static string? PrintRaw(string printer, string doc, byte[] data, out int totalWritten)
     {
@@ -151,18 +133,6 @@ internal static class PrinterApi
             return null;
         }
         finally { ClosePrinter(h); }
-    }
-
-    private static int Fail(string message)
-    {
-        Program.Out("{\"ok\":false,\"error\":" + Json(message) + "}\n");
-        return 1;
-    }
-
-    private static string? Arg(string[] args, string name)
-    {
-        int i = Array.IndexOf(args, name);
-        return i >= 0 && i + 1 < args.Length ? args[i + 1] : null;
     }
 
     internal static string Json(string s)

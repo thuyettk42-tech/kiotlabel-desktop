@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- KiotLabel.exe: trình khởi chạy + gửi lệnh in thô ra máy in Windows. Không có gói NuGet nào, không WinForms. -->
+  <!-- KiotLabel.exe: MỘT tệp duy nhất = máy chủ cục bộ + trình khởi chạy + gửi lệnh in thô ra máy in Windows + giao diện nhúng sẵn (ui/dist).`r`n       Không có gói NuGet nào, không WinForms, không Node. -->
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -14,9 +14,9 @@
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 
     <!-- Thông tin phiên bản hiển thị trong Properties của tệp exe (giúp trình quét và người dùng nhận biết nhà phát hành) -->
-    <Version>3.5.2</Version>
-    <AssemblyVersion>3.5.2.0</AssemblyVersion>
-    <FileVersion>3.5.2.0</FileVersion>
+    <Version>3.5.3</Version>
+    <AssemblyVersion>3.5.3.0</AssemblyVersion>
+    <FileVersion>3.5.3.0</FileVersion>
     <Product>KiotLabel</Product>
     <Company>KiotViet DVKH KV HCM</Company>
     <Description>KiotLabel - thiết kế và in tem mã vạch (bản portable)</Description>
@@ -36,5 +36,10 @@
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
     <UseSystemResourceKeys>true</UseSystemResourceKeys>
   </PropertyGroup>
+
+  <!-- Giao diện KiotLabel (bản build của ui/) nhúng vào chính tệp exe, không nén, không tự giải nén ra đâu cả -->
+  <ItemGroup Condition="Exists('..\ui\dist\index.html')">
+    <EmbeddedResource Include="..\ui\dist\**\*" WithCulture="false" LogicalName="app/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
 
 </Project>
