@@ -1,7 +1,7 @@
 name: Release
 
 # Dựng gói portable trên máy chủ GitHub từ chính mã nguồn công khai, kiểm tra, tạo chứng thực nguồn gốc rồi đưa lên GitHub Releases.
-# Phát hành: git tag v3.5.0 && git push origin v3.5.0   (X.Y của nhãn phải trùng phiên bản giao diện, xem docs/PHAT-HANH.md)
+# Phát hành: git tag v3.5.1 && git push origin v3.5.1   (X.Y của nhãn phải trùng phiên bản giao diện, xem docs/PHAT-HANH.md)
 # Chạy thủ công (workflow_dispatch) chỉ dựng và lưu artifact, không tạo Release.
 on:
   push:
@@ -38,7 +38,15 @@ jobs:
           if ($tag -ne $ver) { throw "Nhãn v$tag không khớp VERSION trong server.mjs ($ver)" }
 
       - name: Đóng gói và kiểm tra
-        run: node scripts/build-desktop.mjs --out "${{ runner.temp }}\kl-desktop"
+        shell: pwsh
+        run: |
+          node scripts/build-desktop.mjs --out "${{ runner.temp }}\kl-desktop" 2>&1 | Tee-Object -FilePath "${{ runner.temp }}\build.log"
+          if ($LASTEXITCODE -ne 0) {
+            # Đưa phần cuối nhật ký lên thành chú thích (annotation) để xem được nguyên nhân ngay trên trang chạy
+            $tail = (Get-Content "${{ runner.temp }}\build.log" -Tail 12) -join '%0A'
+            Write-Host "::error title=Đóng gói thất bại::$tail"
+            exit 1
+          }
 
       - name: Chứng thực nguồn gốc bản dựng
         uses: actions/attest-build-provenance@v2

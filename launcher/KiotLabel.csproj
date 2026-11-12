@@ -14,9 +14,9 @@
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 
     <!-- Thông tin phiên bản hiển thị trong Properties của tệp exe (giúp trình quét và người dùng nhận biết nhà phát hành) -->
-    <Version>3.5.0</Version>
-    <AssemblyVersion>3.5.0.0</AssemblyVersion>
-    <FileVersion>3.5.0.0</FileVersion>
+    <Version>3.5.1</Version>
+    <AssemblyVersion>3.5.1.0</AssemblyVersion>
+    <FileVersion>3.5.1.0</FileVersion>
     <Product>KiotLabel</Product>
     <Company>KiotViet DVKH KV HCM</Company>
     <Description>KiotLabel - thiết kế và in tem mã vạch (bản portable)</Description>

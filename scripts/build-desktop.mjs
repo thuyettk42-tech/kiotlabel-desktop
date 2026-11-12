@@ -17,6 +17,8 @@ const OUT = path.resolve(opt('--out', path.join(ROOT, 'dist-desktop')));
 const NODE_EXE = path.resolve(opt('--node', process.execPath));
 const NAME = 'KiotLabel';
 const run = (cmd, args, cwd) => { console.log('> ' + [cmd, ...args].join(' ')); execFileSync(cmd === 'npm' ? 'npm.cmd' : cmd, args, { cwd, stdio: 'inherit', shell: cmd === 'npm' }); };
+// bsdtar của Windows (tạo và đọc zip); trên máy chủ GitHub, `tar` trong PATH có thể là GNU tar của Git, không làm được việc này
+const TAR = path.join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'tar.exe');
 const dotnet = fs.existsSync('C:\\Program Files\\dotnet\\dotnet.exe') ? 'C:\\Program Files\\dotnet\\dotnet.exe' : 'dotnet';
 
 if (process.platform !== 'win32') throw new Error('Script đóng gói này dành cho Windows.');
@@ -61,7 +63,7 @@ fs.writeFileSync(path.join(root, 'SHA256SUMS.txt'), lines.join('\n') + '\n');
 
 const zip = path.join(OUT, `${NAME}-portable-win-x64.zip`);
 fs.rmSync(zip, { force: true });
-run('tar', ['-a', '-c', '-f', zip, '-C', OUT, NAME], OUT);
+run(TAR, ['-a', '-c', '-f', zip, '-C', OUT, NAME], OUT);
 const zipSha = sha(zip);
 fs.writeFileSync(zip + '.sha256', `${zipSha}  ${path.basename(zip)}\n`);
 console.log(`\nXong: ${zip} (${(fs.statSync(zip).size / 1048576).toFixed(1)} MB)\nSHA-256: ${zipSha}`);

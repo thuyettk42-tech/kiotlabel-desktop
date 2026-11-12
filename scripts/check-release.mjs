@@ -17,6 +17,7 @@ const opt = (n, d) => { const i = argv.indexOf(n); return i >= 0 && argv[i + 1] 
 const ZIP = path.resolve(opt('--zip', path.join(REPO, 'dist-desktop', 'KiotLabel-portable-win-x64.zip')));
 const WEB = path.resolve(opt('--web', path.join(KL, 'dist')));
 
+const TAR = path.join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'tar.exe'); // bsdtar (đọc được zip)
 let failures = 0, warnings = 0;
 const ok = (m) => console.log('  ok    ' + m);
 const bad = (m) => { failures++; console.log('  LỖI   ' + m); };
@@ -85,14 +86,14 @@ else {
   if (!fs.existsSync(shaFile)) bad('Thiếu tệp ' + path.basename(shaFile));
   else if (read(shaFile).trim().split(/\s+/)[0] !== sha) bad('SHA-256 của zip không khớp tệp .sha256 (zip hoặc .sha256 là bản cũ)');
   else ok('SHA-256 khớp: ' + sha.slice(0, 16) + '...');
-  const list = execFileSync('tar', ['-tf', ZIP], { encoding: 'utf8' }).split(/\r?\n/);
+  const list = execFileSync(TAR, ['-tf', ZIP], { encoding: 'utf8' }).split(/\r?\n/);
   for (const need of ['KiotLabel/KiotLabel.exe', 'KiotLabel/runtime/node.exe', 'KiotLabel/server/server.mjs', 'KiotLabel/app/index.html', 'KiotLabel/SHA256SUMS.txt', 'KiotLabel/HUONG-DAN.txt']) {
     if (list.includes(need)) ok(need); else bad('Thiếu trong zip: ' + need);
   }
-  const zipHtml = execFileSync('tar', ['-xOf', ZIP, 'KiotLabel/app/index.html'], { encoding: 'utf8', maxBuffer: 1 << 26 });
+  const zipHtml = execFileSync(TAR, ['-xOf', ZIP, 'KiotLabel/app/index.html'], { encoding: 'utf8', maxBuffer: 1 << 26 });
   const zipVer = (zipHtml.match(/<title>\s*KiotLabel V(\d+\.\d+)/) || [])[1];
   if (zipVer !== title) bad(`Giao diện trong zip là V${zipVer}, mã nguồn hiện tại là V${title}: đóng gói lại`); else ok('Giao diện trong zip cùng phiên bản với mã nguồn');
-  const srvZip = execFileSync('tar', ['-xOf', ZIP, 'KiotLabel/server/server.mjs'], { encoding: 'utf8', maxBuffer: 1 << 26 });
+  const srvZip = execFileSync(TAR, ['-xOf', ZIP, 'KiotLabel/server/server.mjs'], { encoding: 'utf8', maxBuffer: 1 << 26 });
   const norm = (s) => s.replace(/\r\n/g, '\n');
   if (norm(srvZip) !== norm(read(path.join(REPO, 'server', 'server.mjs')))) bad('server.mjs trong zip khác mã nguồn hiện tại: đóng gói lại'); else ok('server.mjs trong zip khớp mã nguồn');
   const MAX_MB = 80;
