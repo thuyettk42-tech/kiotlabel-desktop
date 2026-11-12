@@ -16,6 +16,13 @@ export interface DesktopInfo {
 export interface DesktopPrinter {
   name: string;
   isDefault: boolean;
+  /** Dữ kiện từ Windows để tự chọn cách in (có thể thiếu ở máy chủ macOS/Linux). */
+  driver?: string;
+  port?: string;
+  virtual?: boolean;
+  maxWidthMm?: number;
+  maxHeightMm?: number;
+  dpi?: number[];
 }
 
 // (không dùng union phân biệt vì dự án tắt strict nên TypeScript không thu hẹp kiểu theo ok)
@@ -78,6 +85,25 @@ export async function printRawDesktop(printer: string, bytes: Uint8Array, docNam
       timeoutMs: 180000,
     });
     return { ok: true, data: { bytes: Number(j.bytes) || bytes.length } };
+  } catch (e: any) {
+    return { ok: false, error: String(e?.message || e) };
+  }
+}
+
+/**
+ * Gửi trang vẽ (danh sách lệnh vẽ từ buildVectorOps) để KiotLabel.exe vẽ thẳng ra máy in thường (A4/A5) bằng GDI, không qua PDF.
+ * Chỉ có ở bản desktop Windows.
+ */
+export async function printSheetDesktop(printer: string, job: unknown, docName: string): Promise<DesktopResult<{ pages: number; warnings: string[] }>> {
+  try {
+    const q = new URLSearchParams({ printer, doc: docName });
+    const j = await api('print-sheet?' + q.toString(), {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(job),
+      timeoutMs: 600000,
+    });
+    return { ok: true, data: { pages: Number(j.pages) || 0, warnings: Array.isArray(j.warnings) ? j.warnings.map(String) : [] } };
   } catch (e: any) {
     return { ok: false, error: String(e?.message || e) };
   }

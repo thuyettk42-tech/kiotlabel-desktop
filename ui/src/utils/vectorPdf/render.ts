@@ -22,6 +22,7 @@ import { anchorMultipliers, usesAnchor } from '../../utils';
 import { buildPages, PageSpec } from './pages';
 import { layoutSegments, TextSeg, FontKey, Measurer, LINE_HEIGHT } from './textLayout';
 import { fontKeyOf, fontKeyId, loadFontBytes } from './fonts';
+import { Recorder, RecImagePool, SheetJob } from './recorder';
 
 const MM = 72 / 25.4; // điểm PDF trên mỗi mm
 const PT_TO_MM = 0.3528; // 1 pt = 0,3528 mm (giống bàn thiết kế)
@@ -87,6 +88,7 @@ export function parseColor(css: string | undefined, fallback = '#000000'): { col
 // ---------------------------------------------------------------------------
 class FontPool {
   private fonts = new Map<string, PDFFont>();
+  private keys = new Map<PDFFont, FontKey>();
   constructor(private doc: PDFDocument, private baseUrl?: string) {}
 
   async need(keys: FontKey[]) {
@@ -98,8 +100,14 @@ class FontPool {
       const bytes = await loadFontBytes(k, this.baseUrl);
       // Nhúng nguyên font (không subset): tuỳ chọn subset của pdf-lib làm mất chữ trên nhiều trình xem PDF.
       // Font đã được cắt sẵn còn Latin + tiếng Việt nên mỗi font chỉ khoảng 75-125 KB.
-      this.fonts.set(id, await this.doc.embedFont(bytes, { subset: false }));
+      const font = await this.doc.embedFont(bytes, { subset: false });
+      this.fonts.set(id, font);
+      this.keys.set(font, k);
     }));
+  }
+
+  keyOfFont(font: PDFFont): FontKey {
+    return this.keys.get(font) || { family: 'sans', bold: false, italic: false };
   }
 
   get(k: FontKey): PDFFont {
@@ -185,7 +193,7 @@ class ImagePool {
 interface Ctx {
   doc: PDFDocument;
   fonts: FontPool;
-  images: ImagePool;
+  images: { get(content: string): Promise<any | null> };
   measure: Measurer;
   warnings: Set<string>;
 }
@@ -598,4 +606,39 @@ export async function buildVectorPdf(input: VectorPdfInput): Promise<VectorPdfRe
   if (input.keywords) doc.setKeywords([input.keywords]);
   const bytes = await doc.save();
   return { bytes, pageCount: pages.length, warnings: [...ctx.warnings] };
+}
+
+/**
+ * Danh sách lệnh vẽ cho bản in thẳng ra máy in thường (A4/A5) trên bản desktop. Dùng chung toàn bộ bộ dựng bố cục với PDF vector
+ * (cùng hàm drawLabelCell), chỉ khác nơi ghi: thay vì ghi PDF thì ghi danh sách lệnh để KiotLabel.exe vẽ bằng GDI ở độ phân giải gốc của máy in.
+ */
+export async function buildVectorOps(input: VectorPdfInput): Promise<SheetJob> {
+  // Tài liệu pdf-lib chỉ dùng để đo chữ bằng font nhúng (Arimo/Tinos/Cousine) và để pdf-lib sinh hình học; không được lưu ra tệp
+  const doc = await PDFDocument.create();
+  doc.registerFontkit(fontkit);
+  const fonts = new FontPool(doc, input.fontBaseUrl);
+  await fonts.need(collectFontKeys(input.templateObjects));
+  const images = new RecImagePool();
+  const rec = new Recorder(doc, images, (f) => fonts.keyOfFont(f));
+  const ctx: Ctx = { doc, fonts, images, measure: fonts.measurer(), warnings: new Set() };
+
+  const specs: PageSpec[] = buildPages(input.labelConfig, input.sheetConfig, input.totalItems);
+  const out: SheetJob['pages'] = [];
+  let done = 0;
+  let lastYield = performance.now();
+  for (const spec of specs) {
+    const page = rec.newPage();
+    const pageHeightPt = spec.heightMm * MM;
+    for (const cell of spec.cells) {
+      await drawLabelCell(page as unknown as PDFPage, pageHeightPt, cell.x, cell.y, input.getObjects(cell.index), input.labelConfig, input.sheetConfig, input.includeBackground, ctx);
+    }
+    out.push({ wMm: spec.widthMm, hMm: spec.heightMm, ops: page.ops });
+    done++;
+    if (performance.now() - lastYield > 100) {
+      input.onProgress?.(done, specs.length);
+      await new Promise((r) => setTimeout(r, 0));
+      lastYield = performance.now();
+    }
+  }
+  return { version: 1, pages: out, images: images.export(), warnings: [...ctx.warnings] };
 }

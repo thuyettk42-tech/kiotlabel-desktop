@@ -221,6 +221,8 @@ export function normalizeAngle(angle?: number): number {
 
 /** Đối tượng này phải được dựng thành ảnh (không có lệnh máy in gốc): xoay hoặc hình có nét đứt/chấm. */
 export function needsRaster(obj: LabelObject): boolean {
+  // Chữ có dấu tiếng Việt (hay mọi ký tự ngoài ASCII): dựng thành ảnh ở độ phân giải máy in để không phụ thuộc font nạp sẵn trong máy in
+  if (obj.type === 'text' && /[^\x00-\x7F]/.test(`${obj.prefixText || ''}${obj.content || ''}${obj.suffixText || ''}`)) return true;
   const a = normalizeAngle(obj.angle);
   if (a > 0.01 && a < 359.99) return true;
   if (obj.type === 'shape') {

@@ -2,7 +2,7 @@ name: Release
 
 # Dựng KiotLabel.exe (một tệp, giao diện nhúng sẵn) trên máy chủ GitHub từ chính mã nguồn công khai, kiểm tra, tạo chứng thực nguồn gốc
 # rồi đưa lên GitHub Releases.
-# Phát hành: git tag v3.5.3 && git push origin v3.5.3   (số nhãn phải trùng Version trong launcher/AppInfo.cs, xem docs/PHAT-HANH.md)
+# Phát hành: git tag v3.5.4 && git push origin v3.5.4   (số nhãn phải trùng Version trong launcher/AppInfo.cs, xem docs/PHAT-HANH.md)
 # Chạy thủ công (workflow_dispatch) chỉ dựng và lưu artifact, không tạo Release.
 on:
   push:

@@ -52,6 +52,81 @@ internal static class PrinterApi
     [DllImport("winspool.drv", SetLastError = true)]
     private static extern bool WritePrinter(IntPtr hPrinter, byte[] pBytes, int dwCount, out int dwWritten);
 
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    private struct PRINTER_INFO_2
+    {
+        public string pServerName, pPrinterName, pShareName, pPortName, pDriverName, pComment, pLocation;
+        public IntPtr pDevMode;
+        public string pSepFile, pPrintProcessor, pDatatype, pParameters;
+        public IntPtr pSecurityDescriptor;
+        public uint Attributes, Priority, DefaultPriority, StartTime, UntilTime, Status, cJobs, AveragePPM;
+    }
+
+    [DllImport("winspool.drv", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern int DeviceCapabilitiesW(string device, string? port, ushort capability, IntPtr output, IntPtr devMode);
+
+    private const ushort DC_MAXEXTENT = 5, DC_ENUMRESOLUTIONS = 13;
+
+    /// <summary>Thông tin một máy in để giao diện tự chọn cách in: tên driver, cổng, khổ giấy tối đa (mm), các độ phân giải (DPI).</summary>
+    public sealed record PrinterDetail(string Name, string Driver, string Port, bool IsVirtual, int MaxWidthMm, int MaxHeightMm, int[] Dpi);
+
+    private static bool LooksVirtual(string driver, string port)
+    {
+        string d = driver.ToLowerInvariant(), p = port.ToUpperInvariant();
+        return p.StartsWith("PORTPROMPT") || p.StartsWith("SHRFAX") || p == "NUL:" || p.StartsWith("MICROSOFT.") || p.EndsWith("_MICROSOFT.ONENOTEIM_S-1-5-21") ||
+               d.Contains("microsoft print to pdf") || d.Contains("xps document writer") || d.Contains("onenote") || d.Contains("fax") || d.Contains("software printer");
+    }
+
+    /// <summary>Danh sách máy in kèm thông tin phân loại (không giao tiếp với máy in thật, chỉ hỏi driver).</summary>
+    public static List<PrinterDetail> DetailedPrinters()
+    {
+        var list = new List<PrinterDetail>();
+        int flags = PRINTER_ENUM_LOCAL | PRINTER_ENUM_CONNECTIONS;
+        EnumPrinters(flags, null, 2, IntPtr.Zero, 0, out int needed, out _);
+        if (needed <= 0) return list;
+        IntPtr buf = Marshal.AllocHGlobal(needed);
+        try
+        {
+            if (!EnumPrinters(flags, null, 2, buf, needed, out _, out int count)) return list;
+            int size = Marshal.SizeOf<PRINTER_INFO_2>();
+            for (int i = 0; i < count; i++)
+            {
+                var info = Marshal.PtrToStructure<PRINTER_INFO_2>(IntPtr.Add(buf, i * size));
+                if (string.IsNullOrEmpty(info.pPrinterName)) continue;
+                string driver = info.pDriverName ?? "", port = info.pPortName ?? "";
+                int maxW = 0, maxH = 0;
+                var dpi = new List<int>();
+                try
+                {
+                    int ext = DeviceCapabilitiesW(info.pPrinterName, port, DC_MAXEXTENT, IntPtr.Zero, IntPtr.Zero);
+                    if (ext > 0) { maxW = (ext & 0xFFFF) / 10; maxH = ((ext >> 16) & 0xFFFF) / 10; }
+                    int n = DeviceCapabilitiesW(info.pPrinterName, port, DC_ENUMRESOLUTIONS, IntPtr.Zero, IntPtr.Zero);
+                    if (n > 0 && n < 64)
+                    {
+                        IntPtr res = Marshal.AllocHGlobal(n * 8);
+                        try
+                        {
+                            if (DeviceCapabilitiesW(info.pPrinterName, port, DC_ENUMRESOLUTIONS, res, IntPtr.Zero) > 0)
+                                for (int k = 0; k < n; k++) { int x = Marshal.ReadInt32(res, k * 8); if (x > 0 && !dpi.Contains(x)) dpi.Add(x); }
+                        }
+                        finally { Marshal.FreeHGlobal(res); }
+                    }
+                }
+                catch { /* driver không trả thông tin: để trống */ }
+                list.Add(new PrinterDetail(info.pPrinterName, driver, port, LooksVirtual(driver, port), maxW, maxH, dpi.ToArray()));
+            }
+        }
+        finally { Marshal.FreeHGlobal(buf); }
+        list.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.CurrentCultureIgnoreCase));
+        return list;
+    }
+
+    /// <summary>JSON một máy in cho API: tên, mặc định, driver, cổng, máy in ảo, khổ giấy tối đa, DPI.</summary>
+    public static string DetailJson(PrinterDetail d, bool isDefault)
+    {
+        return "{\"name\":" + Json(d.Name) + ",\"isDefault\":" + (isDefault ? "true" : "false") + ",\"driver\":" + Json(d.Driver) + ",\"port\":" + Json(d.Port) +
+               ",\"virtual\":" + (d.IsVirtual ? "true" : "false") + ",\"maxWidthMm\":" + d.MaxWidthMm + ",\"maxHeightMm\":" + d.MaxHeightMm + ",\"dpi\":[" + string.Join(",", d.Dpi) + "]}";
+    }
     public static string DefaultPrinter()
     {
         int len = 0;
@@ -86,19 +161,9 @@ internal static class PrinterApi
     public static int ListToStdout()
     {
         string def = DefaultPrinter();
-        var sb = new StringBuilder("[");
-        bool first = true;
-        foreach (var name in InstalledPrinters())
-        {
-            if (!first) sb.Append(',');
-            first = false;
-            sb.Append("{\"name\":").Append(Json(name)).Append(",\"isDefault\":").Append(name == def ? "true" : "false").Append('}');
-        }
-        sb.Append("]\n");
-        Program.Out(sb.ToString());
+        Program.Out("[" + string.Join(",", DetailedPrinters().Select(d => DetailJson(d, d.Name == def))) + "]\n");
         return 0;
     }
-
     /// <summary>Trả về null nếu thành công, ngược lại là thông báo lỗi tiếng Việt.</summary>
     public static string? PrintRaw(string printer, string doc, byte[] data, out int totalWritten)
     {

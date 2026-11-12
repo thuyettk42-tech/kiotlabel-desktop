@@ -7,7 +7,7 @@ không cài đặt, không giải nén, không cần Internet. Đây là tài li
 
 - Cùng giao diện thiết kế tem với bản web KiotLabel (khổ tem, mã vạch CODE128/EAN-13/CODE39, QR, chữ, hình, nhập Excel/CSV, sắp xếp, hoàn tác...).
 - **Một tệp duy nhất**: tải `KiotLabel.exe` về rồi bấm đúp. Không có thư mục đi kèm, không cần giải nén, không ghi registry, không cài dịch vụ, không cần quyền quản trị.
-- **In thẳng ra máy in tem** bằng lệnh ZPL/TSPL, không phải xuất PDF rồi mở và in như bản web. Chỉ khi chọn "Lưu thành PDF" mới có tệp PDF.
+- **In thẳng ra máy in** (máy in tem bằng lệnh ZPL/TSPL; máy in thường A4/A5 bằng vẽ trực tiếp), không phải xuất PDF rồi mở và in như bản web. Chỉ khi chọn "Lưu thành PDF" mới có tệp PDF.
 
 ## 2. Yêu cầu và cách dùng
 
@@ -28,7 +28,7 @@ Bạn có thể để tệp ở bất kỳ đâu (Desktop, thư mục riêng, US
 
 | | Bản web | Bản offline (ứng dụng này) |
 |---|---|---|
-| In | Xuất PDF (vector hoặc ảnh) rồi mở/in; hoặc tải tệp ZPL/TSPL | **Chọn máy in rồi in thẳng**; "Lưu thành PDF" khi cần tệp |
+| In | Xuất PDF (vector hoặc ảnh) rồi mở hộp thoại in của trình duyệt | **Chọn máy in rồi in thẳng**, tự chọn cách in tốt nhất theo máy in (lệnh gốc cho máy in tem, vẽ trang cho máy khác); "Lưu thành PDF" khi cần tệp |
 | Mạng | Cần để tải trang | **Không cần** |
 | Dữ liệu (mẫu tem đã lưu, cài đặt) | Trong trình duyệt của người dùng | Trên máy, trong thư mục riêng của ứng dụng (mục 5) |
 | Nhận diện tem bằng AI (Gemini) | Có | **Đã gỡ** (cần Internet và khóa API) |
@@ -40,19 +40,39 @@ Các tính năng cần Internet được gỡ để ứng dụng hoạt động 
 
 ## 4. In ấn
 
-1. Mở tab **Thiết kế tem** → **Bước 4: In tem** (hoặc bảng "Cấu hình in nhanh" bên phải màn hình).
-2. Ở mục **In trực tiếp ra máy in** chọn **máy in** (danh sách lấy từ Windows; "Làm mới" để quét lại), hoặc **Lưu thành PDF**.
-3. Chọn ngôn ngữ **ZPL** (Zebra) hay **TSPL** (TSC, Xprinter, Gprinter...) và độ phân giải máy in (203/300/600 DPI) ở mục "Xuất lệnh máy in nhiệt".
-4. Bấm **In ngay** hoặc **Ctrl+P**. Một lô tem (theo Excel và số lượng) được gửi thành một tác vụ; các dòng giống nhau liên tiếp gom thành một lệnh có số bản.
+**Cách dùng (chỉ ba bước):** mở **Bước 4: In tem** → chọn **máy in** → bấm **In ngay** (hoặc **Ctrl+P**).
+Ứng dụng **tự chọn cách in tốt nhất theo từng máy in**, người dùng không phải biết ZPL, TSPL hay GDI là gì. Chọn **Lưu thành PDF** nếu muốn tệp PDF thay vì in.
 
-Cách hoạt động: giao diện dựng lệnh ZPL/TSPL (kể cả ảnh, chữ xoay, nét đứt được chuyển thành ảnh đơn sắc ở độ phân giải máy in), máy chủ cục bộ nằm ngay trong
-`KiotLabel.exe` nhận lệnh và gửi thẳng vào hàng đợi in Windows (kiểu dữ liệu RAW). Chất lượng do máy in vẽ nên nét ở độ phân giải thật của máy in.
+**Cách tự chọn:** ứng dụng hỏi Windows tên, driver, cổng, khổ giấy tối đa và độ phân giải của máy in, rồi quyết định:
 
-Giới hạn hiện tại:
-- Chỉ in thẳng cho **máy in tem** nhận ZPL/TSPL. Máy in thường (laser/phun) và chế độ giấy văn phòng A4/A5: chọn "Lưu thành PDF" rồi in tệp PDF.
-- Máy in ảo (Microsoft Print to PDF, XPS...) không nhận lệnh thô; ứng dụng báo lỗi rõ. Dùng "Lưu thành PDF" của KiotLabel.
-- Chữ tiếng Việt có dấu cần máy in đã nạp font TrueType (hoặc dùng đối tượng xoay/nét đứt, được in dạng ảnh). Tối đa 5.000 tem mỗi lần in.
+| Máy in | Cách in tự chọn | Lý do |
+|---|---|---|
+| Máy in tem **TSC** (TE, TTP, DA, DE, Alpha...) | Lệnh **TSPL** | Nét nhất, nhanh, mã vạch/QR quét chắc |
+| Máy in tem **Zebra/ZDesigner** (ZPL) | Lệnh **ZPL** | Như trên |
+| **Xprinter, Gprinter, HPRT** loại in tem | Lệnh **TSPL** (độ tin cậy trung bình) | Phần lớn nhận TSPL; sai thì đổi một lần (xem dưới) |
+| Zebra **EPL**, Godex (EZPL), Argox, Datamax, SATO, Brother QL, Dymo... | **Vẽ trang trực tiếp** | Ngôn ngữ riêng, không nhận ZPL/TSPL (gửi nhầm sẽ ra chữ rác) |
+| Máy in **hóa đơn** (ESC/POS), máy in **kim**, **laser/phun**, máy in **ảo**, máy lạ | **Vẽ trang trực tiếp** | Chạy được với mọi driver Windows |
+| Giấy văn phòng **A4/A5** | **Vẽ trang trực tiếp** (luôn) | Khổ giấy và hướng giấy theo thiết lập |
 
+**Độ phân giải** (203/300/600 DPI) cũng lấy từ driver. Muốn xem hoặc đổi, bấm **Đổi cách in** ngay dưới ô chọn máy in: chọn **Tự động**, **Lệnh ZPL**, **Lệnh TSPL** hoặc **Vẽ trang**.
+Lựa chọn của bạn được **nhớ riêng cho từng máy in**.
+
+**Nếu tem in chưa đúng** (máy lạ nhận diện sai): sau khi in, bấm **"Tem in chưa đúng? Thử cách khác"**. Ứng dụng đổi sang cách còn lại (lệnh gốc ↔ vẽ trang), nhớ cho máy in đó, rồi bạn bấm In ngay lần nữa.
+
+Cách hoạt động:
+- **Lệnh gốc (máy in tem):** giao diện dựng lệnh ZPL/TSPL rồi máy chủ cục bộ nằm ngay trong `KiotLabel.exe` gửi vào hàng đợi in Windows (dữ liệu RAW). Chữ **tiếng Việt có dấu được dựng thành ảnh** ở đúng độ phân giải máy in nên không phụ thuộc font nạp sẵn trong máy in; mã vạch và QR vẫn dùng lệnh gốc nên nét và quét chắc. Một lô tem (theo Excel và số lượng) gửi thành một tác vụ, các dòng giống nhau liên tiếp gom thành một lệnh có số bản.
+- **Vẽ trang trực tiếp (GDI):** giao diện dùng **cùng bộ bố cục với PDF vector** (bản in khớp bản PDF) nhưng ghi ra một **danh sách lệnh vẽ** (chữ, hình, mã vạch, QR, ảnh) thay vì tệp PDF;
+  `KiotLabel.exe` vẽ danh sách đó lên máy in bằng GDI ở **độ phân giải gốc của máy in** (300/600/1200 DPI). Chữ, mã vạch và QR là nét vẽ vector nên rất nét; dữ liệu chỉ vài KB mỗi tem
+  (không phải ảnh cả trang) nên nhanh và nhẹ. Chữ dùng font Arial/Times New Roman/Courier New của Windows (cùng độ rộng chữ với font nhúng trong PDF).
+
+**Nâng cao (kỹ thuật viên):** mục gập "Nâng cao: tệp lệnh máy in nhiệt" cho phép chọn ngôn ngữ/độ phân giải/khoảng hở tem (TSPL) và **xuất tệp ZPL/TSPL** để gửi bằng công cụ khác. Người dùng thường không cần mục này.
+
+Giới hạn:
+- Máy in ảo (Microsoft Print to PDF, XPS...) vẽ trang sẽ hỏi nơi lưu tệp; dùng "Lưu thành PDF" của KiotLabel cho tiện.
+- Máy in thường có **lề không in được** (thường 3–5 mm): nội dung sát mép tờ bị cắt; chừa lề giấy trong thiết lập khổ giấy.
+- Driver có thể đổi khổ giấy: nếu khổ giấy thực tế khác khổ thiết kế, ứng dụng báo "Lưu ý" sau khi in.
+- Nhận diện theo **tên máy in/driver**: tên lạ có thể bị xếp vào "vẽ trang" dù máy nhận lệnh gốc (vẫn in được, chỉ kém nét hơn lệnh gốc): đổi bằng "Đổi cách in". Tối đa 5.000 tem mỗi lần in.
+- Chưa kiểm chứng in ra giấy thật trên máy in laser/phun (đã kiểm thử bằng cách in vào tệp PDF qua Windows và so từng điểm ảnh với PDF vector: khớp khoảng 88–98% tùy mẫu, phần lệch chủ yếu là khử răng cưa của chữ giữa Arial và Arimo).
 ## 5. Dữ liệu và quyền riêng tư
 
 - Mặc định dữ liệu (hồ sơ trình duyệt riêng của ứng dụng: mẫu tem đã lưu, bản nháp, máy in đã chọn, cài đặt) nằm ở `%LOCALAPPDATA%\KiotLabel`,
@@ -87,7 +107,9 @@ Nếu trình diệt virus báo nhầm, hãy gửi tệp cho hãng để họ xá
 | Windows báo "protected your PC" | Tệp chưa có chữ ký số: More info → Run anyway (sau khi kiểm tra SHA-256) |
 | Không thấy máy in trong danh sách | Bấm "Làm mới"; kiểm tra máy in đã cài driver và hiện trong Windows (Settings → Printers) |
 | "Máy in không nhận lệnh thô (RAW)" | Đây là máy in ảo/máy in thường: chọn máy in tem thật hoặc "Lưu thành PDF" |
-| Tem ra sai kích thước, lệch | Kiểm tra khổ tem, ngôn ngữ (ZPL/TSPL), DPI và khoảng hở tem (TSPL) khớp với máy in |
+| Tem in ra chữ rác hoặc sai | Bấm "Tem in chưa đúng? Thử cách khác"; hoặc "Đổi cách in" và chọn Vẽ trang |
+| Tem ra sai kích thước, lệch | Kiểm tra khổ tem trong thiết lập; với lệnh TSPL kiểm tra khoảng hở tem ở mục Nâng cao |
+| Tờ A4 in ra lệch hoặc mất chữ sát mép | Máy in thường không in được sát mép: chừa lề giấy 5 mm trở lên trong thiết lập; kiểm tra khổ giấy trong driver |
 | Cửa sổ không mở | Cần Microsoft Edge hoặc Chrome; nếu không có, ứng dụng mở trình duyệt mặc định |
 | Báo "KiotLabel đang chạy" nhưng không thấy cửa sổ | Mở Task Manager, kết thúc tiến trình KiotLabel.exe rồi mở lại |
 

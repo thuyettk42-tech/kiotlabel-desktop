@@ -22,7 +22,7 @@ const APP_DIR = path.resolve(opt('--app-dir', path.join(HERE, '..', 'app')));
 const LAUNCHER = opt('--launcher', '');
 const PORT = Number(opt('--port', '0')) || 0;
 const PARENT_PID = Number(opt('--parent-pid', '0')) || 0;
-const VERSION = '3.5.3';
+const VERSION = '3.5.4';
 const TOKEN = crypto.randomBytes(24).toString('hex');
 const MAX_PRINT_BYTES = 64 * 1024 * 1024;
 const IDLE_MS = 90_000; // không còn trang nào gửi "heartbeat" quá lâu thì tự thoát (tránh sót tiến trình)
@@ -145,6 +145,10 @@ async function handle(req, res) {
     if (route === 'printers' && req.method === 'GET') {
       const list = await listPrinters(url.searchParams.get('refresh') === '1');
       return sendJson(res, 200, { ok: true, printers: list });
+    }
+    if (route === 'print-sheet' && req.method === 'POST') {
+      // In trang vẽ trực tiếp (GDI) chỉ có ở bản Windows (KiotLabel.exe)
+      return sendJson(res, 501, { ok: false, error: 'In trực tiếp ra máy in thường (A4/A5) hiện chỉ có trên Windows. Hãy chọn Lưu thành PDF.' });
     }
     if (route === 'print-raw' && req.method === 'POST') {
       const printer = url.searchParams.get('printer') || '';

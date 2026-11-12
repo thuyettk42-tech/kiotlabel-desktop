@@ -17,7 +17,7 @@ namespace KiotLabel;
 internal sealed class LocalServer : IDisposable
 {
     private const int MaxHeaderBytes = 32 * 1024;
-    private const int MaxBodyBytes = 64 * 1024 * 1024;
+    private const int MaxBodyBytes = 160 * 1024 * 1024; // lệnh vẽ của lô lớn (5.000 tem) có thể vài chục MB
     private static readonly TimeSpan IdleAfterLastBeat = TimeSpan.FromSeconds(90);
     private static readonly TimeSpan NeverConnectedAfter = TimeSpan.FromMinutes(10);
 
@@ -293,19 +293,10 @@ internal sealed class LocalServer : IDisposable
         if (route == "printers" && req.Method == "GET")
         {
             string def = PrinterApi.DefaultPrinter();
-            var sb = new StringBuilder("\"printers\":[");
-            bool firstItem = true;
-            foreach (string name in PrinterApi.InstalledPrinters())
-            {
-                if (!firstItem) sb.Append(',');
-                firstItem = false;
-                sb.Append("{\"name\":").Append(PrinterApi.Json(name)).Append(",\"isDefault\":").Append(name == def ? "true" : "false").Append('}');
-            }
-            sb.Append(']');
-            await Respond(s, 200, "OK", Json8, Json(true, null, sb.ToString()));
+            string items = string.Join(",", PrinterApi.DetailedPrinters().Select(d => PrinterApi.DetailJson(d, d.Name == def)));
+            await Respond(s, 200, "OK", Json8, Json(true, null, "\"printers\":[" + items + "]"));
             return;
-        }
-        if (route == "print-raw" && req.Method == "POST")
+        }        if (route == "print-raw" && req.Method == "POST")
         {
             string printer = QueryValue(query, "printer");
             string doc = Regex.Replace(QueryValue(query, "doc"), @"[^\p{L}\p{N} ._()\-]", "");
@@ -321,6 +312,25 @@ internal sealed class LocalServer : IDisposable
             string? error = PrinterApi.PrintRaw(printer, doc, req.Body, out int written);
             if (error != null) await Respond(s, 502, "Bad Gateway", Json8, Json(false, error));
             else await Respond(s, 200, "OK", Json8, Json(true, null, "\"bytes\":" + written));
+            return;
+        }
+        if (route == "print-sheet" && req.Method == "POST")
+        {
+            // In trang vẽ trực tiếp ra máy in thường (A4/A5...) bằng GDI: thân yêu cầu là danh sách lệnh vẽ (JSON)
+            string printer = QueryValue(query, "printer");
+            string doc = Regex.Replace(QueryValue(query, "doc"), @"[^\p{L}\p{N} ._()\-]", "");
+            if (doc.Length > 80) doc = doc.Substring(0, 80);
+            if (doc.Length == 0) doc = "KiotLabel";
+            if (req.Body.Length == 0) { await Respond(s, 400, "Bad Request", Json8, Json(false, "Không có dữ liệu để in.")); return; }
+            if (!PrinterApi.InstalledPrinters().Contains(printer, StringComparer.Ordinal))
+            {
+                await Respond(s, 404, "Not Found", Json8, Json(false, "Không thấy máy in \"" + printer + "\". Bấm làm mới danh sách máy in."));
+                return;
+            }
+            var r = GdiPrinter.Print(printer, doc, req.Body);
+            string warn = string.Join(",", r.Warnings.Select(PrinterApi.Json));
+            if (r.Error != null) await Respond(s, 502, "Bad Gateway", Json8, Json(false, r.Error));
+            else await Respond(s, 200, "OK", Json8, Json(true, null, "\"pages\":" + r.Pages + ",\"warnings\":[" + warn + "]"));
             return;
         }
         await Respond(s, 404, "Not Found", Json8, Json(false, "Không có API này."));

@@ -10,7 +10,8 @@ import { resizeImage, safeLocalStorage } from "./utils";
 import { convertToZPL } from "./utils/zplGenerator";
 import { convertToTSPL, tsplToBytes } from "./utils/tsplGenerator";
 import { MAX_LABELS, MAX_LABELS_RASTER, buildPrintManifest } from "./utils/printLimits";
-import { detectDesktop, listDesktopPrinters, printRawDesktop, startDesktopHeartbeat, DesktopInfo, DesktopPrinter } from "./utils/desktopBridge";
+import { detectDesktop, listDesktopPrinters, printRawDesktop, printSheetDesktop, startDesktopHeartbeat, DesktopInfo, DesktopPrinter } from "./utils/desktopBridge";
+import { profileOf, resolveMode, alternativeMode, MODE_LABEL, PrintMode } from "./utils/printerProfile";
 
 // Giá trị "máy in" nghĩa là xuất tệp PDF thay vì gửi lệnh ra máy in (bản desktop)
 const PDF_TARGET = "__pdf__";
@@ -235,8 +236,20 @@ export default function App() {
   const [desktop, setDesktop] = useState<DesktopInfo | null>(null);
   const [desktopPrinters, setDesktopPrinters] = useState<DesktopPrinter[]>([]);
   const [printTarget, setPrintTarget] = useState<string>(() => safeLocalStorage.getItem("kiotlabel_print_target") || PDF_TARGET);
+  // Cách in người dùng đã đổi theo từng máy in (zpl | tspl | sheet). Chưa đổi thì ứng dụng TỰ CHỌN theo máy in (printerProfile.ts)
+  const [printerModes, setPrinterModes] = useState<Record<string, PrintMode>>(() => {
+    try { const v = JSON.parse(safeLocalStorage.getItem("kiotlabel_printer_modes") || "{}"); return v && typeof v === "object" ? v : {}; } catch { return {}; }
+  });
   const [isDirectPrinting, setIsDirectPrinting] = useState<boolean>(false);
   const [directPrintMsg, setDirectPrintMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  // mode = undefined: quay về "Tự động" (xóa lựa chọn đã nhớ của máy in này)
+  const choosePrinterMode = (printer: string, mode: PrintMode | undefined) => {
+    const next = { ...printerModes };
+    if (mode) next[printer] = mode; else delete next[printer];
+    setPrinterModes(next);
+    safeLocalStorage.setItem("kiotlabel_printer_modes", JSON.stringify(next));
+    setDirectPrintMsg(null);
+  };
   // Máy in đã lưu nhưng không còn trong danh sách thì quay về "Lưu thành PDF" (không bao giờ in nhầm máy khác)
   const effectivePrintTarget = printTarget !== PDF_TARGET && desktopPrinters.some((p) => p.name === printTarget) ? printTarget : PDF_TARGET;
   // Phím tắt Ctrl+P gọi hàm in mới nhất qua ref (bộ lắng nghe phím không đăng ký lại mỗi lần đổi máy in)
@@ -3520,6 +3533,16 @@ export default function App() {
     clipboard
   ]);
 
+  // kiểu hiệu lực: giấy văn phòng (A4/A5) luôn vẽ trang; cuộn tem theo lựa chọn (mặc định máy in tem)
+  const isOfficeSheet = !!sheetConfig && sheetConfig.mode === "office";
+  const selectedPrinterInfo = desktopPrinters.find((p) => p.name === effectivePrintTarget);
+  const printerProfile = effectivePrintTarget !== PDF_TARGET ? profileOf(selectedPrinterInfo || { name: effectivePrintTarget }) : null;
+  // Cách in hiệu lực: giấy văn phòng luôn vẽ trang; ngoài ra lựa chọn đã nhớ của người dùng, rồi mới tới tự chọn theo máy in
+  const printMode: PrintMode = printerProfile ? resolveMode(printerProfile, printerModes[effectivePrintTarget], isOfficeSheet) : "sheet";
+  const effectivePrintKind: "label" | "sheet" = printMode === "sheet" ? "sheet" : "label";
+  // Độ phân giải của lệnh máy in: lấy từ driver (người dùng không phải chọn); chỉnh tay ở mục Nâng cao chỉ dùng cho tệp xuất
+  const printDpi = printerProfile ? printerProfile.dpi : printerDpi;
+
   // Xuất toàn bộ lô tem thành một tệp lệnh máy in (ZPL/TSPL). Dòng Excel liên tiếp giống nhau được gom
   // thành một lệnh có số bản (^PQ / PRINT n) nên tệp gọn và máy in chạy nhanh.
   const buildPrinterCommandJobs = () => {
@@ -3541,30 +3564,30 @@ export default function App() {
   };
 
   // Dựng toàn bộ lệnh máy in (ZPL/TSPL) của lô tem hiện tại. Trả về null nếu chưa có nhãn nào.
-  const buildPrinterPayload = async (): Promise<{ bytes: Uint8Array; total: number } | null> => {
+  const buildPrinterPayload = async (lang: "zpl" | "tspl" = printerLang, dpi: number = printerDpi): Promise<{ bytes: Uint8Array; total: number } | null> => {
     const jobs = buildPrinterCommandJobs();
     if (jobs.length === 0) {
       alert("Chưa có nhãn nào để xuất. Hãy thêm đối tượng lên tem (hoặc liên kết file Excel) trước.");
       return null;
     }
-    const cfg = { dpi: printerDpi, labelWidthMm: labelConfig.width, labelHeightMm: labelConfig.height, gapMm: tsplGapMm };
+    const cfg = { dpi, labelWidthMm: labelConfig.width, labelHeightMm: labelConfig.height, gapMm: tsplGapMm };
     // Hình ảnh, đối tượng xoay và hình nét đứt/chấm được dựng thành ảnh đơn sắc ở độ phân giải máy in (ảnh gốc được lưu đệm nên lô Excel không dựng lại)
     const failedImages = new Set<string>();
     const parts: string[] = [];
     const bgSpec = { image: labelConfig.bgImagePrint === false ? undefined : labelConfig.bgImage, opacity: labelConfig.bgImageOpacity, size: labelConfig.bgImageSize };
     for (const j of jobs) {
-      const { bitmaps, failedIds, background } = await prepareObjectBitmaps(j.objs, printerDpi, labelConfig.width, labelConfig.height, bgSpec);
+      const { bitmaps, failedIds, background } = await prepareObjectBitmaps(j.objs, dpi, labelConfig.width, labelConfig.height, bgSpec);
       failedIds.forEach((id) => failedImages.add(id));
       // TSPL: ảnh xuất bằng BITMAP nhị phân (gọn, giữ được ảnh dither); ZPL dùng ^GFA dạng văn bản
       const jobCfg = { ...cfg, bitmaps, background, binaryBitmaps: true };
-      parts.push(printerLang === "zpl" ? convertToZPL(j.objs, jobCfg, j.copies) : convertToTSPL(j.objs, jobCfg, j.copies));
+      parts.push(lang === "zpl" ? convertToZPL(j.objs, jobCfg, j.copies) : convertToTSPL(j.objs, jobCfg, j.copies));
     }
     const body = parts.join("\n");
     if (failedImages.size > 0) {
       alert(`Có ${failedImages.size} đối tượng không dựng được cho máy in: hình ảnh (kể cả ảnh nền tem) từ địa chỉ web chặn truy cập sẽ bị bỏ qua (hãy tải ảnh lên từ máy tính); đối tượng xoay hoặc nét đứt không dựng được sẽ in ở dạng không xoay/nét liền.`);
     }
     const total = jobs.reduce((sum, j) => sum + j.copies, 0);
-    const bytes = printerLang === "tspl" ? tsplToBytes(body) : new TextEncoder().encode(body);
+    const bytes = lang === "tspl" ? tsplToBytes(body) : new TextEncoder().encode(body);
     return { bytes, total };
   };
 
@@ -3591,18 +3614,38 @@ export default function App() {
       handleSavePrintFile("pdf");
       return;
     }
-    if (sheetConfig && sheetConfig.mode === "office") {
-      setDirectPrintMsg({ ok: false, text: "Chế độ in giấy văn phòng (A4/A5) chưa in thẳng được: hãy chọn \"Lưu thành PDF\" rồi in tệp PDF. In thẳng dùng cho máy in tem (cuộn tem)." });
-      return;
-    }
     setIsDirectPrinting(true);
     setDirectPrintMsg(null);
     try {
-      const payload = await buildPrinterPayload();
+      if (effectivePrintKind === "sheet") {
+        // Máy in thường (A4/A5...): dựng danh sách lệnh vẽ từ CÙNG bộ bố cục của PDF vector rồi để KiotLabel.exe vẽ bằng GDI ở độ phân giải gốc của máy in
+        const { buildVectorOps } = await import("./utils/vectorPdf/render");
+        const totalItems = getTotalLabelCount();
+        if (totalItems <= 0) { setDirectPrintMsg({ ok: false, text: "Chưa có nhãn nào để in." }); return; }
+        handleSelectObject(null);
+        const job = await buildVectorOps({
+          labelConfig,
+          sheetConfig,
+          totalItems,
+          getObjects: (index) => resolveDynamicObjectsForCell(objects, index),
+          templateObjects: displayObjects,
+          includeBackground: labelConfig.bgImagePrint !== false,
+          title: labelConfig.name || "ThietKe_Tem",
+        });
+        const r = await printSheetDesktop(effectivePrintTarget, job, `${labelConfig.name || "KiotLabel"}_${totalItems}tem`);
+        const extra = [...job.warnings, ...(r.data?.warnings || [])];
+        setDirectPrintMsg(r.ok
+          ? { ok: true, text: `Đã gửi ${r.data?.pages ?? job.pages.length} trang (${totalItems} tem) tới "${effectivePrintTarget}" bằng in trực tiếp.${extra.length ? " Lưu ý: " + extra.join(" ") : ""}` }
+          : { ok: false, text: r.error || "Không in được trang." });
+        return;
+      }
+      // Máy in tem: gửi lệnh gốc theo ngôn ngữ và độ phân giải tự nhận diện (hoặc người dùng đã chọn). Chữ có dấu được dựng thành ảnh (needsRaster).
+      const lang: "zpl" | "tspl" = printMode === "zpl" ? "zpl" : "tspl";
+      const payload = await buildPrinterPayload(lang, printDpi);
       if (!payload) return;
       const r = await printRawDesktop(effectivePrintTarget, payload.bytes, `${labelConfig.name || "KiotLabel"}_${payload.total}tem`);
       setDirectPrintMsg(r.ok
-        ? { ok: true, text: `Đã gửi ${payload.total} tem (${printerLang.toUpperCase()}, ${printerDpi} DPI) tới "${effectivePrintTarget}".` }
+        ? { ok: true, text: `Đã gửi ${payload.total} tem (${lang.toUpperCase()}, ${printDpi} DPI) tới "${effectivePrintTarget}".` }
         : { ok: false, text: r.error || "Không gửi được lệnh in." });
     } finally {
       setIsDirectPrinting(false);
@@ -7199,11 +7242,40 @@ export default function App() {
                             <option key={p.name} value={p.name}>🖨 {p.name}{p.isDefault ? " (mặc định)" : ""}</option>
                           ))}
                         </select>
-                        <p className="text-[9.5px] text-slate-600 leading-snug">
-                          {effectivePrintTarget === PDF_TARGET
-                            ? "Xuất tệp PDF để lưu hoặc in bằng phần mềm khác."
-                            : `Gửi thẳng lệnh ${printerLang.toUpperCase()} (${printerDpi} DPI) tới máy in tem, không qua PDF. Đổi ngôn ngữ/độ phân giải ở mục "Xuất lệnh máy in nhiệt" bên dưới.`}
-                        </p>
+                        {effectivePrintTarget === PDF_TARGET ? (
+                          <p className="text-[9.5px] text-slate-600 leading-snug">Xuất tệp PDF để lưu hoặc in bằng phần mềm khác.</p>
+                        ) : (
+                          <div id="desktop-mode-info" className="text-[9.5px] text-slate-600 leading-snug space-y-1">
+                            <p title={printerProfile?.reason}>
+                              <span className="font-black text-slate-800">Tự chọn: {MODE_LABEL[printMode]}{printMode !== "sheet" ? ` · ${printDpi} DPI` : ""}</span>
+                              {printerModes[effectivePrintTarget] ? " (do bạn chọn)" : ""}
+                              {isOfficeSheet ? " · giấy văn phòng luôn vẽ trang" : ""}
+                              {!printerModes[effectivePrintTarget] && !isOfficeSheet && printerProfile ? ` · ${printerProfile.reason}` : ""}
+                            </p>
+                            {!isOfficeSheet && (
+                              <details id="desktop-mode-details" className="text-[9.5px]">
+                                <summary className="cursor-pointer font-bold text-sky-700 hover:underline select-none">Đổi cách in</summary>
+                                <div className="grid grid-cols-2 gap-1 pt-1" role="radiogroup" aria-label="Cách in">
+                                  {([[undefined, "Tự động", "Theo máy in"], ["zpl", "Lệnh ZPL", "Máy in Zebra"], ["tspl", "Lệnh TSPL", "TSC, Xprinter..."], ["sheet", "Vẽ trang", "Mọi máy in"]] as const).map(([m, name, hint]) => (
+                                    <button
+                                      key={String(m)}
+                                      type="button"
+                                      role="radio"
+                                      aria-checked={printerModes[effectivePrintTarget] === m}
+                                      onClick={() => choosePrinterMode(effectivePrintTarget, m)}
+                                      className={`px-2 py-1 rounded-lg border text-left cursor-pointer transition ${
+                                        printerModes[effectivePrintTarget] === m ? "bg-white border-orange-400 ring-1 ring-orange-300 text-slate-800" : "bg-white border-gray-200 text-slate-600 hover:border-gray-300"
+                                      }`}
+                                    >
+                                      <div className="font-black text-[10px]">{name}</div>
+                                      <div className="text-[8.5px] font-semibold text-slate-500 leading-tight">{hint}</div>
+                                    </button>
+                                  ))}
+                                </div>
+                              </details>
+                            )}
+                          </div>
+                        )}
                         <button
                           type="button"
                           onClick={handleDirectPrint}
@@ -7218,9 +7290,26 @@ export default function App() {
                           <span className="uppercase tracking-wider">{isDirectPrinting ? "Đang gửi lệnh in..." : effectivePrintTarget === PDF_TARGET ? "Lưu PDF" : "In ngay"}</span>
                         </button>
                         {directPrintMsg && (
-                          <p className={`text-[10px] font-bold rounded-md px-2 py-1 border ${directPrintMsg.ok ? "text-emerald-800 bg-emerald-50 border-emerald-200" : "text-red-800 bg-red-50 border-red-200"}`}>
-                            {directPrintMsg.text}
-                          </p>
+                          <div className="space-y-1">
+                            <p className={`text-[10px] font-bold rounded-md px-2 py-1 border ${directPrintMsg.ok ? "text-emerald-800 bg-emerald-50 border-emerald-200" : "text-red-800 bg-red-50 border-red-200"}`}>
+                              {directPrintMsg.text}
+                            </p>
+                            {/* Máy lạ nhận diện sai: một chạm để thử cách còn lại (lệnh gốc <-> vẽ trang), được nhớ theo từng máy in */}
+                            {effectivePrintTarget !== PDF_TARGET && !isOfficeSheet && printerProfile && (printMode !== "sheet" || printerProfile.labelCapable) && (
+                              <button
+                                id="desktop-try-other-mode"
+                                type="button"
+                                onClick={() => {
+                                  const next = alternativeMode(printerProfile, printMode);
+                                  choosePrinterMode(effectivePrintTarget, next);
+                                  setDirectPrintMsg({ ok: true, text: `Đã đổi sang "${MODE_LABEL[next]}" cho máy in này. Bấm In ngay để in lại.` });
+                                }}
+                                className="text-[10px] font-bold text-sky-700 hover:underline cursor-pointer"
+                              >
+                                Tem in chưa đúng? Thử cách khác
+                              </button>
+                            )}
+                          </div>
                         )}
                       </div>
                     )}
@@ -7245,8 +7334,10 @@ export default function App() {
                         <span className="uppercase tracking-wider">LƯU PDF</span>
                       </button>
 
-                      {/* XUẤT LỆNH MÁY IN NHIỆT (ZPL / TSPL) */}
-                      <div className="rounded-xl border border-slate-200/80 bg-slate-50/90 p-2.5 space-y-2 text-[10.5px]">
+                      {/* NÂNG CAO: tệp lệnh máy in nhiệt (ZPL / TSPL) cho kỹ thuật viên; người dùng thường không cần (in thẳng đã tự chọn đúng cách) */}
+                      <details id="advanced-printer-commands" className="rounded-xl border border-slate-200/80 bg-slate-50/90 p-2.5 text-[10.5px]">
+                        <summary className="cursor-pointer select-none font-extrabold text-slate-500 uppercase tracking-wider text-[9.5px]">Nâng cao: tệp lệnh máy in nhiệt</summary>
+                        <div className="space-y-2 pt-2">
                         <div className="flex items-center justify-between">
                           <span className="font-extrabold text-slate-800 uppercase tracking-wider text-[10px]">
                             Xuất lệnh máy in nhiệt
@@ -7332,7 +7423,8 @@ export default function App() {
                           <Printer className="w-3.5 h-3.5 stroke-[2.5]" />
                           <span className="uppercase tracking-wider">Xuất file .{printerLang}</span>
                         </button>
-                      </div>
+                        </div>
+                      </details>
                     </div>
 
                     {isSavingFile && (
@@ -7365,6 +7457,12 @@ export default function App() {
                       </>
                     )}
                   </button>
+                  {!desktop && (
+                    <p id="offline-print-hint" className="text-[10px] text-slate-500 leading-snug text-center px-1">
+                      Muốn in thẳng ra máy in tem, tự chọn đúng chế độ theo máy in và không qua PDF?{" "}
+                      <a href={OFFLINE_DOWNLOAD_URL} target="_blank" rel="noopener noreferrer" className="font-bold text-orange-600 hover:underline">Tải bản offline</a>
+                    </p>
+                  )}
                 </div>
               )}
             </div>
