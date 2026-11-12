@@ -24,10 +24,26 @@ const dotnet = fs.existsSync('C:\\Program Files\\dotnet\\dotnet.exe') ? 'C:\\Pro
 if (process.platform !== 'win32') throw new Error('Script đóng gói này dành cho Windows.');
 
 // 1. node.exe phải là bản chính thức, nguyên vẹn (không đóng gói lại): kiểm tra chữ ký số
-const sig = execFileSync('powershell', ['-NoProfile', '-Command',
-  `$s = Get-AuthenticodeSignature -LiteralPath '${NODE_EXE}'; "$($s.Status)|$($s.SignerCertificate.Subject)"`], { encoding: 'utf8' }).trim();
+// Gọi PowerShell từ một PowerShell khác (ví dụ pwsh trên GitHub Actions) làm PowerShell 5.1 thừa kế PSModulePath của bản 7 và không nạp được
+// module Security (kết quả rỗng): bỏ PSModulePath, và thử cả pwsh nếu vẫn không đọc được.
+function signatureOf(file) {
+  const cmd = `$s = Get-AuthenticodeSignature -LiteralPath '${file}'; "$($s.Status)|$($s.SignerCertificate.Subject)"`;
+  const envClean = { ...process.env }; delete envClean.PSModulePath;
+  const notes = [];
+  for (const [exe, env] of [['powershell', envClean], ['pwsh', process.env]]) {
+    try {
+      const out = execFileSync(exe, ['-NoProfile', '-Command', cmd], { encoding: 'utf8', env, stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+      if (out && out !== '|') return out;
+      notes.push(`${exe}: kết quả rỗng`);
+    } catch (e) {
+      notes.push(`${exe}: ${String(e.stderr || e.message).trim().slice(0, 200)}`);
+    }
+  }
+  return '|' + notes.join(' ; ');
+}
+const sig = signatureOf(NODE_EXE);
 console.log('node.exe: ' + sig);
-if (!sig.startsWith('Valid|') || !/OpenJS Foundation/.test(sig)) throw new Error('node.exe không có chữ ký hợp lệ của OpenJS Foundation: ' + sig);
+if (!sig.startsWith('Valid|') || !/OpenJS Foundation/.test(sig)) throw new Error('node.exe không có chữ ký hợp lệ của OpenJS Foundation (' + NODE_EXE + '): ' + sig);
 
 // 2. Giao diện (bản build tĩnh của KiotLabel, thư mục ui/)
 if (!argv.includes('--skip-web')) {

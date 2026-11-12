@@ -37,7 +37,7 @@ Thử thủ công trước mỗi lần phát hành (bắt buộc, máy tự đ�
 ## 3. Phát hành lên GitHub Releases
 
 1. Cập nhật số phiên bản nếu cần (mục 5), commit, push lên `main`, chờ `ci.yml` xanh.
-2. Gắn nhãn và đẩy: `git tag v3.5.1 && git push origin v3.5.1` (nhãn dạng `vX.Y.Z`, `X.Y` trùng phiên bản giao diện).
+2. Gắn nhãn và đẩy: `git tag v3.5.2 && git push origin v3.5.2` (nhãn dạng `vX.Y.Z`, `X.Y` trùng phiên bản giao diện).
 3. `release.yml` dựng gói trên máy chủ GitHub (windows-latest), chạy `check-release`, tạo **chứng thực nguồn gốc** (attestation), rồi tạo Release kèm
    zip và `.sha256`. Có thể chạy thủ công ở Actions → Release → Run workflow (chỉ dựng, không tạo Release nếu không có nhãn).
 4. Website trỏ tới `https://github.com/thuyettk42-tech/kiotlabel-desktop/releases/latest/download/KiotLabel-portable-win-x64.zip`: luôn là bản mới nhất,

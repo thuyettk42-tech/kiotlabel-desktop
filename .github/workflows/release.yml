@@ -1,7 +1,7 @@
 name: Release
 
 # Dựng gói portable trên máy chủ GitHub từ chính mã nguồn công khai, kiểm tra, tạo chứng thực nguồn gốc rồi đưa lên GitHub Releases.
-# Phát hành: git tag v3.5.1 && git push origin v3.5.1   (X.Y của nhãn phải trùng phiên bản giao diện, xem docs/PHAT-HANH.md)
+# Phát hành: git tag v3.5.2 && git push origin v3.5.2   (X.Y của nhãn phải trùng phiên bản giao diện, xem docs/PHAT-HANH.md)
 # Chạy thủ công (workflow_dispatch) chỉ dựng và lưu artifact, không tạo Release.
 on:
   push:

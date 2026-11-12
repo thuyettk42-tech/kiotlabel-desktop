@@ -17,7 +17,7 @@ internal static class Program
                 case "--print-raw":
                     return PrinterApi.PrintRawCli(args);
                 case "--version":
-                    Out("3.5.1\n");
+                    Out("3.5.2\n");
                     return 0;
             }
         }
