@@ -1,6 +1,6 @@
 # KiotLabel bản Offline (Desktop Portable)
 
-Thiết kế và in tem mã vạch **chạy offline trên Windows**, **in thẳng ra máy in tem** (ZPL/TSPL), không cần cài đặt, không cần Internet.
+Thiết kế và in tem mã vạch **chạy offline trên Windows**, **in thẳng ra máy in** (tự chọn lệnh ZPL/TSPL cho máy in tem hoặc vẽ trang cho máy in thường A4/A5), không cần cài đặt, không cần Internet.
 Cùng giao diện với bản web KiotLabel của [KiotViet DVKH KV HCM](https://www.dvkhkiotviet.com/cong-cu/in-tem).
 
 ## Tải về
