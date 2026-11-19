@@ -6,6 +6,7 @@
 import React, { useEffect, useRef, useState, memo } from "react";
 import JsBarcode from "jsbarcode";
 import { BASE_DPI_SCALE, PT_TO_MM_FACTOR } from "../utils";
+import { t } from "../i18n";
 
 interface BarcodeRendererProps {
   content: string;
@@ -65,7 +66,7 @@ export function processBarcodeContent(
 ): ValidationResult {
   const raw = content.trim();
   if (!raw) {
-    return { valid: false, error: "Dữ liệu trống", encodedContent: "" };
+    return { valid: false, error: t("Dữ liệu trống"), encodedContent: "" };
   }
 
   if (format === "EAN13") {
@@ -74,7 +75,7 @@ export function processBarcodeContent(
     if (digitsOnly.length < 12) {
       return {
         valid: false,
-        error: "EAN13 yêu cầu ít nhất 12 chữ số",
+        error: t("EAN13 yêu cầu ít nhất 12 chữ số"),
         encodedContent: "",
       };
     }
@@ -85,11 +86,11 @@ export function processBarcodeContent(
     // Báo rõ khi dữ liệu nhập bị thay đổi để tránh in ra mã khác với mã đã nhập
     let notice: string | null = null;
     if (digitsOnly.length >= 13 && digitsOnly[12] !== String(checksum)) {
-      notice = `Số kiểm tra đã được tính lại: ${digitsOnly[12]} → ${checksum}`;
+      notice = t("Số kiểm tra đã được tính lại: {v} → {checksum}", { v: digitsOnly[12], checksum });
     } else if (digitsOnly.length > 13) {
-      notice = "EAN-13 chỉ dùng 13 chữ số, phần thừa đã bị bỏ";
+      notice = t("EAN-13 chỉ dùng 13 chữ số, phần thừa đã bị bỏ");
     } else if (digitsOnly.length !== raw.length) {
-      notice = "Các ký tự không phải số đã bị bỏ";
+      notice = t("Các ký tự không phải số đã bị bỏ");
     }
     return { valid: true, error: null, encodedContent: corrected, notice };
   }
@@ -102,7 +103,7 @@ export function processBarcodeContent(
       return {
         valid: false,
         error:
-          "CODE39 chỉ hỗ trợ ký tự chữ hoa, số và [-, ., $, /, +, %, khoảng trắng]",
+          t("CODE39 chỉ hỗ trợ ký tự chữ hoa, số và [-, ., $, /, +, %, khoảng trắng]"),
         encodedContent: "",
       };
     }
@@ -191,7 +192,7 @@ export const BarcodeRenderer = memo(function BarcodeRenderer({
   const moduleMm = objectWidthMm && moduleCount > 0 ? objectWidthMm / moduleCount : null;
   const densityWarning =
     !effectiveError && moduleMm !== null && moduleMm < 0.2
-      ? `Vạch quá mảnh (${moduleMm.toFixed(2)} mm), khó quét. Hãy rút ngắn dữ liệu hoặc tăng độ rộng khung.`
+      ? t("Vạch quá mảnh ({v} mm), khó quét. Hãy rút ngắn dữ liệu hoặc tăng độ rộng khung.", { v: moduleMm.toFixed(2) })
       : null;
   const warning = validation.notice || densityWarning;
   const effectiveContent = validation.valid ? validation.encodedContent : "";
@@ -208,7 +209,7 @@ export const BarcodeRenderer = memo(function BarcodeRenderer({
     if (!validation.valid || !effectiveContent) return;
 
     if (!JsBarcode) {
-      setRenderError("Thư viện JsBarcode chưa được tải.");
+      setRenderError(t("Thư viện JsBarcode chưa được tải."));
       return;
     }
 
@@ -234,7 +235,7 @@ export const BarcodeRenderer = memo(function BarcodeRenderer({
         lineColor: color || "#000000",
         valid: (valid: boolean) => {
           if (!valid) {
-            setRenderError("Không thể mã hóa giá trị này theo chuẩn " + format);
+            setRenderError(t("Không thể mã hóa giá trị này theo chuẩn ") + format);
           }
         },
       });
@@ -263,7 +264,7 @@ export const BarcodeRenderer = memo(function BarcodeRenderer({
       }
     } catch (err) {
       console.error("Barcode execution fail:", err);
-      setRenderError("Lỗi hiển thị mã vạch");
+      setRenderError(t("Lỗi hiển thị mã vạch"));
     }
   }, [effectiveContent, format, barcodeWidth, barcodeHeight, color]);
 
@@ -419,7 +420,7 @@ export const BarcodeRenderer = memo(function BarcodeRenderer({
                 }}
                 className="select-none whitespace-nowrap overflow-visible max-w-full w-full shrink-0 cursor-text hover:bg-black/5 rounded px-0.5 transition-colors duration-150"
                 onDoubleClick={handleStartEdit}
-                title="Nhấp đúp để sửa nhãn"
+                title={t("Nhấp đúp để sửa nhãn")}
               >
                 {effectiveContent || content}
               </div>
@@ -476,7 +477,7 @@ export const BarcodeRenderer = memo(function BarcodeRenderer({
                 }}
                 className="select-none whitespace-nowrap overflow-visible max-w-full w-full shrink-0 cursor-text hover:bg-black/5 rounded px-0.5 transition-colors duration-150"
                 onDoubleClick={handleStartEdit}
-                title="Nhấp đúp để sửa nhãn"
+                title={t("Nhấp đúp để sửa nhãn")}
               >
                 {effectiveContent || content}
               </div>

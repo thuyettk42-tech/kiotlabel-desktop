@@ -19,6 +19,7 @@ import {
   BoxSelect,
 } from "lucide-react";
 import type { AlignMode, DistributeAxis, OrderAction } from "../utils/arrange";
+import { t } from "../i18n";
 
 interface ArrangeToolbarProps {
   selectedCount: number;
@@ -82,7 +83,7 @@ export function ArrangeToolbar({
   const has = selectedCount >= 1;
   const many = selectedCount >= 2;
   const three = selectedCount >= 3;
-  const alignHint = many ? "theo nhóm đã chọn" : "vào phôi tem";
+  const alignHint = many ? t("theo nhóm đã chọn") : t("vào phôi tem");
   const size = "w-4 h-4";
 
   return (
@@ -90,38 +91,38 @@ export function ArrangeToolbar({
       id="arrange-toolbar"
       className="no-print w-fit max-w-full flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 px-3 py-1.5 bg-white border border-gray-150 rounded-xl shadow-xs select-none"
     >
-      <Group label="Căn chỉnh">
-        <IconButton title={`Căn trái ${alignHint}`} disabled={!has} onClick={() => onAlign("left")}>
+      <Group label={t("Căn chỉnh")}>
+        <IconButton title={t("Căn trái {alignHint}", { alignHint })} disabled={!has} onClick={() => onAlign("left")}>
           <AlignStartVertical className={size} />
         </IconButton>
-        <IconButton title={`Căn giữa theo chiều ngang ${alignHint}`} disabled={!has} onClick={() => onAlign("hcenter")}>
+        <IconButton title={t("Căn giữa theo chiều ngang {alignHint}", { alignHint })} disabled={!has} onClick={() => onAlign("hcenter")}>
           <AlignCenterVertical className={size} />
         </IconButton>
-        <IconButton title={`Căn phải ${alignHint}`} disabled={!has} onClick={() => onAlign("right")}>
+        <IconButton title={t("Căn phải {alignHint}", { alignHint })} disabled={!has} onClick={() => onAlign("right")}>
           <AlignEndVertical className={size} />
         </IconButton>
         <span className="w-px h-5 bg-gray-200 mx-0.5" />
-        <IconButton title={`Căn trên ${alignHint}`} disabled={!has} onClick={() => onAlign("top")}>
+        <IconButton title={t("Căn trên {alignHint}", { alignHint })} disabled={!has} onClick={() => onAlign("top")}>
           <AlignStartHorizontal className={size} />
         </IconButton>
-        <IconButton title={`Căn giữa theo chiều dọc ${alignHint}`} disabled={!has} onClick={() => onAlign("vmiddle")}>
+        <IconButton title={t("Căn giữa theo chiều dọc {alignHint}", { alignHint })} disabled={!has} onClick={() => onAlign("vmiddle")}>
           <AlignCenterHorizontal className={size} />
         </IconButton>
-        <IconButton title={`Căn dưới ${alignHint}`} disabled={!has} onClick={() => onAlign("bottom")}>
+        <IconButton title={t("Căn dưới {alignHint}", { alignHint })} disabled={!has} onClick={() => onAlign("bottom")}>
           <AlignEndHorizontal className={size} />
         </IconButton>
       </Group>
 
-      <Group label="Phân bố">
+      <Group label={t("Phân bố")}>
         <IconButton
-          title="Phân bố đều theo chiều ngang (chọn từ 3 đối tượng)"
+          title={t("Phân bố đều theo chiều ngang (chọn từ 3 đối tượng)")}
           disabled={!three}
           onClick={() => onDistribute("horizontal")}
         >
           <AlignHorizontalSpaceBetween className={size} />
         </IconButton>
         <IconButton
-          title="Phân bố đều theo chiều dọc (chọn từ 3 đối tượng)"
+          title={t("Phân bố đều theo chiều dọc (chọn từ 3 đối tượng)")}
           disabled={!three}
           onClick={() => onDistribute("vertical")}
         >
@@ -129,30 +130,30 @@ export function ArrangeToolbar({
         </IconButton>
       </Group>
 
-      <Group label="Lớp">
-        <IconButton title="Đưa lên trên cùng (Ctrl+Shift+])" disabled={!has} onClick={() => onReorder("front")}>
+      <Group label={t("Lớp")}>
+        <IconButton title={t("Đưa lên trên cùng (Ctrl+Shift+])")} disabled={!has} onClick={() => onReorder("front")}>
           <BringToFront className={size} />
         </IconButton>
-        <IconButton title="Đưa lên một lớp (Ctrl+])" disabled={!has} onClick={() => onReorder("forward")}>
+        <IconButton title={t("Đưa lên một lớp (Ctrl+])")} disabled={!has} onClick={() => onReorder("forward")}>
           <ArrowUp className={size} />
         </IconButton>
-        <IconButton title="Đưa xuống một lớp (Ctrl+[)" disabled={!has} onClick={() => onReorder("backward")}>
+        <IconButton title={t("Đưa xuống một lớp (Ctrl+[)")} disabled={!has} onClick={() => onReorder("backward")}>
           <ArrowDown className={size} />
         </IconButton>
-        <IconButton title="Đưa xuống dưới cùng (Ctrl+Shift+[)" disabled={!has} onClick={() => onReorder("back")}>
+        <IconButton title={t("Đưa xuống dưới cùng (Ctrl+Shift+[)")} disabled={!has} onClick={() => onReorder("back")}>
           <SendToBack className={size} />
         </IconButton>
       </Group>
 
-      <Group label="Chọn">
-        <IconButton title="Nhân đôi đối tượng đã chọn (Ctrl+D)" disabled={!has} onClick={onDuplicate}>
+      <Group label={t("Chọn")}>
+        <IconButton title={t("Nhân đôi đối tượng đã chọn (Ctrl+D)")} disabled={!has} onClick={onDuplicate}>
           <CopyPlus className={size} />
         </IconButton>
-        <IconButton title="Chọn tất cả đối tượng (Ctrl+A)" disabled={totalCount === 0} onClick={onSelectAll}>
+        <IconButton title={t("Chọn tất cả đối tượng (Ctrl+A)")} disabled={totalCount === 0} onClick={onSelectAll}>
           <BoxSelect className={size} />
         </IconButton>
         <span className="text-[10.5px] font-bold text-slate-500 ml-1 whitespace-nowrap">
-          {has ? `Đang chọn ${selectedCount}/${totalCount}` : `${totalCount} đối tượng`}
+          {has ? t("Đang chọn {selectedCount}/{totalCount}", { selectedCount, totalCount }) : t("{totalCount} đối tượng", { totalCount })}
         </span>
       </Group>
     </div>

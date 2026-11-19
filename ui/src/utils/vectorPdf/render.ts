@@ -23,6 +23,7 @@ import { buildPages, PageSpec } from './pages';
 import { layoutSegments, TextSeg, FontKey, Measurer, LINE_HEIGHT } from './textLayout';
 import { fontKeyOf, fontKeyId, loadFontBytes } from './fonts';
 import { Recorder, RecImagePool, SheetJob } from './recorder';
+import { t } from "../../i18n";
 
 const MM = 72 / 25.4; // điểm PDF trên mỗi mm
 const PT_TO_MM = 0.3528; // 1 pt = 0,3528 mm (giống bàn thiết kế)
@@ -145,7 +146,7 @@ async function canvasToPng(src: string, maxSide: number): Promise<Uint8Array> {
     const el = new Image();
     el.crossOrigin = 'anonymous';
     el.onload = () => resolve(el);
-    el.onerror = () => reject(new Error('Không tải được hình ảnh'));
+    el.onerror = () => reject(new Error(t("Không tải được hình ảnh")));
     el.src = src;
   });
   const iw = img.naturalWidth || img.width || 1;
@@ -155,7 +156,7 @@ async function canvasToPng(src: string, maxSide: number): Promise<Uint8Array> {
   canvas.width = Math.max(1, Math.round(iw * k));
   canvas.height = Math.max(1, Math.round(ih * k));
   canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
-  const blob: Blob = await new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('Không mã hoá được ảnh'))), 'image/png'));
+  const blob: Blob = await new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error(t("Không mã hoá được ảnh")))), 'image/png'));
   return new Uint8Array(await blob.arrayBuffer());
 }
 
@@ -342,14 +343,14 @@ function drawBarcodeObject(page: PDFPage, obj: LabelObject, ctx: Ctx) {
   const format = obj.barcodeFormat === 'EAN13' ? 'EAN13' : obj.barcodeFormat === 'CODE39' ? 'CODE39' : 'CODE128';
   const validation = processBarcodeContent(obj.content || '', format);
   if (!validation.valid || !validation.encodedContent) {
-    ctx.warnings.add(`Mã vạch "${obj.content}" không hợp lệ (${validation.error || 'dữ liệu trống'}), bị bỏ qua trong PDF.`);
+    ctx.warnings.add(t("Mã vạch \"{content}\" không hợp lệ ({v}), bị bỏ qua trong PDF.", { content: obj.content, v: validation.error || t('dữ liệu trống') }));
     return;
   }
   const holder: any = {};
   try {
     JsBarcode(holder, validation.encodedContent, { format, margin: 0, displayValue: false });
   } catch {
-    ctx.warnings.add(`Không mã hoá được mã vạch "${obj.content}" theo chuẩn ${format}, bị bỏ qua trong PDF.`);
+    ctx.warnings.add(t("Không mã hoá được mã vạch \"{content}\" theo chuẩn {format}, bị bỏ qua trong PDF.", { content: obj.content, format }));
     return;
   }
   const bits: string = (holder.encodings as Array<{ data: string }>).map((e) => e.data).join('');
@@ -414,7 +415,7 @@ function drawQrObject(page: PDFPage, obj: LabelObject, ctx: Ctx) {
   try {
     qr = (QRCode as any).create(content, { errorCorrectionLevel: level });
   } catch {
-    ctx.warnings.add(`Nội dung QR quá dài (${content.length} ký tự), bị bỏ qua trong PDF.`);
+    ctx.warnings.add(t("Nội dung QR quá dài ({length} ký tự), bị bỏ qua trong PDF.", { length: content.length }));
     return;
   }
   const size = qr.modules.size as number;
@@ -461,7 +462,7 @@ async function drawImageInBox(page: PDFPage, img: PDFImage, x: number, yTop: num
 async function drawImageObject(page: PDFPage, obj: LabelObject, ctx: Ctx) {
   if (!obj.content) return;
   const img = await ctx.images.get(obj.content);
-  if (!img) { ctx.warnings.add('Có hình ảnh không đọc được (ví dụ ảnh từ địa chỉ web chặn truy cập), bị bỏ qua trong PDF.'); return; }
+  if (!img) { ctx.warnings.add(t("Có hình ảnh không đọc được (ví dụ ảnh từ địa chỉ web chặn truy cập), bị bỏ qua trong PDF.")); return; }
   await drawImageInBox(page, img, -obj.width / 2, obj.height / 2, obj.width, obj.height, obj.imageFit || 'contain', obj.imageOpacity !== undefined ? obj.imageOpacity : 1);
 }
 
@@ -488,7 +489,7 @@ function drawShapeObject(page: PDFPage, obj: LabelObject) {
 async function drawBackground(page: PDFPage, x: number, yTop: number, w: number, h: number, cfg: LabelConfig, ctx: Ctx) {
   if (!cfg.bgImage) return;
   const img = await ctx.images.get(cfg.bgImage);
-  if (!img) { ctx.warnings.add('Ảnh nền tem không đọc được, bị bỏ qua trong PDF.'); return; }
+  if (!img) { ctx.warnings.add(t("Ảnh nền tem không đọc được, bị bỏ qua trong PDF.")); return; }
   const opacity = cfg.bgImageOpacity !== undefined ? cfg.bgImageOpacity : 0.3;
   const size = cfg.bgImageSize || 'contain';
   page.pushOperators(pushGraphicsState());

@@ -6,6 +6,7 @@
 // Giới hạn số tem mỗi lần in và danh sách "tem thứ k lấy dòng Excel nào" (manifest).
 
 /** PDF vector và lệnh máy in (ZPL/TSPL): không chụp màn hình nên chịu được lô lớn (600 tem chỉ vài giây). */
+import { t } from "../i18n";
 export const MAX_LABELS = 5000;
 /** PDF ảnh (dự phòng) và PNG: chụp DOM từng trang, thời gian và bộ nhớ tăng nhanh theo số tem. */
 export const MAX_LABELS_RASTER = 1000;
@@ -72,7 +73,7 @@ export function buildPrintManifest(opts: {
   if (stopAt === null) return { manifest, warning: null, hasExceeded: false };
 
   const warning = firstRowOverLimit
-    ? `Cảnh báo: Dòng đầu tiên trong Excel đã có số lượng vượt hạn mức ${fmt(limit)} bản in cho phép!`
-    : `Vượt quá số lượng in cho phép (${fmt(limit)} bản), hệ thống chỉ có thể in tới hàng thứ ${stopAt} (dòng ${stopAt + 1} trong tệp Excel), vui lòng xóa các dòng đã in để tiếp tục phần còn lại.`;
+    ? t("Cảnh báo: Dòng đầu tiên trong Excel đã có số lượng vượt hạn mức {v} bản in cho phép!", { v: fmt(limit) })
+    : t("Vượt quá số lượng in cho phép ({v} bản), hệ thống chỉ có thể in tới hàng thứ {stopAt} (dòng {v2} trong tệp Excel), vui lòng xóa các dòng đã in để tiếp tục phần còn lại.", { v: fmt(limit), stopAt, v2: stopAt + 1 });
   return { manifest, warning, hasExceeded: true };
 }

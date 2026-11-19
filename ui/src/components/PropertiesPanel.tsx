@@ -27,6 +27,7 @@ import {
   Square,
   Circle,
 } from "lucide-react";
+import { t } from "../i18n";
 
 interface PropertiesPanelProps {
   selectedObject: LabelObject | null;
@@ -91,13 +92,9 @@ export function PropertiesPanel({
       <div className="flex flex-col items-center justify-center py-6 px-3 text-center border border-dashed border-gray-250 rounded-lg bg-slate-50/50 my-1">
         <Settings className="w-8 h-8 text-slate-450 animate-pulse mb-2" />
         <p className="text-xs font-black text-kiot-navy">
-          Chưa chọn đối tượng nào
-        </p>
+          {t("Chưa chọn đối tượng nào")}</p>
         <p className="text-[11px] text-slate-650 mt-1.5 max-w-[240px] leading-relaxed font-semibold">
-          Vui lòng click chọn trực tiếp một đối tượng (văn bản, mã vạch hoặc mã
-          QR) trên khung nhãn thiết kế bên phải để tùy chỉnh các thuộc tính chi
-          tiết.
-        </p>
+          {t("Vui lòng click chọn trực tiếp một đối tượng (văn bản, mã vạch hoặc mã QR) trên khung nhãn thiết kế bên phải để tùy chỉnh các thuộc tính chi tiết.")}</p>
       </div>
     );
   }
@@ -161,23 +158,20 @@ export function PropertiesPanel({
         <div id="excel-linker-module" className="space-y-1 w-full">
           <div className="flex items-center space-x-1">
             <span className="text-[11.5px] font-black text-blue-700 uppercase tracking-wide">
-              Chọn:
-            </span>
+              {t("Chọn:")}</span>
             <span className="text-[10.5px] text-blue-500 font-bold select-none italic">
-              (Liên kết dữ liệu Excel)
-            </span>
+              {t("(Liên kết dữ liệu Excel)")}</span>
           </div>
 
           <div className="bg-blue-50/50 border border-blue-100 rounded-md p-2 space-y-1.5">
             <div className="flex items-center justify-between text-[11px] font-black text-blue-900 select-none">
               <span className="flex items-center space-x-1">
                 <Database className="w-3.5 h-3.5 text-blue-500 animate-pulse" />
-                <span>Nối dữ liệu từ file Excel đã tải</span>
+                <span>{t("Nối dữ liệu từ file Excel đã tải")}</span>
               </span>
               {selectedObject.excelColumn && (
                 <span className="text-[9.5px] bg-green-100 text-green-800 border border-green-200/55 font-mono font-black px-1.5 py-0.5 rounded uppercase">
-                  ✓ Đã nối
-                </span>
+                  {t("✓ Đã nối")}</span>
               )}
             </div>
 
@@ -185,7 +179,7 @@ export function PropertiesPanel({
               {selectedObject.excelColumn ? (
                 <div className="flex items-center justify-between bg-white px-2 py-1 border border-blue-200 rounded-md text-xs">
                   <span className="font-extrabold text-blue-800 font-mono truncate max-w-[170px]">
-                    ✓ Cột:{" "}
+                    {t("✓ Cột:")}{" "}
                     <span className="text-blue-650">
                       {selectedObject.excelColumn}
                     </span>
@@ -196,10 +190,10 @@ export function PropertiesPanel({
                       handleAttributeChange("excelColumn", undefined)
                     }
                     className="px-2 py-0.5 bg-red-50 hover:bg-red-100 text-red-650 hover:text-red-700 rounded-md transition cursor-pointer flex items-center space-x-0.5 font-black text-[10px]"
-                    title="Gỡ liên kết"
+                    title={t("Gỡ liên kết")}
                   >
                     <Unlink className="w-3 h-3" />
-                    <span>Hủy</span>
+                    <span>{t("Hủy")}</span>
                   </button>
                 </div>
               ) : (
@@ -215,11 +209,10 @@ export function PropertiesPanel({
                     }}
                     className="w-full pl-2 pr-7 py-1 text-xs border border-gray-300 rounded-md focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan focus:outline-none bg-white cursor-pointer text-slate-800 font-bold"
                   >
-                    <option value="">-- Chọn cột nhận giá trị --</option>
+                    <option value="">{t("-- Chọn cột nhận giá trị --")}</option>
                     {excelColumns.map((col) => (
                       <option key={col} value={col}>
-                        📄 Cột: {col}
-                      </option>
+                        {t("📄 Cột: {col}", { col })}</option>
                     ))}
                   </select>
                   <ChevronDown className="absolute right-2 top-1.5 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
@@ -236,17 +229,15 @@ export function PropertiesPanel({
       <div id="excel-linker-module" className="space-y-1 w-full">
         <div className="flex items-center space-x-1.5">
           <span className="text-[11.5px] font-black text-slate-500 uppercase tracking-wide">
-            Chọn:
-          </span>
+            {t("Chọn:")}</span>
           <span className="text-[10.5px] text-slate-400 font-bold select-none italic">
-            (Chọn từ cột Excel)
-          </span>
+            {t("(Chọn từ cột Excel)")}</span>
         </div>
 
         <div className="flex items-center justify-between bg-slate-50 border border-gray-200 rounded-md p-2 shadow-xs">
           <span className="text-[11.5px] text-slate-500 font-bold select-none italic flex items-center space-x-1">
             <Database className="w-3.5 h-3.5 text-slate-300 shrink-0" />
-            <span>Chưa liên kết dữ liệu excel</span>
+            <span>{t("Chưa liên kết dữ liệu excel")}</span>
           </span>
         </div>
       </div>
@@ -269,8 +260,7 @@ export function PropertiesPanel({
           <div className="flex items-center space-x-1.5 text-kiot-navy">
             <Move className="w-3.5 h-3.5 text-kiot-cyan shrink-0" />
             <span className="font-extrabold text-[11.5px]">
-              Vị Trí &amp; Kích Thước (mm)
-            </span>
+              {t("Vị Trí & Kích Thước (mm)")}</span>
           </div>
           <div className="text-slate-400 shrink-0">
             {isPositionExpanded ? (
@@ -285,17 +275,15 @@ export function PropertiesPanel({
           <div className="p-2 border-t border-slate-200 bg-white space-y-2.5 animate-fadeIn">
             {isOutsideLabel(selectedObject, labelConfig.width, labelConfig.height) && (
               <div className="text-[10.5px] font-bold text-amber-800 bg-amber-50 border border-amber-200 rounded-md px-2 py-1">
-                ⚠️ Đối tượng đang nằm ngoài phôi tem, phần thừa sẽ bị cắt khi in.
-              </div>
+                {t("⚠️ Đối tượng đang nằm ngoài phôi tem, phần thừa sẽ bị cắt khi in.")}</div>
             )}
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label
                   className="block text-[11px] text-slate-600 font-bold mb-0.5"
-                  title="Khoảng cách từ mép trái của tem tới mép trái của đối tượng"
+                  title={t("Khoảng cách từ mép trái của tem tới mép trái của đối tượng")}
                 >
-                  X - cách mép trái (mm)
-                </label>
+                  {t("X - cách mép trái (mm)")}</label>
                 <div className="relative">
                   <input
                     {...getNumericInputProps(
@@ -314,10 +302,9 @@ export function PropertiesPanel({
               <div>
                 <label
                   className="block text-[11px] text-slate-600 font-bold mb-0.5"
-                  title="Khoảng cách từ mép trên của tem tới mép trên của đối tượng"
+                  title={t("Khoảng cách từ mép trên của tem tới mép trên của đối tượng")}
                 >
-                  Y - cách mép trên (mm)
-                </label>
+                  {t("Y - cách mép trên (mm)")}</label>
                 <div className="relative">
                   <input
                     {...getNumericInputProps(
@@ -335,8 +322,7 @@ export function PropertiesPanel({
               </div>
               <div>
                 <label className="block text-[11px] text-slate-600 font-bold mb-0.5">
-                  Rộng (mm)
-                </label>
+                  {t("Rộng (mm)")}</label>
                 <div className="relative">
                   <input
                     disabled={selectedObject.type === "qrcode"} // Square proportion constraint
@@ -355,7 +341,7 @@ export function PropertiesPanel({
               </div>
               <div>
                 <label className="block text-[11px] text-slate-600 font-bold mb-0.5">
-                  Cao (mm)
+                  {t("Cao (mm)")}
                 </label>
                 <div className="relative">
                   <input
@@ -378,7 +364,7 @@ export function PropertiesPanel({
             <div className="pt-2 border-t border-slate-200 bg-slate-50/50 p-1.5 rounded-sm">
               <div className="flex items-center justify-between mb-1.5 px-0.5">
                 <span className="text-[11px] text-slate-600 font-extrabold flex items-center space-x-1">
-                  <span>Góc Xoay Nhanh:</span>
+                  <span>{t("Góc Xoay Nhanh:")}</span>
                 </span>
                 <div className="relative w-20">
                   <input
@@ -420,57 +406,50 @@ export function PropertiesPanel({
             {/* Alignment Controls Mapping inside expanded details */}
             <div className="pt-2 border-t border-gray-200/60">
               <span className="block text-[10px] text-slate-400 font-black mb-1.5 text-center uppercase tracking-wide">
-                Căn nhanh vào phôi nhãn
-              </span>
+                {t("Căn nhanh vào phôi nhãn")}</span>
               <div className="grid grid-cols-3 gap-1.5">
                 <button
                   type="button"
                   onClick={alignLeft}
                   className="py-1 px-1 text-[11px] border border-gray-200 bg-white hover:bg-sky-50 hover:border-kiot-cyan text-slate-700 hover:text-kiot-navy rounded-sm font-bold transition focus:outline-none cursor-pointer"
-                  title="Căn trái"
+                  title={t("Căn trái")}
                 >
-                  Căn Trái
-                </button>
+                  {t("Căn Trái")}</button>
                 <button
                   type="button"
                   onClick={alignCenterHoriz}
                   className="py-1 px-1 text-[11px] border border-gray-200 bg-white hover:bg-sky-50 hover:border-kiot-cyan text-slate-700 hover:text-kiot-navy rounded-sm font-bold transition focus:outline-none cursor-pointer"
-                  title="Căn giữa ngang"
+                  title={t("Căn giữa ngang")}
                 >
-                  Giữa Ngang
-                </button>
+                  {t("Giữa Ngang")}</button>
                 <button
                   type="button"
                   onClick={alignRight}
                   className="py-1 px-1 text-[11px] border border-gray-200 bg-white hover:bg-sky-50 hover:border-kiot-cyan text-slate-700 hover:text-kiot-navy rounded-sm font-bold transition focus:outline-none cursor-pointer"
-                  title="Căn phải"
+                  title={t("Căn phải")}
                 >
-                  Căn Phải
-                </button>
+                  {t("Căn Phải")}</button>
                 <button
                   type="button"
                   onClick={alignTop}
                   className="py-1 px-1 text-[11px] border border-gray-200 bg-white hover:bg-sky-50 hover:border-kiot-cyan text-slate-700 hover:text-kiot-navy rounded-sm font-bold transition focus:outline-none cursor-pointer"
-                  title="Căn trên cùng"
+                  title={t("Căn trên cùng")}
                 >
-                  Căn Trên
-                </button>
+                  {t("Căn Trên")}</button>
                 <button
                   type="button"
                   onClick={alignCenterVerti}
                   className="py-1 px-1 text-[11px] border border-gray-200 bg-white hover:bg-sky-50 hover:border-kiot-cyan text-slate-700 hover:text-kiot-navy rounded-sm font-bold transition focus:outline-none cursor-pointer"
-                  title="Căn giữa dọc"
+                  title={t("Căn giữa dọc")}
                 >
-                  Giữa Dọc
-                </button>
+                  {t("Giữa Dọc")}</button>
                 <button
                   type="button"
                   onClick={alignBottom}
                   className="py-1 px-1 text-[11px] border border-gray-200 bg-white hover:bg-sky-50 hover:border-kiot-cyan text-slate-700 hover:text-kiot-navy rounded-sm font-bold transition focus:outline-none cursor-pointer"
-                  title="Căn dưới cùng"
+                  title={t("Căn dưới cùng")}
                 >
-                  Căn Dưới
-                </button>
+                  {t("Căn Dưới")}</button>
               </div>
             </div>
           </div>
@@ -488,18 +467,15 @@ export function PropertiesPanel({
             {/* Nội dung văn bản */}
             <div className="space-y-1.5">
               <label className="block text-[11.5px] font-black text-slate-705 uppercase tracking-wider mb-0.5">
-                Nội dung văn bản
-              </label>
+                {t("Nội dung văn bản")}</label>
 
               {/* Way 1: Nhập thủ công */}
               <div className="space-y-1">
                 <div className="flex items-center space-x-1">
                   <span className="text-[11px] font-black text-slate-550 uppercase tracking-wide">
-                    Nhập:
-                  </span>
+                    {t("Nhập:")}</span>
                   <span className="text-[10.5px] text-slate-450 font-bold select-none italic">
-                    (Điền chữ hiển thị)
-                  </span>
+                    {t("(Điền chữ hiển thị)")}</span>
                 </div>
                 <textarea
                   rows={2}
@@ -515,14 +491,13 @@ export function PropertiesPanel({
                   }`}
                   placeholder={
                     (excelColumns.length > 0 && selectedObject.excelColumn)
-                      ? `Lấy cột động: [${selectedObject.excelColumn}]`
-                      : "Nhập chữ hiển thị..."
+                      ? t("Lấy cột động: [{excelColumn}]", { excelColumn: selectedObject.excelColumn })
+                      : t("Nhập chữ hiển thị...")
                   }
                 />
                 {(excelColumns.length > 0 && selectedObject.excelColumn) && (
                   <p className="text-[10.5px] text-amber-600 font-bold mt-0.5">
-                    ⚠️ Đang nối Excel. Chữ cố định bị tắt.
-                  </p>
+                    {t("⚠️ Đang nối Excel. Chữ cố định bị tắt.")}</p>
                 )}
               </div>
 
@@ -530,8 +505,7 @@ export function PropertiesPanel({
               <div className="relative flex py-1 items-center">
                 <div className="flex-grow border-t border-gray-200"></div>
                 <span className="flex-shrink mx-1.5 text-[10px] font-black text-gray-400 bg-white uppercase tracking-widest select-none px-1">
-                  Hoặc
-                </span>
+                  {t("Hoặc")}</span>
                 <div className="flex-grow border-t border-gray-200"></div>
               </div>
 
@@ -542,12 +516,11 @@ export function PropertiesPanel({
             {/* ĐỊNH DẠNG DƯ LIỆU */}
             <div className="pt-2.5 border-t border-gray-250/60 pb-1 font-sans">
               <span className="block text-[11.5px] uppercase tracking-wider font-extrabold text-kiot-navy mb-1.5">
-                Định dạng dữ liệu
-              </span>
+                {t("Định dạng dữ liệu")}</span>
               <div className="space-y-2 text-xs">
                 {/* Select Format Type */}
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] text-slate-500 font-medium">Loại định dạng:</span>
+                  <span className="text-[11px] text-slate-500 font-medium">{t("Loại định dạng:")}</span>
                   <div className="relative">
                     <select
                       value={selectedObject.dataFormatType || "general"}
@@ -556,9 +529,9 @@ export function PropertiesPanel({
                       }
                       className="w-40 pl-2 pr-6 py-1 text-xs border border-gray-200 rounded focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan focus:outline-none bg-white text-slate-705 font-bold cursor-pointer appearance-none"
                     >
-                      <option value="general">Mặc định (General)</option>
-                      <option value="number">Số (Number)</option>
-                      <option value="datetime">Ngày / Giờ (Date/Time)</option>
+                      <option value="general">{t("Mặc định (General)")}</option>
+                      <option value="number">{t("Số (Number)")}</option>
+                      <option value="datetime">{t("Ngày / Giờ (Date/Time)")}</option>
                     </select>
                     <ChevronDown className="absolute right-1.5 top-1.5 w-3.5 h-3.5 text-gray-450 pointer-events-none" />
                   </div>
@@ -569,11 +542,11 @@ export function PropertiesPanel({
                   <div className="p-2.5 bg-slate-50 border border-slate-150 rounded-md space-y-2 transition duration-205 animate-fadeIn">
                     {/* Decimal Separator */}
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] text-slate-500">Ngăn thập phân:</span>
+                      <span className="text-[11px] text-slate-500">{t("Ngăn thập phân:")}</span>
                       <div className="flex items-center bg-gray-150 p-0.5 rounded gap-1">
                         {[
-                          { value: ",", label: "Dấu phẩy (,)" },
-                          { value: ".", label: "Dấu chấm (.)" },
+                          { value: ",", label: t("Dấu phẩy (,)") },
+                          { value: ".", label: t("Dấu chấm (.)") },
                         ].map((opt) => (
                           <button
                             key={opt.value}
@@ -605,13 +578,12 @@ export function PropertiesPanel({
                         className="rounded border-gray-350 text-kiot-cyan focus:ring-kiot-cyan h-3 w-3 mr-2"
                       />
                       <label htmlFor="numberThousandsSeparator" className="text-[11px] text-slate-650 cursor-pointer select-none font-bold">
-                        Phân cách hàng ngàn, triệu...
-                      </label>
+                        {t("Phân cách hàng ngàn, triệu...")}</label>
                     </div>
 
                     {/* Decimal Places */}
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] text-slate-500">Chữ số thập phân:</span>
+                      <span className="text-[11px] text-slate-500">{t("Chữ số thập phân:")}</span>
                       <select
                         value={selectedObject.numberDecimalPlaces === undefined ? "auto" : selectedObject.numberDecimalPlaces.toString()}
                         onChange={(e) =>
@@ -622,12 +594,12 @@ export function PropertiesPanel({
                         }
                         className="w-24 px-1.5 py-0.5 text-[11px] border border-gray-200 rounded focus:border-kiot-cyan focus:outline-none bg-white font-bold text-slate-705 cursor-pointer"
                       >
-                        <option value="auto">Tự động</option>
-                        <option value="0">0 chữ số</option>
-                        <option value="1">1 chữ số</option>
-                        <option value="2">2 chữ số</option>
-                        <option value="3">3 chữ số</option>
-                        <option value="4">4 chữ số</option>
+                        <option value="auto">{t("Tự động")}</option>
+                        <option value="0">{t("0 chữ số")}</option>
+                        <option value="1">{t("1 chữ số")}</option>
+                        <option value="2">{t("2 chữ số")}</option>
+                        <option value="3">{t("3 chữ số")}</option>
+                        <option value="4">{t("4 chữ số")}</option>
                       </select>
                     </div>
                   </div>
@@ -638,7 +610,7 @@ export function PropertiesPanel({
                   <div className="p-2.5 bg-slate-50 border border-slate-150 rounded-md space-y-2 transition duration-205 animate-fadeIn">
                     {/* Format presets select */}
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] text-slate-500">Định dạng mẫu:</span>
+                      <span className="text-[11px] text-slate-500">{t("Định dạng mẫu:")}</span>
                       <div className="relative">
                         <select
                           value={
@@ -657,12 +629,12 @@ export function PropertiesPanel({
                           }}
                           className="w-40 pl-1.5 pr-6 py-0.5 text-[11px] border border-gray-200 rounded focus:border-kiot-cyan focus:outline-none bg-white text-slate-750 font-bold cursor-pointer appearance-none"
                         >
-                          <option value="DD/MM/YYYY">Ngày/Tháng/Năm (DD/MM/YYYY)</option>
-                          <option value="DD/MM/YYYY HH:mm">Ngày/Tháng/Năm Giờ:Phút (DD/MM/YYYY HH:mm)</option>
-                          <option value="HH:mm">Giờ:Phút (HH:mm)</option>
-                          <option value="DD-MM-YYYY">Ngày-Tháng-Năm (DD-MM-YYYY)</option>
-                          <option value="YYYY-MM-DD">Năm-Tháng-Ngày (YYYY-MM-DD)</option>
-                          <option value="custom">Tùy chọn tự nhập</option>
+                          <option value="DD/MM/YYYY">{t("Ngày/Tháng/Năm (DD/MM/YYYY)")}</option>
+                          <option value="DD/MM/YYYY HH:mm">{t("Ngày/Tháng/Năm Giờ:Phút (DD/MM/YYYY HH:mm)")}</option>
+                          <option value="HH:mm">{t("Giờ:Phút (HH:mm)")}</option>
+                          <option value="DD-MM-YYYY">{t("Ngày-Tháng-Năm (DD-MM-YYYY)")}</option>
+                          <option value="YYYY-MM-DD">{t("Năm-Tháng-Ngày (YYYY-MM-DD)")}</option>
+                          <option value="custom">{t("Tùy chọn tự nhập")}</option>
                         </select>
                         <ChevronDown className="absolute right-1 top-1.5 w-3 h-3 text-gray-450 pointer-events-none" />
                       </div>
@@ -672,12 +644,12 @@ export function PropertiesPanel({
                     {(!["DD/MM/YYYY", "DD/MM/YYYY HH:mm", "HH:mm", "DD-MM-YYYY", "YYYY-MM-DD"].includes(selectedObject.datetimeFormat || "") ||
                       selectedObject.datetimeFormat === "") && (
                       <div className="flex items-center justify-between">
-                        <span className="text-[11px] text-slate-500">Chuỗi định dạng:</span>
+                        <span className="text-[11px] text-slate-500">{t("Chuỗi định dạng:")}</span>
                         <input
                           type="text"
                           value={selectedObject.datetimeFormat || "DD/MM/YYYY HH:mm"}
                           onChange={(e) => handleAttributeChange("datetimeFormat", e.target.value)}
-                          placeholder="Ví dụ: DD/MM/YYYY HH:mm"
+                          placeholder={t("Ví dụ: DD/MM/YYYY HH:mm")}
                           className="w-40 px-2 py-0.5 text-[11px] border border-gray-200 rounded focus:border-kiot-cyan focus:outline-none bg-white text-slate-700 font-mono font-bold"
                         />
                       </div>
@@ -695,8 +667,8 @@ export function PropertiesPanel({
                         className="rounded border-gray-300 text-kiot-cyan focus:ring-kiot-cyan h-3 w-3 mr-2 font-bold cursor-pointer"
                       />
                       <label htmlFor="useSystemTime" className="text-[11px] text-slate-650 cursor-pointer select-none font-bold flex items-center gap-1">
-                        <span>Chọn giờ hệ thống</span>
-                        <span className="text-[9px] text-slate-400 font-normal italic">(Lấy giờ computer)</span>
+                        <span>{t("Chọn giờ hệ thống")}</span>
+                        <span className="text-[9px] text-slate-400 font-normal italic">{t("(Lấy giờ computer)")}</span>
                       </label>
                     </div>
                   </div>
@@ -707,14 +679,12 @@ export function PropertiesPanel({
             {/* ĐỊNH DẠNG CHỮ & TRỰC QUAN */}
             <div className="pt-2.5 border-t border-gray-250/60 pb-1 font-sans space-y-2.5">
               <span className="block text-[11.5px] uppercase tracking-wider font-extrabold text-kiot-navy">
-                Định dạng chữ &amp; Trực quan
-              </span>
+                {t("Định dạng chữ & Trực quan")}</span>
 
               {/* Bold, Italic, Underline, Strikethrough buttons / Định dạng chữ */}
               <div className="space-y-1">
                 <span className="block text-[11px] text-slate-600 font-bold">
-                  Kiểu dáng chữ
-                </span>
+                  {t("Kiểu dáng chữ")}</span>
                 <div className="flex bg-gray-100 p-0.5 rounded-md gap-1">
                   {/* Bold Button */}
                   <button
@@ -732,7 +702,7 @@ export function PropertiesPanel({
                         ? "bg-white text-kiot-navy font-bold shadow-sm ring-1 ring-kiot-cyan/40"
                         : "text-gray-400 hover:text-gray-700"
                     }`}
-                    title="Chữ đậm"
+                    title={t("Chữ đậm")}
                   >
                     <Bold className="w-3.5 h-3.5" />
                   </button>
@@ -753,7 +723,7 @@ export function PropertiesPanel({
                         ? "bg-white text-kiot-navy font-bold shadow-sm ring-1 ring-kiot-cyan/40"
                         : "text-gray-400 hover:text-gray-700"
                     }`}
-                    title="Chữ nghiêng"
+                    title={t("Chữ nghiêng")}
                   >
                     <Italic className="w-3.5 h-3.5" />
                   </button>
@@ -772,7 +742,7 @@ export function PropertiesPanel({
                         ? "bg-white text-kiot-navy font-bold shadow-sm ring-1 ring-kiot-cyan/40"
                         : "text-gray-400 hover:text-gray-700"
                     }`}
-                    title="Gạch chân"
+                    title={t("Gạch chân")}
                   >
                     <Underline className="w-3.5 h-3.5" />
                   </button>
@@ -791,7 +761,7 @@ export function PropertiesPanel({
                         ? "bg-white text-kiot-navy font-bold shadow-sm ring-1 ring-kiot-cyan/40"
                         : "text-gray-400 hover:text-gray-700"
                     }`}
-                    title="Gạch ngang chữ"
+                    title={t("Gạch ngang chữ")}
                   >
                     <Strikethrough className="w-3.5 h-3.5" />
                   </button>
@@ -802,8 +772,7 @@ export function PropertiesPanel({
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="block text-[11px] text-slate-650 font-bold mb-0.5">
-                    Font chữ
-                  </label>
+                    {t("Font chữ")}</label>
                   <div className="relative">
                     <select
                       value={selectedObject.fontFamily || "sans-serif"}
@@ -812,12 +781,12 @@ export function PropertiesPanel({
                       }
                       className="w-full pl-2 pr-6 py-1 text-xs border border-gray-200 rounded-md focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan focus:outline-none bg-white appearance-none text-slate-800 font-bold cursor-pointer"
                     >
-                      <option value="sans-serif">Chữ thường (Sans)</option>
+                      <option value="sans-serif">{t("Chữ thường (Sans)")}</option>
                       <option value="Arial">Arial</option>
                       <option value="Times New Roman">Times New Roman</option>
                       <option value="Tahoma">Tahoma</option>
-                      <option value="monospace">Mã máy (Mono)</option>
-                      <option value="serif">Chữ Serif (Times)</option>
+                      <option value="monospace">{t("Mã máy (Mono)")}</option>
+                      <option value="serif">{t("Chữ Serif (Times)")}</option>
                     </select>
                     <ChevronDown className="absolute right-2 top-2 a w-3.5 h-3.5 text-gray-400 pointer-events-none" />
                   </div>
@@ -825,8 +794,7 @@ export function PropertiesPanel({
 
                 <div>
                   <label className="block text-[11px] text-slate-650 font-bold mb-0.5">
-                    Cỡ chữ (pt)
-                  </label>
+                    {t("Cỡ chữ (pt)")}</label>
                   <input
                     {...getNumericInputProps(
                       "fontSize",
@@ -842,8 +810,7 @@ export function PropertiesPanel({
               {/* Màu sắc chữ (grouped directly under font size/family) */}
               <div className="space-y-1">
                 <label className="block text-[11px] text-slate-650 font-bold">
-                  Màu sắc chữ
-                </label>
+                  {t("Màu sắc chữ")}</label>
                 <div className="flex items-center space-x-2">
                   <input
                     type="color"
@@ -887,8 +854,7 @@ export function PropertiesPanel({
               <div className="grid grid-cols-2 gap-2 pt-1 border-t border-gray-200/45">
                 <div className="flex-1">
                   <span className="block text-[11px] text-slate-650 font-bold mb-0.5">
-                    Căn lề chữ
-                  </span>
+                    {t("Căn lề chữ")}</span>
                   <div className="flex bg-gray-100 p-0.5 rounded-md">
                     {(["left", "center", "right"] as const).map((align) => {
                       return (
@@ -921,8 +887,7 @@ export function PropertiesPanel({
 
                 <div>
                   <span className="block text-[11px] text-slate-650 font-bold mb-0.5">
-                    Chỉnh chỉ số
-                  </span>
+                    {t("Chỉnh chỉ số")}</span>
                   <div className="flex bg-gray-100 p-0.5 rounded-md text-[11px] font-bold">
                     {(["normal", "superscript", "subscript"] as const).map((subSuper) => {
                       return (
@@ -940,13 +905,13 @@ export function PropertiesPanel({
                           }`}
                           title={
                             subSuper === "normal"
-                              ? "Chữ bình thường"
+                              ? t("Chữ bình thường")
                               : subSuper === "superscript"
-                                ? "Chỉ số trên"
-                                : "Chỉ số dưới"
+                                ? t("Chỉ số trên")
+                                : t("Chỉ số dưới")
                           }
                         >
-                          {subSuper === "normal" && "Thường"}
+                          {subSuper === "normal" && t("Thường")}
                           {subSuper === "superscript" && "A²"}
                           {subSuper === "subscript" && "A₂"}
                         </button>
@@ -960,23 +925,20 @@ export function PropertiesPanel({
               {/* PHẦN TIỀN TỐ VÀ HẬU TỐ */}
               <div className="pt-2 border-t border-gray-250/60 pb-1.5 space-y-2.5">
                 <span className="block text-[11px] uppercase tracking-wider font-extrabold text-kiot-navy">
-                  Tiền tố &amp; Hậu tố
-                </span>
+                  {t("Tiền tố & Hậu tố")}</span>
 
                 {/* 1. TIỀN TỐ (PREFIX) */}
                 <div className="p-2 border border-sky-100 rounded-lg bg-sky-50/20 space-y-2">
                   <div className="flex items-center justify-between">
                     <label className="text-[11px] font-bold text-slate-650">
-                      Tiền tố (Prefix)
-                    </label>
+                      {t("Tiền tố (Prefix)")}</label>
                     <span className="text-[9px] bg-sky-100 text-sky-800 px-1 py-0.2 rounded font-mono">
-                      Trước content
-                    </span>
+                      {t("Trước content")}</span>
                   </div>
                   <input
                     type="text"
                     value={selectedObject.prefixText || ""}
-                    placeholder="Mặc định thêm vào trước..."
+                    placeholder={t("Mặc định thêm vào trước...")}
                     onChange={(e) =>
                       handleAttributeChange("prefixText", e.target.value)
                     }
@@ -988,8 +950,7 @@ export function PropertiesPanel({
                         {/* Font Size */}
                         <div>
                           <label className="block text-[9.5px] text-slate-500 font-bold mb-0.5">
-                            Cỡ chữ (pt)
-                          </label>
+                            {t("Cỡ chữ (pt)")}</label>
                           <input
                             {...getNumericInputProps(
                               "prefixFontSize",
@@ -1006,8 +967,7 @@ export function PropertiesPanel({
                         {/* Font Family */}
                         <div>
                           <label className="block text-[9.5px] text-slate-500 font-bold mb-0.5">
-                            Font chữ
-                          </label>
+                            {t("Font chữ")}</label>
                           <select
                             value={
                               selectedObject.prefixFontFamily || "sans-serif"
@@ -1032,8 +992,7 @@ export function PropertiesPanel({
                       {/* Màu đặc biệt cho Prefix */}
                       <div className="flex items-center justify-between gap-2 border-t border-sky-100/45 pt-1.5 pb-0.5">
                         <label className="text-[9.5px] text-slate-500 font-bold">
-                          Màu tiền tố:
-                        </label>
+                          {t("Màu tiền tố:")}</label>
                         <div className="flex items-center space-x-1.5">
                           <input
                             type="color"
@@ -1125,7 +1084,7 @@ export function PropertiesPanel({
                           }
                           className="text-[10px] bg-transparent border-none outline-none font-bold text-slate-700 cursor-pointer p-0 shrink-0"
                         >
-                          <option value="normal">Thường</option>
+                          <option value="normal">{t("Thường")}</option>
                           <option value="superscript">A²</option>
                           <option value="subscript">A₂</option>
                         </select>
@@ -1138,16 +1097,15 @@ export function PropertiesPanel({
                 <div className="p-2 border border-purple-100 rounded-lg bg-purple-50/20 space-y-2">
                   <div className="flex items-center justify-between">
                     <label className="text-[11px] font-bold text-slate-650">
-                      Hậu tố (Suffix)
-                    </label>
+                      {t("Hậu tố (Suffix)")}</label>
                     <span className="text-[9px] bg-purple-100 text-purple-800 px-1 py-0.2 rounded font-mono">
-                      Sau content
+                      {t("Sau content")}
                     </span>
                   </div>
                   <input
                     type="text"
                     value={selectedObject.suffixText || ""}
-                    placeholder="Mặc định thêm vào sau..."
+                    placeholder={t("Mặc định thêm vào sau...")}
                     onChange={(e) =>
                       handleAttributeChange("suffixText", e.target.value)
                     }
@@ -1159,8 +1117,7 @@ export function PropertiesPanel({
                         {/* Font Size */}
                         <div>
                           <label className="block text-[9.5px] text-slate-500 font-bold mb-0.5">
-                            Cỡ chữ (pt)
-                          </label>
+                            {t("Cỡ chữ (pt)")}</label>
                           <input
                             {...getNumericInputProps(
                               "suffixFontSize",
@@ -1177,8 +1134,7 @@ export function PropertiesPanel({
                         {/* Font Family */}
                         <div>
                           <label className="block text-[9.5px] text-slate-500 font-bold mb-0.5">
-                            Font chữ
-                          </label>
+                            {t("Font chữ")}</label>
                           <select
                             value={
                               selectedObject.suffixFontFamily || "sans-serif"
@@ -1203,8 +1159,7 @@ export function PropertiesPanel({
                       {/* Màu đặc biệt cho Suffix */}
                       <div className="flex items-center justify-between gap-2 border-t border-purple-100/45 pt-1.5 pb-0.5">
                         <label className="text-[9.5px] text-slate-500 font-bold">
-                          Màu hậu tố:
-                        </label>
+                          {t("Màu hậu tố:")}</label>
                         <div className="flex items-center space-x-1.5">
                           <input
                             type="color"
@@ -1296,7 +1251,7 @@ export function PropertiesPanel({
                           }
                           className="text-[10px] bg-transparent border-none outline-none font-bold text-slate-700 cursor-pointer p-0 shrink-0"
                         >
-                          <option value="normal">Thường</option>
+                          <option value="normal">{t("Thường")}</option>
                           <option value="superscript">A²</option>
                           <option value="subscript">A₂</option>
                         </select>
@@ -1309,7 +1264,7 @@ export function PropertiesPanel({
               {/* Hướng căn chỉnh và dòng chảy khi nhiều dòng */}
               <div className="pt-1.5 border-t border-gray-250/60 pb-0.5">
                 <label className="block text-[11px] text-slate-650 font-bold mb-1 flex items-center space-x-1">
-                  <span>Điểm neo / Dòng chảy văn bản</span>
+                  <span>{t("Điểm neo / Dòng chảy văn bản")}</span>
                 </label>
                 <div className="relative">
                   <select
@@ -1354,32 +1309,23 @@ export function PropertiesPanel({
                     className="w-full pl-2 pr-6 py-1 text-xs border border-gray-200 rounded-md focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan focus:outline-none bg-white font-bold text-slate-800 cursor-pointer appearance-none"
                   >
                     <option value="top-left">
-                      Trên - Trái (góc trên bên trái)
-                    </option>
+                      {t("Trên - Trái (góc trên bên trái)")}</option>
                     <option value="top-center">
-                      Trên - Giữa
-                    </option>
+                      {t("Trên - Giữa")}</option>
                     <option value="top-right">
-                      Trên - Phải (góc trên bên phải)
-                    </option>
+                      {t("Trên - Phải (góc trên bên phải)")}</option>
                     <option value="center-left">
-                      Giữa - Trái
-                    </option>
+                      {t("Giữa - Trái")}</option>
                     <option value="center">
-                      Chính giữa (tâm)
-                    </option>
+                      {t("Chính giữa (tâm)")}</option>
                     <option value="center-right">
-                      Giữa - Phải
-                    </option>
+                      {t("Giữa - Phải")}</option>
                     <option value="bottom-left">
-                      Dưới - Trái (góc dưới bên trái)
-                    </option>
+                      {t("Dưới - Trái (góc dưới bên trái)")}</option>
                     <option value="bottom-center">
-                      Dưới - Giữa
-                    </option>
+                      {t("Dưới - Giữa")}</option>
                     <option value="bottom-right">
-                      Dưới - Phải (góc dưới bên phải)
-                    </option>
+                      {t("Dưới - Phải (góc dưới bên phải)")}</option>
                   </select>
                   <ChevronDown className="absolute right-2 top-2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
                 </div>
@@ -1396,18 +1342,15 @@ export function PropertiesPanel({
             {/* 1. Phần Mã vạch (giá trị) */}
             <div className="space-y-1.5">
               <label className="block text-[11.5px] font-black text-slate-705 uppercase tracking-wider mb-0.5">
-                Mã vạch (Giá trị)
-              </label>
+                {t("Mã vạch (Giá trị)")}</label>
 
               {/* Way 1: Nhập thủ công */}
               <div className="space-y-1">
                 <div className="flex items-center space-x-1">
                   <span className="text-[11px] font-black text-slate-550 uppercase tracking-wide">
-                    Nhập:
-                  </span>
+                    {t("Nhập:")}</span>
                   <span className="text-[10.5px] text-slate-450 font-bold select-none italic">
-                    (Điền giá trị cố định)
-                  </span>
+                    {t("(Điền giá trị cố định)")}</span>
                 </div>
                 <input
                   type="text"
@@ -1423,14 +1366,13 @@ export function PropertiesPanel({
                   }`}
                   placeholder={
                     (excelColumns.length > 0 && selectedObject.excelColumn)
-                      ? `Lấy mã vạch từ cột [${selectedObject.excelColumn}]`
-                      : "Ví dụ: CODE128, EAN13..."
+                      ? t("Lấy mã vạch từ cột [{excelColumn}]", { excelColumn: selectedObject.excelColumn })
+                      : t("Ví dụ: CODE128, EAN13...")
                   }
                 />
                 {(excelColumns.length > 0 && selectedObject.excelColumn) && (
                   <p className="text-[10.5px] text-amber-600 font-bold mt-0.5">
-                    ⚠️ Đang nối Excel. Giá trị mã vạch bị ẩn.
-                  </p>
+                    {t("⚠️ Đang nối Excel. Giá trị mã vạch bị ẩn.")}</p>
                 )}
               </div>
 
@@ -1438,8 +1380,7 @@ export function PropertiesPanel({
               <div className="relative flex py-1 items-center">
                 <div className="flex-grow border-t border-gray-200"></div>
                 <span className="flex-shrink mx-1.5 text-[10px] font-black text-gray-400 bg-white uppercase tracking-widest select-none px-1">
-                  Hoặc
-                </span>
+                  {t("Hoặc")}</span>
                 <div className="flex-grow border-t border-gray-200"></div>
               </div>
 
@@ -1451,8 +1392,7 @@ export function PropertiesPanel({
             <div className="pt-1.5 border-t border-gray-100/50 space-y-2 font-sans">
               <div>
                 <label className="block text-[11px] text-slate-650 font-bold mb-0.5 uppercase tracking-wider">
-                  Chuẩn mã vạch
-                </label>
+                  {t("Chuẩn mã vạch")}</label>
                 <div className="relative">
                   <select
                     value={selectedObject.barcodeFormat || "CODE128"}
@@ -1462,12 +1402,10 @@ export function PropertiesPanel({
                     className="w-full pl-2 pr-6 py-1 text-xs border border-gray-200 rounded-md focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan focus:outline-none bg-white appearance-none text-slate-800 font-bold"
                   >
                     <option value="CODE128">
-                      CODE128 (Chữ &amp; số - Khuyên dùng)
-                    </option>
+                      {t("CODE128 (Chữ & số - Khuyên dùng)")}</option>
                     <option value="EAN13">
-                      EAN-13 (13 chữ số - Châu Âu/VN)
-                    </option>
-                    <option value="CODE39">CODE39 (Chữ &amp; số cơ bản)</option>
+                      {t("EAN-13 (13 chữ số - Châu Âu/VN)")}</option>
+                    <option value="CODE39">{t("CODE39 (Chữ & số cơ bản)")}</option>
                   </select>
                   <ChevronDown className="absolute right-2 top-2  w-3.5 h-3.5 text-gray-400 pointer-events-none" />
                 </div>
@@ -1476,8 +1414,7 @@ export function PropertiesPanel({
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="block text-[11px] text-slate-650 font-bold mb-0.5">
-                    Độ rộng vạch (0.5 - 6)
-                  </label>
+                    {t("Độ rộng vạch (0.5 - 6)")}</label>
                   <input
                     {...getNumericInputProps(
                       "barcodeWidth",
@@ -1491,8 +1428,7 @@ export function PropertiesPanel({
 
                 <div>
                   <label className="block text-[11px] text-slate-650 font-bold mb-0.5">
-                    Cao mã (mm)
-                  </label>
+                    {t("Cao mã (mm)")}</label>
                   <input
                     {...getNumericInputProps(
                       "barcodeHeight",
@@ -1509,8 +1445,7 @@ export function PropertiesPanel({
             {/* Màu sắc mã vạch */}
             <div className="pt-2 border-t border-gray-200/50">
               <label className="block text-[11px] text-slate-650 font-bold mb-1">
-                Màu mã vạch (đối tượng)
-              </label>
+                {t("Màu mã vạch (đối tượng)")}</label>
               <div className="flex items-center space-x-2">
                 <input
                   type="color"
@@ -1549,8 +1484,7 @@ export function PropertiesPanel({
             {/* 4. Cấu hình chữ nhãn */}
             <div className="pt-1.5 border-t border-gray-200/65 space-y-1 font-sans">
               <label className="block text-[11px] text-slate-705 font-black uppercase tracking-wider mb-0.5">
-                Cấu hình chữ nhãn:
-              </label>
+                {t("Cấu hình chữ nhãn:")}</label>
 
               <div className="flex items-center space-x-2">
                 <input
@@ -1569,8 +1503,7 @@ export function PropertiesPanel({
                   htmlFor="barcode-show-above-chk"
                   className="text-[11.5px] text-slate-700 font-semibold select-none cursor-pointer"
                 >
-                  Hiển thị số/chữ bên trên mã vạch
-                </label>
+                  {t("Hiển thị số/chữ bên trên mã vạch")}</label>
               </div>
 
               <div className="flex items-center space-x-2">
@@ -1594,8 +1527,7 @@ export function PropertiesPanel({
                   htmlFor="barcode-show-below-chk"
                   className="text-[11.5px] text-slate-700 font-semibold select-none cursor-pointer"
                 >
-                  Hiển thị số/chữ bên dưới mã vạch
-                </label>
+                  {t("Hiển thị số/chữ bên dưới mã vạch")}</label>
               </div>
             </div>
 
@@ -1607,8 +1539,7 @@ export function PropertiesPanel({
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label className="block text-[11px] text-slate-650 font-bold mb-0.5">
-                      Cỡ chữ (pt)
-                    </label>
+                      {t("Cỡ chữ (pt)")}</label>
                     <input
                       {...getNumericInputProps(
                         "barcodeFontSize",
@@ -1622,8 +1553,7 @@ export function PropertiesPanel({
 
                   <div>
                     <label className="block text-[11px] text-slate-650 font-bold mb-0.5">
-                      Font Chữ
-                    </label>
+                      {t("Font Chữ")}</label>
                     <div className="relative">
                       <select
                         value={selectedObject.barcodeFontFamily || "sans-serif"}
@@ -1635,11 +1565,11 @@ export function PropertiesPanel({
                         }
                         className="w-full pl-2 pr-6 py-1 text-xs border border-gray-200 rounded-md focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan focus:outline-none bg-white appearance-none text-slate-800 font-bold"
                       >
-                        <option value="sans-serif">Chữ thường (Sans)</option>
+                        <option value="sans-serif">{t("Chữ thường (Sans)")}</option>
                         <option value="Arial">Arial</option>
                         <option value="Times New Roman">Times New Roman</option>
                         <option value="Tahoma">Tahoma</option>
-                        <option value="monospace">Mã máy (Mono)</option>
+                        <option value="monospace">{t("Mã máy (Mono)")}</option>
                       </select>
                       <ChevronDown className="absolute right-2 top-2  w-3.5 h-3.5 text-gray-400 pointer-events-none" />
                     </div>
@@ -1648,8 +1578,7 @@ export function PropertiesPanel({
 
                 <div>
                   <label className="block text-[11px] text-slate-650 font-bold mb-0.5">
-                    Khoảng cách tới mã vạch (mm)
-                  </label>
+                    {t("Khoảng cách tới mã vạch (mm)")}</label>
                   <input
                     {...getNumericInputProps(
                       "barcodeTextMargin",
@@ -1666,8 +1595,7 @@ export function PropertiesPanel({
                 <div className="flex items-center space-x-2 pt-1">
                   <div className="flex-1">
                     <span className="block text-[10.5px] text-slate-550 font-bold mb-0.5">
-                      Độ đậm
-                    </span>
+                      {t("Độ đậm")}</span>
                     <button
                       type="button"
                       onClick={() =>
@@ -1685,14 +1613,13 @@ export function PropertiesPanel({
                       }`}
                     >
                       <Bold className="w-3.5 h-3.5 mr-0.5 text-kiot-navy" />
-                      <span className="text-[11px] font-bold">Tô đậm</span>
+                      <span className="text-[11px] font-bold">{t("Tô đậm")}</span>
                     </button>
                   </div>
 
                   <div className="flex-1">
                     <span className="block text-[10.5px] text-slate-550 font-bold mb-0.5">
-                      In nghiêng
-                    </span>
+                      {t("In nghiêng")}</span>
                     <button
                       type="button"
                       onClick={() =>
@@ -1710,7 +1637,7 @@ export function PropertiesPanel({
                       }`}
                     >
                       <Italic className="w-3.5 h-3.5 mr-0.5 text-kiot-navy" />
-                      <span className="text-[11px] font-bold">Nghiêng</span>
+                      <span className="text-[11px] font-bold">{t("Nghiêng")}</span>
                     </button>
                   </div>
                 </div>
@@ -1718,8 +1645,7 @@ export function PropertiesPanel({
                 {/* Màu sắc chữ nhãn mã vạch */}
                 <div className="pt-2 border-t border-gray-200/50">
                   <label className="block text-[11px] text-slate-650 font-bold mb-1">
-                    Màu sắc chữ nhãn
-                  </label>
+                    {t("Màu sắc chữ nhãn")}</label>
                   <div className="flex items-center space-x-2">
                     <input
                       type="color"
@@ -1780,18 +1706,15 @@ export function PropertiesPanel({
             {/* Nội dung QR Code */}
             <div className="space-y-1.5">
               <label className="block text-[11.5px] font-black text-slate-705 uppercase tracking-wider mb-0.5">
-                Nội dung QR Code
-              </label>
+                {t("Nội dung QR Code")}</label>
 
               {/* Way 1: Nhập thủ công */}
               <div className="space-y-1">
                 <div className="flex items-center space-x-1">
                   <span className="text-[11px] font-black text-slate-550 uppercase tracking-wide">
-                    Nhập:
-                  </span>
+                    {t("Nhập:")}</span>
                   <span className="text-[10.5px] text-slate-450 font-bold select-none italic">
-                    (Điền nội dung cố định)
-                  </span>
+                    {t("(Điền nội dung cố định)")}</span>
                 </div>
                 <textarea
                   rows={2}
@@ -1807,14 +1730,13 @@ export function PropertiesPanel({
                   }`}
                   placeholder={
                     (excelColumns.length > 0 && selectedObject.excelColumn)
-                      ? `Lấy dữ liệu QR từ cột [${selectedObject.excelColumn}]`
-                      : "Ví dụ: URL, số tài khoản, chuỗi mã hóa..."
+                      ? t("Lấy dữ liệu QR từ cột [{excelColumn}]", { excelColumn: selectedObject.excelColumn })
+                      : t("Ví dụ: URL, số tài khoản, chuỗi mã hóa...")
                   }
                 />
                 {(excelColumns.length > 0 && selectedObject.excelColumn) && (
                   <p className="text-[10.5px] text-amber-600 font-bold mt-0.5">
-                    ⚠️ Đang nối Excel. Nội dung QR bị ẩn.
-                  </p>
+                    {t("⚠️ Đang nối Excel. Nội dung QR bị ẩn.")}</p>
                 )}
               </div>
 
@@ -1822,8 +1744,7 @@ export function PropertiesPanel({
               <div className="relative flex py-1 items-center">
                 <div className="flex-grow border-t border-gray-200"></div>
                 <span className="flex-shrink mx-1.5 text-[10px] font-black text-gray-400 bg-white uppercase tracking-widest select-none px-1">
-                  Hoặc
-                </span>
+                  {t("Hoặc")}</span>
                 <div className="flex-grow border-t border-gray-200"></div>
               </div>
 
@@ -1832,15 +1753,12 @@ export function PropertiesPanel({
             </div>
 
             <div className="text-[11px] text-gray-600 font-bold leading-relaxed bg-slate-50 p-2 rounded-md border border-gray-200">
-              💡 <strong>Mẹo:</strong> QR Code sẽ tự động tăng mật độ nén dựa
-              trên độ dài dữ liệu để máy quét/camera nhận dạng nhanh nhất.
-            </div>
+              💡 <strong>{t("Mẹo:")}</strong> {" "+t("QR Code sẽ tự động tăng mật độ nén dựa trên độ dài dữ liệu để máy quét/camera nhận dạng nhanh nhất.")}</div>
 
             {/* Mức sửa lỗi QR */}
             <div className="pt-2 border-t border-gray-200/50">
               <label className="block text-[11px] text-slate-650 font-bold mb-1">
-                Mức sửa lỗi (Error correction)
-              </label>
+                {t("Mức sửa lỗi (Error correction)")}</label>
               <select
                 value={selectedObject.qrErrorCorrection || "H"}
                 onChange={(e) =>
@@ -1848,21 +1766,19 @@ export function PropertiesPanel({
                 }
                 className="w-full pl-2 pr-6 py-1 text-xs border border-gray-200 rounded-md focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan focus:outline-none bg-white font-bold text-slate-800 cursor-pointer"
               >
-                <option value="L">L - Thấp (chứa được nhiều dữ liệu nhất)</option>
-                <option value="M">M - Trung bình</option>
-                <option value="Q">Q - Khá cao</option>
-                <option value="H">H - Cao nhất (mặc định, chịu bẩn/rách tốt)</option>
+                <option value="L">{t("L - Thấp (chứa được nhiều dữ liệu nhất)")}</option>
+                <option value="M">{t("M - Trung bình")}</option>
+                <option value="Q">{t("Q - Khá cao")}</option>
+                <option value="H">{t("H - Cao nhất (mặc định, chịu bẩn/rách tốt)")}</option>
               </select>
               <p className="text-[10px] text-slate-500 mt-1">
-                Nội dung dài (trên ~1.000 ký tự) nên chọn mức L hoặc M.
-              </p>
+                {t("Nội dung dài (trên ~1.000 ký tự) nên chọn mức L hoặc M.")}</p>
             </div>
 
             {/* Màu QR Code */}
             <div className="pt-2 border-t border-gray-200/50">
               <label className="block text-[11px] text-slate-650 font-bold mb-1">
-                Màu sắc mã QR (đối tượng)
-              </label>
+                {t("Màu sắc mã QR (đối tượng)")}</label>
               <div className="flex items-center space-x-2">
                 <input
                   type="color"
@@ -1909,13 +1825,12 @@ export function PropertiesPanel({
             {/* Nguồn hình ảnh */}
             <div className="space-y-1.5">
               <label className="block text-[11.5px] font-black text-slate-705 mb-0.5">
-                Nguồn hình ảnh (URL hoặc Base64)
-              </label>
+                {t("Nguồn hình ảnh (URL hoặc Base64)")}</label>
               <textarea
                 rows={2}
                 value={
                   selectedObject.content.startsWith("data:")
-                    ? "[Dữ liệu ảnh tải lên]"
+                    ? t("[Dữ liệu ảnh tải lên]")
                     : selectedObject.content
                 }
                 disabled={
@@ -1926,13 +1841,12 @@ export function PropertiesPanel({
                   handleAttributeChange("content", e.target.value)
                 }
                 className={`w-full p-2 text-xs border border-gray-200 rounded-md font-mono focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan focus:outline-none bg-white text-slate-800 disabled:bg-gray-100 disabled:text-gray-500`}
-                placeholder="Dán đường dẫn ảnh hoặc kéo thả ảnh mới vào..."
+                placeholder={t("Dán đường dẫn ảnh hoặc kéo thả ảnh mới vào...")}
               />
               {selectedObject.content.startsWith("data:") && (
                 <div className="mt-1 flex items-center justify-between">
                   <span className="text-[11px] text-green-600 font-bold">
-                    ✓ Ảnh đã tải lên (Offline)
-                  </span>
+                    {t("✓ Ảnh đã tải lên (Offline)")}</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -1958,8 +1872,7 @@ export function PropertiesPanel({
                     }}
                     className="text-[11px] text-kiot-cyan hover:underline font-black cursor-pointer"
                   >
-                    Thay đổi ảnh...
-                  </button>
+                    {t("Thay đổi ảnh...")}</button>
                 </div>
               )}
             </div>
@@ -1968,8 +1881,7 @@ export function PropertiesPanel({
             <div className="grid grid-cols-2 gap-2 pt-1.5 border-t border-gray-100/50">
               <div>
                 <label className="block text-[11px] text-slate-650 font-bold mb-0.5">
-                  Tỷ lệ (Fit)
-                </label>
+                  {t("Tỷ lệ (Fit)")}</label>
                 <div className="relative">
                   <select
                     value={selectedObject.imageFit || "contain"}
@@ -1978,9 +1890,9 @@ export function PropertiesPanel({
                     }
                     className="w-full pl-2 pr-6 py-1 text-xs border border-gray-200 rounded-md focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan focus:outline-none bg-white appearance-none text-slate-800 font-bold"
                   >
-                    <option value="contain">Thu vừa (Contain)</option>
-                    <option value="cover">Phủ kín (Cover)</option>
-                    <option value="fill">Kéo giãn (Fill)</option>
+                    <option value="contain">{t("Thu vừa (Contain)")}</option>
+                    <option value="cover">{t("Phủ kín (Cover)")}</option>
+                    <option value="fill">{t("Kéo giãn (Fill)")}</option>
                   </select>
                   <ChevronDown className="absolute right-2 top-2  w-3.5 h-3.5 text-gray-400 pointer-events-none" />
                 </div>
@@ -1988,8 +1900,7 @@ export function PropertiesPanel({
 
               <div>
                 <label className="block text-[11px] text-slate-650 font-bold mb-0.5">
-                  Độ mờ (Opacity)
-                </label>
+                  {t("Độ mờ (Opacity)")}</label>
                 <input
                   {...getNumericInputProps(
                     "imageOpacity",
@@ -2006,8 +1917,7 @@ export function PropertiesPanel({
 
             <div>
               <label className="block text-[11px] text-slate-650 font-bold mb-0.5">
-                Đơn sắc khi xuất lệnh máy in nhiệt (ZPL/TSPL)
-              </label>
+                {t("Đơn sắc khi xuất lệnh máy in nhiệt (ZPL/TSPL)")}</label>
               <div className="relative">
                 <select
                   value={selectedObject.imageMono || "auto"}
@@ -2016,19 +1926,16 @@ export function PropertiesPanel({
                   }
                   className="w-full pl-2 pr-6 py-1 text-xs border border-gray-200 rounded-md focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan focus:outline-none bg-white appearance-none text-slate-800 font-bold"
                 >
-                  <option value="auto">Tự động (logo: ngưỡng, ảnh chụp: dither)</option>
-                  <option value="threshold">Ngưỡng đen/trắng (nét sắc, cho logo)</option>
-                  <option value="dither">Dither (giữ sắc độ ảnh chụp)</option>
+                  <option value="auto">{t("Tự động (logo: ngưỡng, ảnh chụp: dither)")}</option>
+                  <option value="threshold">{t("Ngưỡng đen/trắng (nét sắc, cho logo)")}</option>
+                  <option value="dither">{t("Dither (giữ sắc độ ảnh chụp)")}</option>
                 </select>
                 <ChevronDown className="absolute right-2 top-2  w-3.5 h-3.5 text-gray-400 pointer-events-none" />
               </div>
             </div>
 
             <div className="text-[11px] text-gray-600 font-bold leading-relaxed bg-slate-50 p-2 rounded-md border border-gray-200">
-              💡 <strong>Mẹo:</strong> Có thể trực tiếp kéo và thả một file hình
-              ảnh (.png, .jpg...) từ máy tính thả vào khung thiết kế để làm logo
-              nhãn động.
-            </div>
+              💡 <strong>{t("Mẹo:")}</strong> {" "+t("Có thể trực tiếp kéo và thả một file hình ảnh (.png, .jpg...) từ máy tính thả vào khung thiết kế để làm logo nhãn động.")}</div>
 
             {/* Vị trí & Kích thước (Collapsible) */}
             {renderPositionPanel()}
@@ -2042,28 +1949,27 @@ export function PropertiesPanel({
             {/* Shape Type Selection */}
             <div className="space-y-2 pb-3 border-b border-gray-100">
               <label className="block text-[11.5px] font-black text-slate-700">
-                Loại hình khối (Shape)
-              </label>
+                {t("Loại hình khối (Shape)")}</label>
               <div className="grid grid-cols-2 gap-2">
                 {[
                   {
                     id: "line",
-                    name: "Đường kẻ (Line)",
+                    name: t("Đường kẻ (Line)"),
                     icon: <Minus className="w-4 h-4 text-indigo-500" />
                   },
                   {
                     id: "rect",
-                    name: "H.chữ nhật (Rect)",
+                    name: t("H.chữ nhật (Rect)"),
                     icon: <Square className="w-4 h-4 text-amber-500" />
                   },
                   {
                     id: "circle",
-                    name: "Hình tròn (Circle)",
+                    name: t("Hình tròn (Circle)"),
                     icon: <Circle className="w-4 h-4 text-emerald-500" />
                   },
                   {
                     id: "oval",
-                    name: "Hình oval (Oval)",
+                    name: t("Hình oval (Oval)"),
                     icon: (
                       <div className="w-4 h-2 bg-transparent border-[1.5px] border-pink-500 rounded-full inline-block shrink-0" />
                     )
@@ -2076,10 +1982,10 @@ export function PropertiesPanel({
                       type="button"
                       onClick={() => {
                         const newType = item.id as any;
-                        let nm = "Hình chữ nhật";
-                        if (newType === "line") nm = "Đường kẻ";
-                        else if (newType === "circle") nm = "Hình tròn";
-                        else if (newType === "oval") nm = "Hình oval";
+                        let nm = t("Hình chữ nhật");
+                        if (newType === "line") nm = t("Đường kẻ");
+                        else if (newType === "circle") nm = t("Hình tròn");
+                        else if (newType === "oval") nm = t("Hình oval");
                         
                         onChangeObject({
                           ...selectedObject,
@@ -2105,8 +2011,7 @@ export function PropertiesPanel({
             <div className="grid grid-cols-2 gap-2 pb-1">
               <div>
                 <label className="block text-[10.5px] text-slate-500 font-bold mb-0.5">
-                  Độ dày viền (mm)
-                </label>
+                  {t("Độ dày viền (mm)")}</label>
                 <input
                   {...getNumericInputProps(
                     "shapeStrokeWidth",
@@ -2120,17 +2025,16 @@ export function PropertiesPanel({
 
               <div>
                 <label className="block text-[10.5px] text-slate-500 font-bold mb-0.5">
-                  Kiểu viền
-                </label>
+                  {t("Kiểu viền")}</label>
                 <div className="relative">
                   <select
                     value={selectedObject.shapeStrokeStyle || "solid"}
                     onChange={(e) => handleAttributeChange("shapeStrokeStyle", e.target.value)}
                     className="w-full pl-1.5 pr-4 py-0.5 text-xs border border-gray-200 rounded focus:border-kiot-cyan focus:outline-none bg-white text-slate-800 font-bold cursor-pointer"
                   >
-                    <option value="solid">─── Liền viền (Solid)</option>
-                    <option value="dashed">- - - Đứt nét (Dashed)</option>
-                    <option value="dotted">• • • Chấm bi (Dotted)</option>
+                    <option value="solid">{t("─── Liền viền (Solid)")}</option>
+                    <option value="dashed">{t("- - - Đứt nét (Dashed)")}</option>
+                    <option value="dotted">{t("• • • Chấm bi (Dotted)")}</option>
                   </select>
                   <ChevronDown className="absolute right-1 top-1.5 w-3 h-3 text-gray-400 pointer-events-none" />
                 </div>
@@ -2140,8 +2044,7 @@ export function PropertiesPanel({
             {/* Border Stroke Color */}
             <div className="space-y-1">
               <label className="block text-[10.5px] text-slate-505 font-bold">
-                Màu sắc viền
-              </label>
+                {t("Màu sắc viền")}</label>
               <div className="flex items-center space-x-2">
                 <input
                   type="color"
@@ -2164,8 +2067,7 @@ export function PropertiesPanel({
               <div className="space-y-2 border-t border-gray-100 pt-3">
                 <div className="flex items-center justify-between">
                   <label className="text-[10.5px] text-slate-550 font-bold">
-                    Màu nền (Shading)
-                  </label>
+                    {t("Màu nền (Shading)")}</label>
                   <label className="flex items-center space-x-1 cursor-pointer">
                     <input
                       type="checkbox"
@@ -2180,8 +2082,7 @@ export function PropertiesPanel({
                       className="rounded border-gray-300 text-kiot-cyan focus:ring-kiot-cyan w-3 h-3 cursor-pointer"
                     />
                     <span className="text-[10px] text-slate-505 font-bold select-none">
-                      Trong suốt
-                    </span>
+                      {t("Trong suốt")}</span>
                   </label>
                 </div>
 
@@ -2209,8 +2110,7 @@ export function PropertiesPanel({
             {selectedObject.shapeType === "rect" && (
               <div className="space-y-1.5 border-t border-gray-100 pt-3">
                 <label className="block text-[10.5px] text-slate-505 font-bold mb-0.5">
-                  Độ bo góc (Corner Radius - mm)
-                </label>
+                  {t("Độ bo góc (Corner Radius - mm)")}</label>
                 <input
                   {...getNumericInputProps(
                     "shapeCornerRadius",
@@ -2237,7 +2137,7 @@ export function PropertiesPanel({
           className="w-full py-1.5 px-3 border border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-300 rounded-md flex items-center justify-center space-x-1.5 text-[11.5px] font-black uppercase transition duration-150 cursor-pointer shadow-sm animate-pulse-subtle"
         >
           <Trash2 className="w-4 h-4 text-red-500 hover:text-red-700" />
-          <span>Xoá Đối Tượng</span>
+          <span>{t("Xoá Đối Tượng")}</span>
         </button>
       </div>
     </div>

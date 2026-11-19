@@ -11,6 +11,7 @@ import { QRCodeRenderer } from "./QRCodeRenderer";
 import { mmToPx, pxToMm, BASE_DPI_SCALE } from "../utils";
 import { MAX_LABELS } from "../utils/printLimits";
 import { Trash, Maximize2, Move, LayoutGrid, RefreshCw, Info, Printer, Plus, Minus, Terminal, FileText, Image, Barcode, QrCode, Settings, ChevronDown, ChevronUp, Zap } from "lucide-react";
+import { t } from "../i18n";
 
 interface LabelCanvasProps {
   labelConfig: LabelConfig;
@@ -790,10 +791,10 @@ export function LabelCanvas({
                   ? "bg-amber-500 hover:bg-amber-600 text-white border-amber-500 hover:border-amber-600 shadow-amber-200"
                   : "bg-white hover:bg-amber-50/70 border-slate-200 hover:border-amber-200 text-slate-700 hover:text-amber-850 shadow-sm"
               }`}
-              title={showHowToUse ? "Ẩn bảng hướng dẫn các bước thiết kế" : "Xem hướng dẫn các bước thiết kế"}
+              title={showHowToUse ? t("Ẩn bảng hướng dẫn các bước thiết kế") : t("Xem hướng dẫn các bước thiết kế")}
             >
               <Info className={`w-3.5 h-3.5 shrink-0 transition-transform duration-300 ${showHowToUse ? "rotate-12 text-white" : "text-amber-500"}`} />
-              <span>{showHowToUse ? "Thu gọn HD" : "Hướng dẫn"}</span>
+              <span>{showHowToUse ? t("Thu gọn HD") : t("Hướng dẫn")}</span>
             </button>
           )}
 
@@ -809,10 +810,10 @@ export function LabelCanvas({
                 ? "bg-slate-700 hover:bg-slate-800 text-white border-slate-700 border-b-slate-900 shadow-sm"
                 : "border-sky-600 bg-gradient-to-r from-kiot-cyan to-sky-500 hover:from-sky-500 hover:to-sky-600 text-white"
             }`}
-            title="Đóng / mở bảng cấu hình số lượng in trực tiếp ngay trên màn hình thiết kế"
+            title={t("Đóng / mở bảng cấu hình số lượng in trực tiếp ngay trên màn hình thiết kế")}
           >
             <Printer className={`w-4.5 h-4.5 stroke-[2.5] ${isFloatingPrintOpen ? "" : "animate-bounce"}`} />
-            <span>{isFloatingPrintOpen ? "THU GỌN" : "IN TEM"}</span>
+            <span>{isFloatingPrintOpen ? t("THU GỌN") : t("IN TEM")}</span>
           </button>
         </div>
 
@@ -827,9 +828,9 @@ export function LabelCanvas({
               <div className="flex flex-col">
                 <span className="text-[11px] font-black text-kiot-navy tracking-wide uppercase flex items-center space-x-1">
                   <Printer className="w-3.5 h-3.5 text-kiot-cyan animate-pulse" />
-                  <span>CẤU HÌNH IN NHANH</span>
+                  <span>{t("CẤU HÌNH IN NHANH")}</span>
                 </span>
-                <span className="text-[8px] text-slate-400 font-extrabold uppercase mt-0.5">Bảng điều khiển độc lập</span>
+                <span className="text-[8px] text-slate-400 font-extrabold uppercase mt-0.5">{t("Bảng điều khiển độc lập")}</span>
               </div>
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
             </div>
@@ -848,8 +849,7 @@ export function LabelCanvas({
                     : "text-slate-500 hover:text-slate-850 font-semibold"
                 }`}
               >
-                Số lượng cố định
-              </button>
+                {t("Số lượng cố định")}</button>
               <button
                 type="button"
                 disabled={!excelData || excelData.length === 0}
@@ -864,10 +864,10 @@ export function LabelCanvas({
                     ? "bg-white text-emerald-800 shadow-xs border border-emerald-250 font-extrabold"
                     : "text-slate-500 hover:text-slate-850 font-semibold cursor-pointer"
                 }`}
-                title={(!excelData || excelData.length === 0) ? "Hãy tải dữ liệu Excel trước" : "Lấy số bản in theo cột Excel"}
+                title={(!excelData || excelData.length === 0) ? t("Hãy tải dữ liệu Excel trước") : t("Lấy số bản in theo cột Excel")}
               >
-                <span>Theo Excel</span>
-                {(!excelData || excelData.length === 0) && <span className="text-[7.5px] bg-slate-200 text-slate-505 px-1 rounded font-bold">Khóa</span>}
+                <span>{t("Theo Excel")}</span>
+                {(!excelData || excelData.length === 0) && <span className="text-[7.5px] bg-slate-200 text-slate-505 px-1 rounded font-bold">{t("Khóa")}</span>}
               </button>
             </div>
 
@@ -875,8 +875,7 @@ export function LabelCanvas({
             {printQuantityMode === 'constant' ? (
               <div className="space-y-1">
                 <label className="block text-[9.5px] text-slate-500 font-bold uppercase select-none mb-0.5">
-                  Số lượng bản sao cần in:
-                </label>
+                  {t("Số lượng bản sao cần in:")}</label>
                 <div className="flex items-center space-x-2">
                   <button
                     type="button"
@@ -913,7 +912,7 @@ export function LabelCanvas({
                       }}
                       className="w-full text-center py-1 text-xs bg-white border border-slate-300 rounded-lg text-slate-850 font-black font-mono focus:border-kiot-cyan outline-none"
                     />
-                    <span className="absolute right-2 top-1 text-[9px] text-slate-400 font-extrabold select-none">bản</span>
+                    <span className="absolute right-2 top-1 text-[9px] text-slate-400 font-extrabold select-none">{t("bản")}</span>
                   </div>
                   <button
                     type="button"
@@ -930,8 +929,7 @@ export function LabelCanvas({
             ) : (
               <div className="space-y-1">
                 <label className="block text-[9.5px] text-slate-500 font-bold uppercase select-none mb-0.5">
-                  Chọn cột số lượng trong File:
-                </label>
+                  {t("Chọn cột số lượng trong File:")}</label>
                 {excelData && excelData.length > 0 ? (
                   <select
                     value={printQuantityColumn || ""}
@@ -942,28 +940,26 @@ export function LabelCanvas({
                     }}
                     className="w-full text-[10px] font-extrabold font-mono py-1.5 px-1 bg-white border border-slate-250 rounded-lg text-[#0F172A] focus:border-kiot-cyan outline-none cursor-pointer"
                   >
-                    <option value="">-- Mặc định: in 1 bản / dòng --</option>
+                    <option value="">{t("-- Mặc định: in 1 bản / dòng --")}</option>
                     {(numericExcelColumns || []).map((col) => (
                       <option key={col} value={col}>
-                        Cột số: [{col}]
-                      </option>
+                        {t("Cột số: [{col}]", { col })}</option>
                     ))}
                   </select>
                 ) : (
                   <div className="text-[9.2px] text-orange-850 bg-orange-50 border border-orange-200/50 p-1.5 rounded-lg leading-normal">
-                    ⚠️ Chưa tải dữ liệu Excel phù hợp.
-                  </div>
+                    {t("⚠️ Chưa tải dữ liệu Excel phù hợp.")}</div>
                 )}
               </div>
             )}
 
             {/* Print Quantity summary metadata info bar */}
             <div className="text-[9.5px] text-slate-500 font-bold py-1 bg-slate-50 px-2 rounded-lg border border-slate-150 flex justify-between select-none">
-              <span>Tổng số bản in:</span>
+              <span>{t("Tổng số bản in:")}</span>
               <span className="text-kiot-navy font-black font-mono">
                 {printQuantityMode === "excel_column" && excelData && excelData.length > 0 
-                  ? `${printManifestLength || 0} bản` 
-                  : `${printCopies || 1} bản`}
+                  ? t("{v} bản", { v: printManifestLength || 0 }) 
+                  : t("{v} bản", { v: printCopies || 1 })}
               </span>
             </div>
 
@@ -981,11 +977,11 @@ export function LabelCanvas({
                 >
                   <div className="flex items-center space-x-1.5 min-w-0">
                     <Settings className="w-3.5 h-3.5 text-kiot-cyan shrink-0" />
-                    <span className="uppercase tracking-wider text-[9.5px] text-slate-800">Thiết lập mở rộng</span>
+                    <span className="uppercase tracking-wider text-[9.5px] text-slate-800">{t("Thiết lập mở rộng")}</span>
                   </div>
                   <div className="flex items-center space-x-1 text-slate-400">
                     <span className="text-[9px] font-medium text-slate-500">
-                      {isExtendedSettingsOpen ? "Ẩn" : "Hiện"}
+                      {isExtendedSettingsOpen ? t("Ẩn") : t("Hiện")}
                     </span>
                     {isExtendedSettingsOpen ? (
                       <ChevronUp className="w-3.5 h-3.5 text-slate-500 shrink-0" />
@@ -1001,9 +997,8 @@ export function LabelCanvas({
                     <div className="flex items-center justify-between bg-slate-50 p-1.5 rounded-lg border border-slate-200/60">
                       <div className="flex items-center space-x-1 min-w-0">
                         <label htmlFor="quick-optimize-thermal-toggle" className="text-[9.5px] font-black text-slate-700 uppercase tracking-wide cursor-pointer select-none truncate">
-                          Tối ưu in nhiệt (Đơn sắc nét)
-                        </label>
-                        <span title="Tính năng binarize ảnh đơn sắc: Loại bỏ hoàn toàn điểm mờ anti-aliasing, giúp bản in trên máy in nhiệt đen tuyền tuyệt đối và cực kỳ sắc nét!">
+                          {t("Tối ưu in nhiệt (Đơn sắc nét)")}</label>
+                        <span title={t("Tính năng binarize ảnh đơn sắc: Loại bỏ hoàn toàn điểm mờ anti-aliasing, giúp bản in trên máy in nhiệt đen tuyền tuyệt đối và cực kỳ sắc nét!")}>
                           <Info className="w-3 h-3 text-slate-400 hover:text-kiot-cyan cursor-help shrink-0" />
                         </span>
                       </div>
@@ -1024,17 +1019,16 @@ export function LabelCanvas({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                          <span className="font-extrabold text-slate-700 uppercase tracking-wider text-[9px]">Độ ổn định RAM/Bộ nhớ</span>
+                          <span className="font-extrabold text-slate-700 uppercase tracking-wider text-[9px]">{t("Độ ổn định RAM/Bộ nhớ")}</span>
                         </div>
                         <span className="font-mono font-bold text-sky-800 bg-sky-100/80 px-1.5 py-0.2 rounded text-[9px]">
-                          Cache: {cachedPagesCount} trang
+                          {t("Cache: {n} trang", { n: cachedPagesCount })}
                         </span>
                       </div>
                       
                       <div className="flex items-center justify-between">
                         <label htmlFor="quick-auto-release-ram-toggle" className="text-[9.5px] font-bold text-slate-600 cursor-pointer select-none">
-                          Tự động xả RAM sau khi in
-                        </label>
+                          {t("Tự động xả RAM sau khi in")}</label>
                         <input
                           id="quick-auto-release-ram-toggle"
                           type="checkbox"
@@ -1052,13 +1046,12 @@ export function LabelCanvas({
                         onClick={(e) => {
                           e.stopPropagation();
                           onClearCanvasMemory?.();
-                          alert("Đã giải phóng toàn bộ RAM cache ảnh thành công! Bộ nhớ trình duyệt đã được đưa về trạng thái tối ưu.");
+                          alert(t("Đã giải phóng toàn bộ RAM cache ảnh thành công! Bộ nhớ trình duyệt đã được đưa về trạng thái tối ưu."));
                         }}
                         className="w-full py-1 px-1.5 text-center text-[9.5px] font-extrabold text-white bg-kiot-cyan hover:bg-sky-600 transition-colors rounded cursor-pointer select-none active:scale-[0.98]"
-                        title="Giải phóng ngay bộ nhớ đệm canvas để tránh giật lag khi in hàng loạt"
+                        title={t("Giải phóng ngay bộ nhớ đệm canvas để tránh giật lag khi in hàng loạt")}
                       >
-                        ⚡ XẢ RAM & DỌN CACHED CANVASES
-                      </button>
+                        {t("⚡ XẢ RAM & DỌN CACHED CANVASES")}</button>
                     </div>
                   </div>
                 )}
@@ -1066,7 +1059,7 @@ export function LabelCanvas({
 
               {desktopPrint && (
                 <div className="space-y-1.5">
-                  <label htmlFor="quick-desktop-printer" className="block text-[10px] font-extrabold text-slate-600 uppercase tracking-wider">Máy in</label>
+                  <label htmlFor="quick-desktop-printer" className="block text-[10px] font-extrabold text-slate-600 uppercase tracking-wider">{t("Máy in")}</label>
                   <select
                     id="quick-desktop-printer"
                     value={desktopPrint.target}
@@ -1074,9 +1067,9 @@ export function LabelCanvas({
                     onChange={(e) => desktopPrint.onChangeTarget(e.target.value)}
                     className="w-full px-2 py-1.5 text-xs font-bold bg-white border border-gray-300 rounded-lg text-slate-800 focus:border-kiot-cyan focus:outline-none cursor-pointer"
                   >
-                    <option value={desktopPrint.pdfValue}>💾 Lưu thành PDF (không in)</option>
+                    <option value={desktopPrint.pdfValue}>{t("💾 Lưu thành PDF (không in)")}</option>
                     {desktopPrint.printers.map((p) => (
-                      <option key={p.name} value={p.name}>🖨 {p.name}{p.isDefault ? " (mặc định)" : ""}</option>
+                      <option key={p.name} value={p.name}>🖨 {p.name}{p.isDefault ? t(" (mặc định)") : ""}</option>
                     ))}
                   </select>
                   {desktopPrint.message && (
@@ -1100,14 +1093,14 @@ export function LabelCanvas({
                       ? "bg-slate-50 text-slate-400 border-slate-200 cursor-not-allowed"
                       : "bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700 hover:shadow-sm active:scale-[0.98]"
                   }`}
-                  title="Lưu dưới dạng tệp PDF với kích thước gốc (mm)"
+                  title={t("Lưu dưới dạng tệp PDF với kích thước gốc (mm)")}
                 >
                   {isSavingFile && saveFileProgress.includes("PDF") ? (
                     <RefreshCw className="w-3.5 h-3.5 stroke-[3.5] animate-spin text-white" />
                   ) : (
                     <FileText className="w-3.5 h-3.5 stroke-[2.5]" />
                   )}
-                  <span className="uppercase tracking-wider">LƯU PDF</span>
+                  <span className="uppercase tracking-wider">{t("LƯU PDF")}</span>
                 </button>
               </div>
 
@@ -1132,17 +1125,17 @@ export function LabelCanvas({
                   ? "bg-slate-300 text-slate-500 border-slate-400 cursor-not-allowed opacity-75 shadow-none"
                   : "border-sky-600 bg-gradient-to-r from-kiot-cyan to-sky-500 hover:from-sky-500 hover:to-sky-600 text-white cursor-pointer hover:scale-[1.01] active:scale-[0.98] hover:shadow-lg shadow-md"
               }`}
-              title={isPreparingPrint ? "Đang chuẩn bị vẽ nhãn & mã vạch..." : "Truyền và gọi hộp thoại in tem nhãn"}
+              title={isPreparingPrint ? t("Đang chuẩn bị vẽ nhãn & mã vạch...") : t("Truyền và gọi hộp thoại in tem nhãn")}
             >
               {isPreparingPrint ? (
                 <>
                   <RefreshCw className="w-4.5 h-4.5 stroke-[2.5] animate-spin" />
-                  <span className="uppercase tracking-widest font-black">ĐANG VẼ TEM...</span>
+                  <span className="uppercase tracking-widest font-black">{t("ĐANG VẼ TEM...")}</span>
                 </>
               ) : (
                 <>
                   <Printer className="w-4.5 h-4.5 stroke-[2.5]" />
-                  <span className="uppercase tracking-widest font-black">{desktopPrint ? (desktopPrint.target === desktopPrint.pdfValue ? "LƯU PDF" : "IN TEM") : "IN TEM"}</span>
+                  <span className="uppercase tracking-widest font-black">{desktopPrint ? (desktopPrint.target === desktopPrint.pdfValue ? t("LƯU PDF") : "IN TEM") : "IN TEM"}</span>
                 </>
               )}
             </button>
@@ -2089,24 +2082,22 @@ export function LabelCanvas({
           <p className="text-[12px] font-bold text-[#1E293B] flex items-center justify-center space-x-1.5">
             <LayoutGrid className="w-4 h-4 text-emerald-600 animate-pulse" />
             <span>
-              Trang xem trước bản in (
-              {sheetConfig.paperSize === "custom"
-                ? "Tự chọn"
+              {t("Trang xem trước bản in (")}{sheetConfig.paperSize === "custom"
+                ? t("Tự chọn")
                 : sheetConfig.paperSize}{" "}
               -{" "}
-              {sheetConfig.orientation === "portrait" ? "Khổ dọc" : "Khổ ngang"}
+              {sheetConfig.orientation === "portrait" ? t("Khổ dọc") : t("Khổ ngang")}
               )
             </span>
           </p>
           <p className="text-[10px] text-gray-500 mt-0.5 leading-relaxed">
-            Áp dụng ma trận lề lề trên: {sheetConfig.marginTop}mm, trái:{" "}
-            {sheetConfig.marginLeft}mm | {sheetConfig.cols} cột x{" "}
-            {sheetConfig.rows} hàng.
-          </p>
+            {t("Áp dụng ma trận lề lề trên: {marginTop}mm, trái:", { marginTop: sheetConfig.marginTop })}{" "}
+            {t("{marginLeft}mm | {cols} cột x", { marginLeft: sheetConfig.marginLeft, cols: sheetConfig.cols })}{" "}
+            {t("{rows} hàng.", { rows: sheetConfig.rows })}</p>
           <div className="text-[10px] bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded-md font-bold mt-1.5 inline-block border border-gray-200">
             {hasExcel
-              ? `Liên kết Excel: ${totalItems} hàng (${totalSheets} trang)`
-              : `Số nhãn lặp đầy ô: ${totalItems} (${totalSheets} trang)`}
+              ? t("Liên kết Excel: {totalItems} hàng ({totalSheets} trang)", { totalItems, totalSheets })
+              : t("Số nhãn lặp đầy ô: {totalItems} ({totalSheets} trang)", { totalItems, totalSheets })}
           </div>
         </div>
 
@@ -2345,8 +2336,7 @@ export function LabelCanvas({
                           }
                         >
                           <span className="text-[9px] text-gray-300 font-mono no-print">
-                            Trống
-                          </span>
+                            {t("Trống")}</span>
                         </div>
                       );
                     }
@@ -2387,20 +2377,15 @@ export function LabelCanvas({
         {limitPreview && totalSheets > 3 && (
           <div className="mt-4 mb-2 p-3.5 bg-amber-50/95 border border-amber-250/70 rounded-xl shadow-md text-center max-w-lg mx-auto no-print flex flex-col items-center justify-center space-y-2 select-none animate-fadeIn">
             <p className="text-[11.5px] text-amber-950 font-bold leading-relaxed">
-              ⚡ Đang chỉ hiển thị trước 3 / {totalSheets} trang thiết kế để giữ
-              tốc độ phản hồi siêu mượt.
-            </p>
+              {t("⚡ Đang chỉ hiển thị trước 3 / {totalSheets} trang thiết kế để giữ tốc độ phản hồi siêu mượt.", { totalSheets })}</p>
             <p className="text-[10px] text-amber-900 leading-normal font-medium">
-              Toàn bộ {totalSheets} trang sẽ tự động được gửi và xuất đầy đủ khi
-              bạn in ấn (Print / Ctrl+P)!
-            </p>
+              {t("Toàn bộ {totalSheets} trang sẽ tự động được gửi và xuất đầy đủ khi bạn in ấn (Print / Ctrl+P)!", { totalSheets })}</p>
             <button
               type="button"
               onClick={() => setShowAllPagesOnScreen(true)}
               className="mt-1 px-4 py-1.5 bg-amber-600 hover:bg-amber-750 text-white font-bold rounded-lg text-xs leading-none transition-all shadow-sm border border-amber-600 cursor-pointer"
             >
-              Hiển thị tất cả {totalSheets} trang thiết kế ngay
-            </button>
+              {t("Hiển thị tất cả {totalSheets} trang thiết kế ngay", { totalSheets })}</button>
           </div>
         )}
         </div>
@@ -2478,17 +2463,16 @@ export function LabelCanvas({
         <div className="bg-white/95 rounded-lg border border-gray-200 p-3 mb-5 shadow-sm text-center max-w-xl z-20 no-print">
           <p className="text-[12px] font-bold text-[#1E293B] flex items-center justify-center space-x-1.5">
             <LayoutGrid className="w-4 h-4 text-emerald-600 animate-pulse" />
-            <span>Xem trước bản in cuộn ({cols} tem 1 hàng)</span>
+            <span>{t("Xem trước bản in cuộn ({cols} tem 1 hàng)", { cols })}</span>
           </p>
           <p className="text-[10px] text-gray-400 mt-0.5 leading-relaxed font-semibold">
-            Chiều rộng phôi cuộn: {backingWidth}mm | Khoảng cách cột: {colGap}mm
-            | Khoảng trống hàng (Gap): {rowGap}mm (~{(rowGap / 25.4).toFixed(3)}{" "}
+            {t("Chiều rộng phôi cuộn: {backingWidth}mm | Khoảng cách cột: {colGap}mm | Khoảng trống hàng (Gap): {rowGap}mm (~{v}", { backingWidth, colGap, rowGap, v: (rowGap / 25.4).toFixed(3) })}{" "}
             inch)
           </p>
           <div className="text-[10px] bg-sky-50 text-kiot-navy px-2.5 py-0.5 rounded-md font-bold mt-1.5 inline-block border border-kiot-cyan/35 ring-1 ring-kiot-cyan/5">
             {hasExcel
-              ? `Liên kết Excel: ${totalItems} hàng (${totalRows} hàng tem)`
-              : `Số nhãn in thử: ${totalItems} (${totalRows} hàng tem)`}
+              ? t("Liên kết Excel: {totalItems} hàng ({totalRows} hàng tem)", { totalItems, totalRows })
+              : t("Số nhãn in thử: {totalItems} ({totalRows} hàng tem)", { totalItems, totalRows })}
           </div>
         </div>
 
@@ -2712,8 +2696,7 @@ export function LabelCanvas({
                         }
                       >
                         <span className="text-[9px] text-gray-300 font-mono no-print">
-                          Trống
-                        </span>
+                          {t("Trống")}</span>
                       </div>
                     );
                   }
@@ -2753,20 +2736,15 @@ export function LabelCanvas({
         {limitPreview && totalRows > 20 && (
           <div className="mt-4 mb-2 p-3.5 bg-sky-50/95 border border-sky-200/70 rounded-xl shadow-md text-center max-w-lg mx-auto no-print flex flex-col items-center justify-center space-y-2 select-none animate-fadeIn">
             <p className="text-[11.5px] text-sky-950 font-bold leading-relaxed">
-              ⚡ Đang chỉ hiển thị trước 20 / {totalRows} hàng tem để đảm bảo
-              trình duyệt cuộn mượt mà.
-            </p>
+              {t("⚡ Đang chỉ hiển thị trước 20 / {totalRows} hàng tem để đảm bảo trình duyệt cuộn mượt mà.", { totalRows })}</p>
             <p className="text-[10px] text-sky-900 leading-normal font-medium">
-              Toàn bộ {totalRows} hàng ({totalItems} tem) sẽ tự động được gửi và
-              xuất đầy đủ khi bạn in ấn (Print / Ctrl+P)!
-            </p>
+              {t("Toàn bộ {totalRows} hàng ({totalItems} tem) sẽ tự động được gửi và xuất đầy đủ khi bạn in ấn (Print / Ctrl+P)!", { totalRows, totalItems })}</p>
             <button
               type="button"
               onClick={() => setShowAllPagesOnScreen(true)}
               className="mt-1 px-4 py-1.5 bg-kiot-cyan hover:bg-sky-600 text-white font-bold rounded-lg text-xs leading-none transition-all shadow-sm border border-kiot-cyan cursor-pointer"
             >
-              Hiển thị tất cả {totalRows} hàng tem ngay
-            </button>
+              {t("Hiển thị tất cả {totalRows} hàng tem ngay", { totalRows })}</button>
           </div>
         )}
         </div>
@@ -2923,7 +2901,7 @@ export function LabelCanvas({
             maxWidth: "100%",
             backgroundColor: labelConfig.bgColor || "#ffffff",
           }}
-          title="Làm việc kéo thả bên trong phạm vi phôi nhãn trắng"
+          title={t("Làm việc kéo thả bên trong phạm vi phôi nhãn trắng")}
         >
           {/* Watermark/Background Image overlay */}
           {labelConfig.bgImage && (
@@ -3171,7 +3149,7 @@ export function LabelCanvas({
                         top: `-${32 * designZoom}px`,
                         transform: "translate(-50%, -100%)",
                       }}
-                      title="Kéo để xoay đối tượng (Giữ Shift để hít 15°)"
+                      title={t("Kéo để xoay đối tượng (Giữ Shift để hít 15°)")}
                     >
                       <RefreshCw style={{ width: `${10 * designZoom}px`, height: `${10 * designZoom}px`, strokeWidth: 3 }} />
                     </div>
@@ -3188,7 +3166,7 @@ export function LabelCanvas({
                         transform: "translate(-50%, -50%)",
                       }}
                       className="absolute top-0 left-0 bg-kiot-cyan border border-white rounded-full shadow-md z-40 no-print transition-all"
-                      title="Kéo góc để thay đổi kích thước đồng thời"
+                      title={t("Kéo góc để thay đổi kích thước đồng thời")}
                     />
                     {/* Top-Right */}
                     <div
@@ -3203,7 +3181,7 @@ export function LabelCanvas({
                         transform: "translate(50%, -50%)",
                       }}
                       className="absolute top-0 right-0 bg-kiot-cyan border border-white rounded-full shadow-md z-40 no-print transition-all"
-                      title="Kéo góc để thay đổi kích thước đồng thời"
+                      title={t("Kéo góc để thay đổi kích thước đồng thời")}
                     />
                     {/* Bottom-Left */}
                     <div
@@ -3218,7 +3196,7 @@ export function LabelCanvas({
                         transform: "translate(-50%, 50%)",
                       }}
                       className="absolute bottom-0 left-0 bg-kiot-cyan border border-white rounded-full shadow-md z-40 no-print transition-all"
-                      title="Kéo góc để thay đổi kích thước đồng thời"
+                      title={t("Kéo góc để thay đổi kích thước đồng thời")}
                     />
                     {/* Bottom-Right */}
                     <div
@@ -3233,7 +3211,7 @@ export function LabelCanvas({
                         transform: "translate(50%, 50%)",
                       }}
                       className="absolute bottom-0 right-0 bg-kiot-cyan border border-white rounded-full shadow-md z-40 no-print transition-all"
-                      title="Kéo góc để thay đổi kích thước đồng thời"
+                      title={t("Kéo góc để thay đổi kích thước đồng thời")}
                     />
 
                     {/* Middle Edge Handles */}
@@ -3250,7 +3228,7 @@ export function LabelCanvas({
                         transform: "translate(-50%, -50%)",
                       }}
                       className="absolute top-0 left-1/2 bg-kiot-cyan border border-white rounded-full shadow-md z-45 no-print transition-all"
-                      title="Kéo cạnh để thay đổi kích thước"
+                      title={t("Kéo cạnh để thay đổi kích thước")}
                     />
                     {/* Bottom-Center */}
                     <div
@@ -3265,7 +3243,7 @@ export function LabelCanvas({
                         transform: "translate(-50%, 50%)",
                       }}
                       className="absolute bottom-0 left-1/2 bg-kiot-cyan border border-white rounded-full shadow-md z-45 no-print transition-all"
-                      title="Kéo cạnh để thay đổi kích thước"
+                      title={t("Kéo cạnh để thay đổi kích thước")}
                     />
                     {/* Left-Center */}
                     <div
@@ -3280,7 +3258,7 @@ export function LabelCanvas({
                         transform: "translate(-50%, -50%)",
                       }}
                       className="absolute top-1/2 left-0 bg-kiot-cyan border border-white rounded-full shadow-md z-45 no-print transition-all"
-                      title="Kéo cạnh để thay đổi kích thước"
+                      title={t("Kéo cạnh để thay đổi kích thước")}
                     />
                     {/* Right-Center */}
                     <div
@@ -3295,7 +3273,7 @@ export function LabelCanvas({
                         transform: "translate(50%, -50%)",
                       }}
                       className="absolute top-1/2 right-0 bg-kiot-cyan border border-white rounded-full shadow-md z-45 no-print transition-all"
-                      title="Kéo cạnh để thay đổi kích thước"
+                      title={t("Kéo cạnh để thay đổi kích thước")}
                     />
 
                     {/* Visual Anchor Indicator (Target Crosshair ⌖) */}
@@ -3317,7 +3295,7 @@ export function LabelCanvas({
                             width: `${20 * designZoom}px`,
                             height: `${20 * designZoom}px`,
                           }}
-                          title={`Điểm neo: ${origin}`}
+                          title={t("Điểm neo: {origin}", { origin })}
                         >
                           <div
                             className="relative rounded-full border-red-500 bg-white/85 shadow-md flex items-center justify-center ring-red-400 animate-pulse"
@@ -3380,27 +3358,27 @@ export function LabelCanvas({
           <span className="flex items-center space-x-1">
             <LayoutGrid className="w-3.5 h-3.5 text-kiot-cyan" />
             <span>
-              Phôi nhãn dán:{" "}
+              {t("Phôi nhãn dán:")}{" "}
               <strong>
                 {labelConfig.width} x {labelConfig.height}mm
               </strong>
             </span>
           </span>
           <span>•</span>
-          <span>Tỷ lệ hiển thị: 1mm = {pixelScale}px</span>
+          <span>{t("Tỷ lệ hiển thị: 1mm = {pixelScale}px", { pixelScale })}</span>
           <span>•</span>
           <span className="flex items-center space-x-1.5">
-            <span>Hút lưới (Snap):</span>
+            <span>{t("Hút lưới (Snap):")}</span>
             <select
               value={gridSnapSize}
               onChange={(e) => onUpdateGridSnapSize?.(parseFloat(e.target.value))}
               className="bg-sky-50 border border-kiot-cyan/20 outline-none text-[11px] py-px px-1.5 text-kiot-navy font-bold rounded-full cursor-pointer hover:bg-sky-100 transition"
             >
-              <option value={0}>Tắt</option>
-              <option value={0.5}>Mịn (0.5mm)</option>
-              <option value={1}>1.0 mm (Mặc định)</option>
-              <option value={2}>2.0 mm (Thô)</option>
-              <option value={5}>5.0 mm (Lớn)</option>
+              <option value={0}>{t("Tắt")}</option>
+              <option value={0.5}>{t("Mịn (0.5mm)")}</option>
+              <option value={1}>{t("1.0 mm (Mặc định)")}</option>
+              <option value={2}>{t("2.0 mm (Thô)")}</option>
+              <option value={5}>{t("5.0 mm (Lớn)")}</option>
             </select>
           </span>
         </div>
@@ -3412,27 +3390,27 @@ export function LabelCanvas({
               onMouseEnter={() => setShowLogsPopupBottom(true)}
               onMouseLeave={() => setShowLogsPopupBottom(false)}
               onClick={() => setShowLogsPopupBottom(!showLogsPopupBottom)}
-              title="Nhấp để xem chi tiết liên kết tệp mẫu này"
+              title={t("Nhấp để xem chi tiết liên kết tệp mẫu này")}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-              <span className="font-mono text-[9px] uppercase font-extrabold text-emerald-800 shrink-0">LIÊN KẾT:</span>
+              <span className="font-mono text-[9px] uppercase font-extrabold text-emerald-800 shrink-0">{t("LIÊN KẾT:")}</span>
               <span className="truncate max-w-[130px]" title={`File: ${currentFilePath}`}>{currentFilePath.split(/[\\/]/).pop()}</span>
               
               {showLogsPopupBottom && (
                 <div className="absolute bottom-full right-0 mb-2 w-64 bg-white text-slate-800 rounded-lg shadow-xl border border-gray-250 p-2 text-left z-50 pointer-events-auto select-all">
-                  <h5 className="font-extrabold text-[10px] text-zinc-500 uppercase tracking-wider border-b border-gray-150 pb-1 mb-1.5">Nhật ký liên kết file</h5>
+                  <h5 className="font-extrabold text-[10px] text-zinc-500 uppercase tracking-wider border-b border-gray-150 pb-1 mb-1.5">{t("Nhật ký liên kết file")}</h5>
                   <div className="text-[9.5px] space-y-1 max-h-32 overflow-y-auto font-mono text-slate-600">
-                    <div><strong className="text-emerald-700 font-extrabold text-[9px] uppercase">Đường dẫn đầy đủ:</strong></div>
+                    <div><strong className="text-emerald-700 font-extrabold text-[9px] uppercase">{t("Đường dẫn đầy đủ:")}</strong></div>
                     <div className="break-all select-all font-semibold text-[10px] text-slate-700 bg-slate-50 p-1 rounded border border-slate-200/50 mb-1.5">{currentFilePath}</div>
                     
-                    <div className="font-extrabold text-slate-500 text-[8.5px] uppercase tracking-wider mb-1">Cập nhật gần đây:</div>
+                    <div className="font-extrabold text-slate-500 text-[8.5px] uppercase tracking-wider mb-1">{t("Cập nhật gần đây:")}</div>
                     {!saveLogs || saveLogs.length === 0 ? (
-                      <div className="text-gray-400 italic py-0.5">Chưa ghi nhận hoạt động nào</div>
+                      <div className="text-gray-400 italic py-0.5">{t("Chưa ghi nhận hoạt động nào")}</div>
                     ) : (
                       saveLogs.slice(0, 5).map((log, index) => (
                         <div key={index} className="flex justify-between items-center py-0.5 border-b border-dashed border-gray-100 last:border-0">
                           <span className="truncate text-slate-500">
-                            {log.type === 'save' ? '💾 Lưu mới (As)' : log.type === 'quick-save' ? '🔄 Ghi đè file' : '📂 Nhập file'}
+                            {log.type === 'save' ? t("💾 Lưu mới (As)") : log.type === 'quick-save' ? t("🔄 Ghi đè file") : t("📂 Nhập file")}
                           </span>
                           <span className="text-gray-400 font-medium shrink-0 ml-1">{log.time}</span>
                         </div>
@@ -3448,28 +3426,28 @@ export function LabelCanvas({
               onMouseEnter={() => setShowLogsPopupBottom(true)}
               onMouseLeave={() => setShowLogsPopupBottom(false)}
               onClick={() => setShowLogsPopupBottom(!showLogsPopupBottom)}
-              title="Nhấp để xem chi tiết bộ lưu trữ này"
+              title={t("Nhấp để xem chi tiết bộ lưu trữ này")}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse shrink-0" />
-              <span className="font-mono text-[9px] uppercase font-extrabold text-indigo-800 shrink-0">BẢN LƯU WEB:</span>
-              <span className="truncate max-w-[130px]" title={`Mẫu lưu trình duyệt: ${currentLocalStorageKey}`}>{currentLocalStorageKey}</span>
+              <span className="font-mono text-[9px] uppercase font-extrabold text-indigo-800 shrink-0">{t("BẢN LƯU WEB:")}</span>
+              <span className="truncate max-w-[130px]" title={t("Mẫu lưu trình duyệt: {currentLocalStorageKey}", { currentLocalStorageKey })}>{currentLocalStorageKey}</span>
               
               {showLogsPopupBottom && (
                 <div className="absolute bottom-full right-0 mb-2 w-64 bg-white text-slate-800 rounded-lg shadow-xl border border-gray-250 p-2 text-left z-50 pointer-events-auto select-all">
-                  <h5 className="font-extrabold text-[10px] text-zinc-500 uppercase tracking-wider border-b border-gray-150 pb-1 mb-1.5">Trạng thái bộ lưu mẫu</h5>
+                  <h5 className="font-extrabold text-[10px] text-zinc-500 uppercase tracking-wider border-b border-gray-150 pb-1 mb-1.5">{t("Trạng thái bộ lưu mẫu")}</h5>
                   <div className="text-[9.5px] space-y-1 font-mono text-slate-600">
-                    <div><strong className="text-indigo-700 font-extrabold text-[9px] uppercase">Tên mẫu lưu trữ:</strong></div>
+                    <div><strong className="text-indigo-700 font-extrabold text-[9px] uppercase">{t("Tên mẫu lưu trữ:")}</strong></div>
                     <div className="break-all font-semibold text-[10px] text-slate-700 bg-slate-50 p-1 rounded border border-slate-200/50 mb-1.5">{currentLocalStorageKey}</div>
-                    <p className="text-[9px] text-slate-400 font-sans leading-normal">Bản vẽ này được lưu đè trực tiếp trên trình duyệt bằng phím tắt <strong>Ctrl + S</strong> thay vì mở dialog lựa chọn mới.</p>
+                    <p className="text-[9px] text-slate-400 font-sans leading-normal">{t("Bản vẽ này được lưu đè trực tiếp trên trình duyệt bằng phím tắt")+" "}<strong>Ctrl + S</strong> {" "+t("thay vì mở dialog lựa chọn mới.")}</p>
                     
-                    <div className="font-extrabold text-slate-500 text-[8.5px] uppercase tracking-wider mb-1">Cập nhật gần đây:</div>
+                    <div className="font-extrabold text-slate-500 text-[8.5px] uppercase tracking-wider mb-1">{t("Cập nhật gần đây:")}</div>
                     {!saveLogs || saveLogs.length === 0 ? (
-                      <div className="text-gray-400 italic py-0.5">Chưa ghi nhận hoạt động nào</div>
+                      <div className="text-gray-400 italic py-0.5">{t("Chưa ghi nhận hoạt động nào")}</div>
                     ) : (
                       saveLogs.slice(0, 5).map((log, index) => (
                         <div key={index} className="flex justify-between items-center py-0.5 border-b border-dashed border-gray-100 last:border-0">
                           <span className="truncate text-slate-500">
-                            {log.type === 'save' ? '💾 Lưu mới (As)' : log.type === 'quick-save' ? '🔄 Ghi đè' : '📂 Nhập file'}
+                            {log.type === 'save' ? t("💾 Lưu mới (As)") : log.type === 'quick-save' ? t("🔄 Ghi đè") : t("📂 Nhập file")}
                           </span>
                           <span className="text-gray-400 font-medium shrink-0 ml-1">{log.time}</span>
                         </div>
@@ -3483,9 +3461,7 @@ export function LabelCanvas({
 
           <div className="flex items-center bg-white/90 backdrop-blur-sm shadow border border-gray-100 py-1 px-3 rounded-full space-x-2 pointer-events-auto">
             <span>
-              💡 <strong>Nút di chuyển:</strong> Sử dụng các phím mũi tên ⬅️ ➡️ ⬆️
-              ⬇️ để dịch nhãn, phím Delete để xoá nhanh.
-            </span>
+              💡 <strong>{t("Nút di chuyển:")}</strong> {" "+t("Sử dụng các phím mũi tên ⬅️ ➡️ ⬆️ ⬇️ để dịch nhãn, phím Delete để xoá nhanh.")}</span>
           </div>
 
           {/* Subtle Inspect button integrated into status bar */}
@@ -3497,21 +3473,21 @@ export function LabelCanvas({
                 pw.api.show_devtools()
                   .then((res: any) => {
                     if (res && res.status === "error") {
-                      alert("Không thể mở DevTools: " + res.message);
+                      alert(t("Không thể mở DevTools: ") + res.message);
                     }
                   })
                   .catch((err: any) => {
-                    alert("Lỗi kết nối ứng dụng offline: " + err);
+                    alert(t("Lỗi kết nối ứng dụng offline: ") + err);
                   });
               } else {
-                alert("Tính năng Inspect chỉ khả dụng trên ứng dụng bản Offline cài đặt. Trên trình duyệt web này, vui lòng nhấn phím F12 hoặc nhấp chuột phải chọn 'Inspect' (Kiểm tra) để xem.");
+                alert(t("Tính năng Inspect chỉ khả dụng trên ứng dụng bản Offline cài đặt. Trên trình duyệt web này, vui lòng nhấn phím F12 hoặc nhấp chuột phải chọn 'Inspect' (Kiểm tra) để xem."));
               }
             }}
             className="flex items-center space-x-1 py-1 px-2.5 rounded-full bg-slate-50 border border-slate-200 text-[10.5px] font-bold text-slate-500 hover:text-slate-700 hover:bg-slate-100/90 hover:border-slate-300 transition pointer-events-auto shadow-sm cursor-pointer select-none"
-            title="Kiểm tra phản hồi & nhật ký lỗi hoạt động"
+            title={t("Kiểm tra phản hồi & nhật ký lỗi hoạt động")}
           >
             <Terminal className="w-3 h-3 text-slate-400" />
-            <span>Kiểm tra</span>
+            <span>{t("Kiểm tra")}</span>
           </button>
         </div>
       </div>

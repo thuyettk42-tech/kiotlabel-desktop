@@ -1,3 +1,5 @@
+import { t } from "./i18n";
+
 export async function callGeminiClientSide(
   image: string,
   labelWidth: number,
@@ -214,7 +216,7 @@ CÁC PHẦN TỬ VÀ THÔNG SỐ:
       const resData = await res.json();
       const resultText = resData.candidates?.[0]?.content?.parts?.[0]?.text;
       if (!resultText) {
-        throw new Error("Không nhận được nội dung từ phản hồi của Gemini.");
+        throw new Error(t("Không nhận được nội dung từ phản hồi của Gemini."));
       }
 
       let resultJson = JSON.parse(resultText);
@@ -490,5 +492,5 @@ Yêu cầu đầu ra: Hãy thực hiện viết báo cáo phân tích chi tiết
     }
   }
 
-  throw lastError || new Error("Không thể kết nối đến API Gemini từ trình duyệt của bạn.");
+  throw lastError || new Error(t("Không thể kết nối đến API Gemini từ trình duyệt của bạn."));
 }

@@ -4,11 +4,12 @@
  */
 
 import { LabelTemplate } from "./types";
+import { tk } from "./i18n";
 
 export const LABEL_TEMPLATES: LabelTemplate[] = [
   {
-    name: "Tem kệ siêu thị (Thực phẩm tươi sống)",
-    description: "Mẫu tem kệ siêu thị tiêu chuẩn 65x45mm dùng cho thực phẩm đông lạnh, tươi sống có giá bán, barcode, trọng lượng và thông tin hạn sử dụng.",
+    name: tk("Tem kệ siêu thị (Thực phẩm tươi sống)"),
+    description: tk("Mẫu tem kệ siêu thị tiêu chuẩn 65x45mm dùng cho thực phẩm đông lạnh, tươi sống có giá bán, barcode, trọng lượng và thông tin hạn sử dụng."),
     config: {
       width: 65,
       height: 45,
@@ -274,8 +275,8 @@ export const LABEL_TEMPLATES: LabelTemplate[] = [
     ]
   },
   {
-    name: "Tem nhãn sản phẩm KM ( cuộn 2 tem )",
-    description: "Mẫu tem quảng cáo, khuyến mãi có kích thước 35x22mm bao gồm tên cửa hàng, tên mặt hàng, mã vạch, giá niêm yết có gạch ngang và giá khuyến mãi nổi bật.",
+    name: tk("Tem nhãn sản phẩm KM ( cuộn 2 tem )"),
+    description: tk("Mẫu tem quảng cáo, khuyến mãi có kích thước 35x22mm bao gồm tên cửa hàng, tên mặt hàng, mã vạch, giá niêm yết có gạch ngang và giá khuyến mãi nổi bật."),
     config: {
       width: 35,
       height: 22,
@@ -370,8 +371,8 @@ export const LABEL_TEMPLATES: LabelTemplate[] = [
     ]
   },
   {
-    name: "Tem nhãn sản phẩm KM ( Cuộn 3 tem )",
-    description: "Mẫu tem quảng cáo, khuyến mãi dạng cuộn 3 tem/hàng có kích thước 35x22mm bao gồm tên cửa hàng, tên mặt hàng, mã vạch, giá niêm yết gạch ngang và giá KM nổi bật.",
+    name: tk("Tem nhãn sản phẩm KM ( Cuộn 3 tem )"),
+    description: tk("Mẫu tem quảng cáo, khuyến mãi dạng cuộn 3 tem/hàng có kích thước 35x22mm bao gồm tên cửa hàng, tên mặt hàng, mã vạch, giá niêm yết gạch ngang và giá KM nổi bật."),
     config: {
       width: 35,
       height: 22,
@@ -478,8 +479,8 @@ export const LABEL_TEMPLATES: LabelTemplate[] = [
     ]
   },
   {
-    name: "Tem mắt kính chữ T 40x28 đuôi 45",
-    description: "Mẫu tem nhãn mắt kính chữ T tiêu chuẩn 40x28mm đuôi 45mm (tổng sải cánh 85mm), xoay đứng 90/270 độ tiện lợi dán gọng kính.",
+    name: tk("Tem mắt kính chữ T 40x28 đuôi 45"),
+    description: tk("Mẫu tem nhãn mắt kính chữ T tiêu chuẩn 40x28mm đuôi 45mm (tổng sải cánh 85mm), xoay đứng 90/270 độ tiện lợi dán gọng kính."),
     config: {
       width: 85,
       height: 28,
@@ -623,8 +624,8 @@ export const LABEL_TEMPLATES: LabelTemplate[] = [
     ]
   },
   {
-    name: "Tem mắt kính chữ T 50x35 đuôi 35",
-    description: "Mẫu tem nhãn mắt kính chữ T tiêu chuẩn 50x35mm đuôi 35mm (tổng sải cánh 85mm), xoay đứng 90/270 độ dán gọng kính chuyên nghiệp.",
+    name: tk("Tem mắt kính chữ T 50x35 đuôi 35"),
+    description: tk("Mẫu tem nhãn mắt kính chữ T tiêu chuẩn 50x35mm đuôi 35mm (tổng sải cánh 85mm), xoay đứng 90/270 độ dán gọng kính chuyên nghiệp."),
     config: {
       width: 85,
       height: 35,
@@ -817,8 +818,8 @@ export const LABEL_TEMPLATES: LabelTemplate[] = [
     ]
   },
   {
-    name: "Tem trang sức 75x10",
-    description: "Mẫu tem trang sức có râu treo tiêu chuẩn 75x10mm bao gồm tên hàng hóa, giá bán, barcode và tên cửa hàng.",
+    name: tk("Tem trang sức 75x10"),
+    description: tk("Mẫu tem trang sức có râu treo tiêu chuẩn 75x10mm bao gồm tên hàng hóa, giá bán, barcode và tên cửa hàng."),
     config: {
       width: 75,
       height: 10,
@@ -910,8 +911,8 @@ export const LABEL_TEMPLATES: LabelTemplate[] = [
     ]
   },
   {
-    name: "Tem trang sức 85x12",
-    description: "Mẫu tem trang sức có râu treo tiêu chuẩn 85x12mm bao gồm tên hàng hóa, giá bán, barcode và tên cửa hàng.",
+    name: tk("Tem trang sức 85x12"),
+    description: tk("Mẫu tem trang sức có râu treo tiêu chuẩn 85x12mm bao gồm tên hàng hóa, giá bán, barcode và tên cửa hàng."),
     config: {
       width: 85,
       height: 12,

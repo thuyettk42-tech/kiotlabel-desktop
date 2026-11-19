@@ -7,6 +7,7 @@
 // khi trang không có thẻ meta mã xác thực (do máy chủ desktop chèn vào HTML), mọi hàm ở đây trả về "không phải desktop"
 // mà không gọi mạng.
 
+import { t } from "../i18n";
 export interface DesktopInfo {
   version: string;
   platform: string;
@@ -36,18 +37,18 @@ function token(): string | null {
 }
 
 async function api(path: string, init?: RequestInit & { timeoutMs?: number }): Promise<any> {
-  const t = token();
-  if (!t) throw new Error('Không phải bản desktop.');
+  const tok = token();
+  if (!tok) throw new Error(t("Không phải bản desktop."));
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), init?.timeoutMs ?? 20000);
   try {
     const res = await fetch('/api/desktop/' + path, {
       ...init,
       signal: ctl.signal,
-      headers: { 'x-kiotlabel-token': t, ...(init?.headers || {}) },
+      headers: { 'x-kiotlabel-token': tok, ...(init?.headers || {}) },
     });
     const json = await res.json().catch(() => ({}));
-    if (!res.ok || json.ok === false) throw new Error(json.error || `Lỗi ${res.status}`);
+    if (!res.ok || json.ok === false) throw new Error(json.error || t("Lỗi {status}", { status: res.status }));
     return json;
   } finally {
     clearTimeout(timer);

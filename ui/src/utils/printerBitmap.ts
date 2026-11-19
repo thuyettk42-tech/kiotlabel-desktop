@@ -7,6 +7,7 @@
 // Phần "thuần" (không cần trình duyệt) nằm ở đầu file để test bằng node; phần dùng canvas nằm ở cuối.
 
 import { LabelObject } from '../types';
+import { t } from "../i18n";
 
 /** Ảnh đơn sắc: mỗi phần tử của `data` là 1 điểm ảnh (1 = đen, 0 = trắng), theo từng hàng. */
 export interface MonoBitmap {
@@ -268,7 +269,7 @@ export function loadImage(src: string): Promise<HTMLImageElement> {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error('Không tải được hình ảnh'));
+    img.onerror = () => reject(new Error(t("Không tải được hình ảnh")));
     img.src = src;
   });
 }
@@ -296,7 +297,7 @@ export async function rasterizeImageObject(obj: LabelObject, dpi: number): Promi
     canvas.width = w;
     canvas.height = h;
     const ctx = canvas.getContext('2d');
-    if (!ctx) throw new Error('Không có canvas');
+    if (!ctx) throw new Error(t("Không có canvas"));
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, w, h);
     ctx.globalAlpha = opacity;

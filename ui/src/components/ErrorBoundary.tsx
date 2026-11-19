@@ -4,6 +4,7 @@
  */
 
 import React, { ErrorInfo, ReactNode } from "react";
+import { t } from "../i18n";
 
 interface Props {
   children: ReactNode;
@@ -60,14 +61,13 @@ export class ErrorBoundary extends React.Component<Props, State> {
               </svg>
             </div>
 
-            <h1 className="text-xl font-black text-slate-800 mb-2">Đã xảy ra lỗi hệ thống</h1>
+            <h1 className="text-xl font-black text-slate-800 mb-2">{t("Đã xảy ra lỗi hệ thống")}</h1>
             <p className="text-sm text-slate-500 leading-relaxed mb-6">
-              Không thể tải giao diện KiotLabel do một lỗi phát sinh bất ngờ. Lỗi này có thể xảy ra do xung đột dữ liệu cũ hoặc trình duyệt offline bị gián hạn.
-            </p>
+              {t("Không thể tải giao diện KiotLabel do một lỗi phát sinh bất ngờ. Lỗi này có thể xảy ra do xung đột dữ liệu cũ hoặc trình duyệt offline bị gián hạn.")}</p>
 
             {/* Error Message Collapse */}
             <div className="bg-rose-50/70 border border-rose-100 rounded-lg p-4 mb-6 text-left">
-              <span className="text-[10px] font-bold text-rose-700 uppercase tracking-wide block mb-1">Chi tiết kỹ thuật:</span>
+              <span className="text-[10px] font-bold text-rose-700 uppercase tracking-wide block mb-1">{t("Chi tiết kỹ thuật:")}</span>
               <code className="block font-mono text-xs text-rose-600 word-break break-all max-h-32 overflow-auto whitespace-pre-wrap leading-relaxed">
                 {this.state.error?.stack || this.state.error?.message || String(this.state.error)}
               </code>
@@ -79,20 +79,17 @@ export class ErrorBoundary extends React.Component<Props, State> {
                 onClick={this.handleReloadOnly}
                 className="w-full sm:w-auto px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs rounded-lg transition-colors cursor-pointer shadow-sm"
               >
-                Tải lại trang
-              </button>
+                {t("Tải lại trang")}</button>
               <button
                 onClick={this.handleResetAndReload}
                 className="w-full sm:w-auto px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-lg transition-colors cursor-pointer shadow-sm"
-                title="Khôi phục cài đặt gốc, giải quyết xung đột dữ liệu lưu trữ"
+                title={t("Khôi phục cài đặt gốc, giải quyết xung đột dữ liệu lưu trữ")}
               >
-                Xóa dữ liệu lưu trữ & Khởi động lại
-              </button>
+                {t("Xóa dữ liệu lưu trữ & Khởi động lại")}</button>
             </div>
             
             <p className="text-[10.5px] text-slate-400 mt-6 leading-normal">
-              Nếu lỗi vẫn tiếp diễn, vui lòng kiểm tra tệp tin Excel liên kết hoặc cấu hình cài đặt offline.
-            </p>
+              {t("Nếu lỗi vẫn tiếp diễn, vui lòng kiểm tra tệp tin Excel liên kết hoặc cấu hình cài đặt offline.")}</p>
           </div>
         </div>
       );

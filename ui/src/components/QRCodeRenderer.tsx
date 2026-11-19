@@ -5,6 +5,7 @@
 
 import { useEffect, useState, memo } from "react";
 import QRCode from "qrcode";
+import { t } from "../i18n";
 
 interface QRCodeRendererProps {
   content: string;
@@ -63,7 +64,7 @@ export const QRCodeRenderer = memo(function QRCodeRenderer({
   useEffect(() => {
     const cleanContent = content.trim();
     if (!cleanContent) {
-      setError("Nội dung trống");
+      setError(t("Nội dung trống"));
       return;
     }
 
@@ -84,11 +85,11 @@ export const QRCodeRenderer = memo(function QRCodeRenderer({
       const msg = String(err?.message || err || "");
       if (/too big|too long|amount of data/i.test(msg)) {
         // Thông báo dễ hiểu thay cho lỗi chung chung của thư viện
-        const hint = errorCorrection === "L" ? "Hãy rút ngắn nội dung." : "Hãy rút ngắn nội dung hoặc chọn mức sửa lỗi thấp hơn (L).";
-        setError(`Dữ liệu quá dài cho QR (${cleanContent.length} ký tự, mức ${errorCorrection}). ${hint}`);
+        const hint = errorCorrection === "L" ? t("Hãy rút ngắn nội dung.") : t("Hãy rút ngắn nội dung hoặc chọn mức sửa lỗi thấp hơn (L).");
+        setError(t("Dữ liệu quá dài cho QR ({length} ký tự, mức {errorCorrection}). {hint}", { length: cleanContent.length, errorCorrection, hint }));
       } else {
         console.error("QR Code execution failed:", err);
-        setError("Lỗi render QR Code");
+        setError(t("Lỗi render QR Code"));
       }
     });
     return () => { cancelled = true; };

@@ -11,6 +11,7 @@
 // Arial và Times New Roman khớp bề rộng chữ với bản hiển thị; font mặc định (Inter/Segoe UI) và Tahoma chỉ gần đúng.
 
 import type { FontKey } from './textLayout';
+import { t } from "../../i18n";
 
 export function familyOf(fontFamily?: string): FontKey['family'] {
   if (fontFamily === 'Times New Roman' || fontFamily === 'serif') return 'serif';
@@ -41,7 +42,7 @@ export function loadFontBytes(k: FontKey, baseUrl?: string): Promise<ArrayBuffer
   let p = bytesCache.get(url);
   if (!p) {
     p = fetch(url).then((r) => {
-      if (!r.ok) throw new Error(`Không tải được font ${fontFileName(k)} (${r.status})`);
+      if (!r.ok) throw new Error(t("Không tải được font {v} ({status})", { v: fontFileName(k), status: r.status }));
       return r.arrayBuffer();
     });
     p.catch(() => bytesCache.delete(url));

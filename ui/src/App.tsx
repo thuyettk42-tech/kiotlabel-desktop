@@ -90,6 +90,7 @@ import {
   CheckCircle
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { t, useLang, setLang } from "./i18n";
 
 interface TomyTemplate {
   name: string;
@@ -201,6 +202,7 @@ function binarizeCanvas(canvas: HTMLCanvasElement, threshold: number = 200) {
 }
 
 export default function App() {
+  const uiLang = useLang(); // vẽ lại toàn bộ giao diện khi đổi VI/EN
   const dropzoneRef = useRef<HTMLDivElement>(null);
   const pasteInputRef = useRef<HTMLInputElement>(null);
   // 1. Core state for current active label
@@ -219,7 +221,7 @@ export default function App() {
     return {
       width: 65,
       height: 45,
-      name: "Tem Kệ Siêu Thị Mặc Định"
+      name: t("Tem Kệ Siêu Thị Mặc Định")
     };
   });
 
@@ -321,7 +323,7 @@ export default function App() {
         y: -16.0,
         width: 59,
         height: 5,
-        content: "CỬA HÀNG ĐIỆN TỬ VIỆT NAM",
+        content: t("CỬA HÀNG ĐIỆN TỬ VIỆT NAM"),
         fontSize: 9,
         fontWeight: "bold",
         textFlowOrigin: "center",
@@ -348,7 +350,7 @@ export default function App() {
         y: 14.0,
         width: 59,
         height: 5,
-        content: "Hotline: 1900 1234 - Địa chỉ: Hà Nội",
+        content: t("Hotline: 1900 1234 - Địa chỉ: Hà Nội"),
         fontSize: 7.5,
         textFlowOrigin: "center",
         textAlign: "center"
@@ -862,7 +864,7 @@ export default function App() {
         y: -16.0,
         width: 59,
         height: 5,
-        content: "CỬA HÀNG ĐIỆN TỬ VIỆT NAM",
+        content: t("CỬA HÀNG ĐIỆN TỬ VIỆT NAM"),
         fontSize: 9,
         fontWeight: "bold",
         textFlowOrigin: "center",
@@ -889,7 +891,7 @@ export default function App() {
         y: 14.0,
         width: 59,
         height: 5,
-        content: "Hotline: 1900 1234 - Địa chỉ: Hà Nội",
+        content: t("Hotline: 1900 1234 - Địa chỉ: Hà Nội"),
         fontSize: 7.5,
         textFlowOrigin: "center",
         textAlign: "center"
@@ -914,11 +916,11 @@ export default function App() {
           return [
             {
               id: "tab-default-1",
-              name: parsed.labelConfig?.name || "Mẫu Thiết Kế 1",
+              name: parsed.labelConfig?.name || t("Mẫu Thiết Kế 1"),
               labelConfig: parsed.labelConfig || {
                 width: 65,
                 height: 45,
-                name: "Tem Kệ Siêu Thị Mặc Định"
+                name: t("Tem Kệ Siêu Thị Mặc Định")
               },
               sheetConfig: parsed.sheetConfig || {
                 mode: 'thermal',
@@ -966,11 +968,11 @@ export default function App() {
     return [
       {
         id: "tab-default-1",
-        name: "Mẫu Thiết Kế 1",
+        name: t("Mẫu Thiết Kế 1"),
         labelConfig: {
           width: 65,
           height: 45,
-          name: "Tem Kệ Siêu Thị Mặc Định"
+          name: t("Tem Kệ Siêu Thị Mặc Định")
         },
         sheetConfig: {
           mode: 'thermal',
@@ -1113,7 +1115,7 @@ export default function App() {
         y: -16.0,
         width: 59,
         height: 5,
-        content: "CỬA HÀNG ĐIỆN TỬ VIỆT NAM",
+        content: t("CỬA HÀNG ĐIỆN TỬ VIỆT NAM"),
         fontSize: 9,
         fontWeight: "bold",
         textFlowOrigin: "center",
@@ -1140,7 +1142,7 @@ export default function App() {
         y: 14.0,
         width: 59,
         height: 5,
-        content: "Hotline: 1900 1234 - Địa chỉ: Hà Nội",
+        content: t("Hotline: 1900 1234 - Địa chỉ: Hà Nội"),
         fontSize: 7.5,
         textFlowOrigin: "center",
         textAlign: "center"
@@ -1159,11 +1161,11 @@ export default function App() {
 
     const newTab: DesignerTab = {
       id: newTabId,
-      name: `Mẫu Thiết Kế ${nextIndex}`,
+      name: t("Mẫu Thiết Kế {nextIndex}", { nextIndex }),
       labelConfig: {
         width: 65,
         height: 45,
-        name: `Mẫu Thiết Kế ${nextIndex}`
+        name: t("Mẫu Thiết Kế {nextIndex}", { nextIndex })
       },
       sheetConfig: {
         mode: 'thermal',
@@ -1244,7 +1246,7 @@ export default function App() {
   const handleDeleteTabClick = (tabIdToDelete: string, tabName: string, e: React.MouseEvent) => {
     e.stopPropagation();
     if (tabs.length <= 1) {
-      alert("Không thể xóa bản thiết kế cuối cùng!");
+      alert(t("Không thể xóa bản thiết kế cuối cùng!"));
       return;
     }
     setTabToDelete({ id: tabIdToDelete, name: tabName });
@@ -1771,7 +1773,7 @@ export default function App() {
       const rawData = XLSX.utils.sheet_to_json<any[]>(sheet, { header: 1, raw: false });
       
       if (rawData.length < 1) {
-        alert("Tệp Excel rỗng hoặc không chứa bảng dữ liệu!");
+        alert(t("Tệp Excel rỗng hoặc không chứa bảng dữ liệu!"));
         return false;
       }
 
@@ -1779,7 +1781,7 @@ export default function App() {
       const headers = (rawData[0] as any[]).map(h => String(h || "").trim()).filter(h => h !== "");
       
       if (headers.length === 0) {
-        alert("Không tìm thấy tiêu đề cột hợp lệ nào ở dòng thứ nhất!");
+        alert(t("Không tìm thấy tiêu đề cột hợp lệ nào ở dòng thứ nhất!"));
         return false;
       }
 
@@ -1798,7 +1800,7 @@ export default function App() {
       }
 
       if (items.length === 0) {
-        alert("Nhập tệp Excel thành công nhưng không có các dòng dữ liệu từ dòng số 2 để liên kết.");
+        alert(t("Nhập tệp Excel thành công nhưng không có các dòng dữ liệu từ dòng số 2 để liên kết."));
         return false;
       }
 
@@ -1825,7 +1827,7 @@ export default function App() {
       return true;
     } catch (err: any) {
       console.error("XLSX parse error: ", err);
-      alert("Nạp tệp Excel thất bại. Vui lòng kiểm tra lại định dạng tệp .xlsx, .xls hoặc .csv.");
+      alert(t("Nạp tệp Excel thất bại. Vui lòng kiểm tra lại định dạng tệp .xlsx, .xls hoặc .csv."));
       return false;
     }
   };
@@ -1882,10 +1884,10 @@ export default function App() {
             setExcelFileBase64(response.base64);
           }
         } else if (response && response.status === "error") {
-          alert("Lỗi mở file thông qua hệ điều hành: " + response.message);
+          alert(t("Lỗi mở file thông qua hệ điều hành: ") + response.message);
         }
       } catch (err: any) {
-        alert("Lỗi khởi tạo hộp thoại chọn file hệ thống: " + err.message);
+        alert(t("Lỗi khởi tạo hộp thoại chọn file hệ thống: ") + err.message);
       }
     } else if (typeof window !== 'undefined' && 'showOpenFilePicker' in window) {
       try {
@@ -1893,7 +1895,7 @@ export default function App() {
         const [handle] = await window.showOpenFilePicker({
           types: [
             {
-              description: 'Tệp Excel/CSV (*.xlsx, *.xls, *.csv)',
+              description: t("Tệp Excel/CSV (*.xlsx, *.xls, *.csv)"),
               accept: {
                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
                 'application/vnd.ms-excel': ['.xls'],
@@ -1914,7 +1916,7 @@ export default function App() {
         }
       } catch (err: any) {
         if (err.name !== 'AbortError') {
-          alert("Lỗi nạp Excel: " + err.message);
+          alert(t("Lỗi nạp Excel: ") + err.message);
         }
       }
     } else {
@@ -1945,15 +1947,15 @@ export default function App() {
           const ok = await processExcelBinary(bytes.buffer, response.filename, false); // Always sync mode (preserve mappings)
           if (ok) {
             setExcelFileBase64(response.base64);
-            alert(`[ĐỒNG BỘ CHẠY NGẦM THÀNH CÔNG]\nHệ thống đã tự động quét và làm mới dữ liệu từ đường dẫn:\n"${excelFilePath}"\n\n✓ Giữ nguyên 100% tất cả các liên kết trường dữ liệu.`);
+            alert(t("[ĐỒNG BỘ CHẠY NGẦM THÀNH CÔNG]\nHệ thống đã tự động quét và làm mới dữ liệu từ đường dẫn:\n\"{excelFilePath}\"\n\n✓ Giữ nguyên 100% tất cả các liên kết trường dữ liệu.", { excelFilePath }));
           }
         } else if (response && response.status === "error") {
           // If the file was moved or is inaccessible, offer standard re-picking fallback
-          alert(`Không thể tự động đồng bộ ẩn: ${response.message}\n\nHệ thống sẽ hiển thị hộp thoại chọn lại file để khôi phục.`);
+          alert(t("Không thể tự động đồng bộ ẩn: {message}\n\nHệ thống sẽ hiển thị hộp thoại chọn lại file để khôi phục.", { message: response.message }));
           triggerExcelLoadDialog('sync');
         }
       } catch (err: any) {
-        alert("Lỗi đồng bộ chạy ngầm: " + err.message);
+        alert(t("Lỗi đồng bộ chạy ngầm: ") + err.message);
         triggerExcelLoadDialog('sync');
       }
     }
@@ -1980,7 +1982,7 @@ export default function App() {
           if (ok) {
             const base64Str = arrayBufferToBase64(arrayBuffer);
             setExcelFileBase64(base64Str);
-            alert(`[ĐỒNG BỘ CHẠY NGẦM THÀNH CÔNG]\nĐã cập nhật dữ liệu tự động từ file: "${file.name}"\n\n✓ Giữ nguyên 100% tất cả các liên kết trường dữ liệu.`);
+            alert(t("[ĐỒNG BỘ CHẠY NGẦM THÀNH CÔNG]\nĐã cập nhật dữ liệu tự động từ file: \"{name}\"\n\n✓ Giữ nguyên 100% tất cả các liên kết trường dữ liệu.", { name: file.name }));
           }
         } else {
           // If permission is denied, fall back transparently
@@ -2192,7 +2194,7 @@ export default function App() {
 
   // Apply dimensions presets
   // Kích thước tem hợp lệ: số từ 10 đến 300 mm (cho phép 1 chữ số thập phân, vd. 38.1)
-  const SIZE_HINT = "Nhập kích thước từ 10 đến 300 mm (ví dụ 50 hoặc 38.1).";
+  const SIZE_HINT = t("Nhập kích thước từ 10 đến 300 mm (ví dụ 50 hoặc 38.1).");
   const [sizeError, setSizeError] = useState<string | null>(null);
   const parseSizeMm = (raw: string): number | null => {
     const n = Number(raw.trim().replace(",", "."));
@@ -2253,7 +2255,7 @@ export default function App() {
         y: 0,
         width: w,
         height: h,
-        content: customContent || "NỘI DUNG VĂN BẢN MỚI",
+        content: customContent || t("NỘI DUNG VĂN BẢN MỚI"),
         fontSize: 10, // Default font size is 10 pt
         fontWeight: "normal",
         textAlign: "center",
@@ -2436,7 +2438,7 @@ export default function App() {
 
   // Clear everything (Start from blank, blank label canvas)
   const handleClearCanvas = () => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa tất cả các phần tử trên nhãn này?")) {
+    if (window.confirm(t("Bạn có chắc chắn muốn xóa tất cả các phần tử trên nhãn này?"))) {
       setObjectsWithHistory([]);
       handleSelectObject(null);
       clearCanvasMemory();
@@ -2445,11 +2447,11 @@ export default function App() {
 
   // Khôi phục về thiết kế mẫu mặc định ban đầu
   const handleResetToDefault = () => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa toàn bộ thiết kế hiện tại và khôi phục về thiết kế mẫu mặc định của hệ thống?")) {
+    if (window.confirm(t("Bạn có chắc chắn muốn xóa toàn bộ thiết kế hiện tại và khôi phục về thiết kế mẫu mặc định của hệ thống?"))) {
       setLabelConfig({
         width: 65,
         height: 45,
-        name: "Tem Kệ Siêu Thị Mặc Định"
+        name: t("Tem Kệ Siêu Thị Mặc Định")
       });
       setObjectsWithHistory([
         {
@@ -2459,7 +2461,7 @@ export default function App() {
           y: -16.0,
           width: 59,
           height: 5,
-          content: "CỬA HÀNG ĐIỆN TỬ VIỆT NAM",
+          content: t("CỬA HÀNG ĐIỆN TỬ VIỆT NAM"),
           fontSize: 9,
           fontWeight: "bold",
           textFlowOrigin: "center",
@@ -2486,7 +2488,7 @@ export default function App() {
           y: 14.0,
           width: 59,
           height: 5,
-          content: "Hotline: 1900 1234 - Địa chỉ: Hà Nội",
+          content: t("Hotline: 1900 1234 - Địa chỉ: Hà Nội"),
           fontSize: 7.5,
           textFlowOrigin: "center",
           textAlign: "center"
@@ -2675,10 +2677,10 @@ export default function App() {
 
       handleSelectObject(null);
       
-      let alertMsg = `Đã nạp thành công thiết kế "${parsedData.name || "Mẫu nhập"}" gồm ${parsedData.objects.length} phần tử và toàn bộ cài đặt khổ giấy!`;
+      let alertMsg = t("Đã nạp thành công thiết kế \"{v}\" gồm {length} phần tử và toàn bộ cài đặt khổ giấy!", { v: parsedData.name || "Mẫu nhập", length: parsedData.objects.length });
       if (parsedData.excelColumns && parsedData.excelColumns.length > 0) {
         const rowCount = parsedData.excelRowsCompact?.length || parsedData.excelData?.length || 0;
-        alertMsg += `\n\n[Excel Linked] Đã tự động khôi phục dữ liệu Excel: "${parsedData.excelFileName || "xlsx_linked_file.xlsx"}" (${rowCount} dòng sản phẩm), sẵn sàng in hàng loạt ngay lập tức! Bạn có thể tải lại file này bất kỳ lúc nào để chỉnh sửa/làm mẫu.`;
+        alertMsg += t("\n\n[Excel Linked] Đã tự động khôi phục dữ liệu Excel: \"{v}\" ({rowCount} dòng sản phẩm), sẵn sàng in hàng loạt ngay lập tức! Bạn có thể tải lại file này bất kỳ lúc nào để chỉnh sửa/làm mẫu.", { v: parsedData.excelFileName || "xlsx_linked_file.xlsx", rowCount });
       }
       alert(alertMsg);
       return true;
@@ -2750,13 +2752,13 @@ export default function App() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (err: any) {
-      alert("Lỗi khi tải tệp Excel: " + err.message);
+      alert(t("Lỗi khi tải tệp Excel: ") + err.message);
     }
   };
 
   // Save layout template in user local storage
   const handleSaveToLocalStorage = (customName?: string) => {
-    const nameToSave = (customName || customSaveName).trim() || `Bản vẽ ${new Date().toLocaleDateString("vi-VN")}`;
+    const nameToSave = (customName || customSaveName).trim() || t("Bản vẽ {v}", { v: new Date().toLocaleDateString("vi-VN") });
     
     // Compress spreadsheet rows using a compact index array rather than repeating column names
     const compactExcelRows = excelData.map((row) => {
@@ -2790,7 +2792,7 @@ export default function App() {
       { time: new Date().toLocaleTimeString("vi-VN"), path: `Local Storage: ${nameToSave}`, type: 'save' },
       ...prev
     ]);
-    alert(`Đã lưu thiết kế "${nameToSave}" thành công vào bộ nhớ trình duyệt!`);
+    alert(t("Đã lưu thiết kế \"{nameToSave}\" thành công vào bộ nhớ trình duyệt!", { nameToSave }));
   };
 
   // Load previous design from local storage
@@ -2885,7 +2887,7 @@ export default function App() {
         ]);
         callback?.();
       } catch (err: any) {
-        alert("Lỗi kết xuất file tải xuống: " + err.message);
+        alert(t("Lỗi kết xuất file tải xuống: ") + err.message);
       }
     };
 
@@ -2919,7 +2921,7 @@ export default function App() {
                 pathSaved = result.file_path || null;
                 filenameSaved = result.filename || null;
               } else if (result.status === "error") {
-                alert(`Lỗi lưu tệp tin thông qua ứng dụng offline: ${result.message}`);
+                alert(t("Lỗi lưu tệp tin thông qua ứng dụng offline: {message}", { message: result.message }));
                 return;
               }
             }
@@ -2936,12 +2938,12 @@ export default function App() {
                   ...prev
                 ]);
               }
-              alert(`Đã lưu thành công tệp tin thiết kế (.kvl) vào máy tính của bạn!`);
+              alert(t("Đã lưu thành công tệp tin thiết kế (.kvl) vào máy tính của bạn!"));
               onSuccess?.();
             }
           })
           .catch((err: any) => {
-            alert("Lỗi gọi API lưu tệp tin Python: " + err.message);
+            alert(t("Lỗi gọi API lưu tệp tin Python: ") + err.message);
           });
         return;
       }
@@ -2953,7 +2955,7 @@ export default function App() {
         const opts = {
           suggestedName: filename,
           types: [{
-            description: format === 'kvl' ? 'Bộ mẫu KVL (*.kvl)' : 'Tệp cấu hình JSON (*.json)',
+            description: format === 'kvl' ? t("Bộ mẫu KVL (*.kvl)") : t("Tệp cấu hình JSON (*.json)"),
             accept: format === 'kvl' ? { 'text/plain': ['.kvl'] } : { 'application/json': ['.json'] }
           }]
         };
@@ -2982,7 +2984,7 @@ export default function App() {
               { time: new Date().toLocaleTimeString("vi-VN"), path: handle.name, type: 'save' },
               ...prev
             ]);
-            alert(`Đã lưu thành công tệp thiết kế "${handle.name}" vào máy tính của bạn! Từ bây giờ bạn có thể sửa và bấm Ctrl + S để tự động cập nhật trực tiếp không cần chọn đường dẫn.`);
+            alert(t("Đã lưu thành công tệp thiết kế \"{name}\" vào máy tính của bạn! Từ bây giờ bạn có thể sửa và bấm Ctrl + S để tự động cập nhật trực tiếp không cần chọn đường dẫn.", { name: handle.name }));
             onSuccess?.();
           })
           .catch((err: any) => {
@@ -2998,7 +3000,7 @@ export default function App() {
       
       triggerBlobDownload(fileContent, filename, mimeType, nameToSave, onSuccess);
     } catch (err: any) {
-      alert("Lỗi khi kết xuất file: " + err.message);
+      alert(t("Lỗi khi kết xuất file: ") + err.message);
     }
   };
 
@@ -3042,18 +3044,18 @@ export default function App() {
                 { time: new Date().toLocaleTimeString("vi-VN"), path: currentFilePath, type: 'quick-save' },
                 ...prev
               ]);
-              alert(`Đã tự động lưu đè và cập nhật thành công vào file:\n${result.filename}`);
+              alert(t("Đã tự động lưu đè và cập nhật thành công vào file:\n{filename}", { filename: result.filename }));
             } else if (result && result.status === "error") {
-              alert(`Lỗi khi lưu đè tệp tin: ${result.message}`);
+              alert(t("Lỗi khi lưu đè tệp tin: {message}", { message: result.message }));
             } else {
-              alert("Lưu tệp tin thất bại!");
+              alert(t("Lưu tệp tin thất bại!"));
             }
           })
           .catch((err: any) => {
-            alert("Lỗi kết nối lưu đè trực tiếp Python: " + err.message);
+            alert(t("Lỗi kết nối lưu đè trực tiếp Python: ") + err.message);
           });
       } catch (err: any) {
-        alert("Lỗi mã hóa dữ liệu: " + err.message);
+        alert(t("Lỗi mã hóa dữ liệu: ") + err.message);
       }
     } 
     // If we have an active file handle in Web File System Access API (Google Chrome / Edge)
@@ -3093,13 +3095,13 @@ export default function App() {
               { time: new Date().toLocaleTimeString("vi-VN"), path: activeFileHandle.name, type: 'quick-save' },
               ...prev
             ]);
-            alert(`Đã tự động lưu đè và cập nhật trực tiếp thành công vào file:\n"${activeFileHandle.name}"`);
+            alert(t("Đã tự động lưu đè và cập nhật trực tiếp thành công vào file:\n\"{name}\"", { name: activeFileHandle.name }));
           })
           .catch((err: any) => {
-            alert("Lỗi khi ghi đè trực tiếp lên tệp: " + err.message);
+            alert(t("Lỗi khi ghi đè trực tiếp lên tệp: ") + err.message);
           });
       } catch (err: any) {
-        alert("Lỗi mã hóa dữ liệu: " + err.message);
+        alert(t("Lỗi mã hóa dữ liệu: ") + err.message);
       }
     }
     // If we have an active file in browser (currentFilePath is set but window.pywebview is not available), let's save directly by downloading!
@@ -3136,7 +3138,7 @@ export default function App() {
         { time: new Date().toLocaleTimeString("vi-VN"), path: `Local Storage: ${currentLocalStorageKey}`, type: 'quick-save' },
         ...prev
       ]);
-      alert(`Đã tự động lưu đè và cập nhật trực tiếp thành công vào Bộ nhớ duyệt web:\n"${currentLocalStorageKey}"`);
+      alert(t("Đã tự động lưu đè và cập nhật trực tiếp thành công vào Bộ nhớ duyệt web:\n\"{currentLocalStorageKey}\"", { currentLocalStorageKey }));
     }
     // Standard unlinked state -> Open Save Dialog (Save As)
     else {
@@ -3189,24 +3191,24 @@ export default function App() {
                   ...prev
                 ]);
               } else {
-                alert("Nội dung tệp thiếu thông số cấu trúc (labelConfig/objects).");
+                alert(t("Nội dung tệp thiếu thông số cấu trúc (labelConfig/objects)."));
               }
             } catch (err: any) {
-              alert("Lỗi phân tích tệp KVL/JSON: " + err.message);
+              alert(t("Lỗi phân tích tệp KVL/JSON: ") + err.message);
             }
           } else if (response && response.status === "error") {
-            alert("Lỗi mở tệp tin: " + response.message);
+            alert(t("Lỗi mở tệp tin: ") + response.message);
           }
         })
         .catch((err: any) => {
-          alert("Lỗi nạp tệp qua Python: " + err.message);
+          alert(t("Lỗi nạp tệp qua Python: ") + err.message);
         });
     } else if (typeof window !== 'undefined' && 'showOpenFilePicker' in window) {
       // @ts-ignore
       window.showOpenFilePicker({
         types: [
           {
-            description: 'Bộ mẫu KVL hoặc JSON (*.kvl, *.json)',
+            description: t("Bộ mẫu KVL hoặc JSON (*.kvl, *.json)"),
             accept: {
               'application/json': ['.json', '.kvl'],
               'text/plain': ['.kvl']
@@ -3228,7 +3230,7 @@ export default function App() {
               const decodedStr = decodeURIComponent(escape(atob(rawContent.trim())));
               parsedData = JSON.parse(decodedStr);
             } catch (b64Err) {
-              throw new Error("Định dạng file không hợp lệ. Vui lòng nạp file .kvl hoặc .json chính xác.");
+              throw new Error(t("Định dạng file không hợp lệ. Vui lòng nạp file .kvl hoặc .json chính xác."));
             }
           }
 
@@ -3242,12 +3244,12 @@ export default function App() {
               { time: new Date().toLocaleTimeString("vi-VN"), path: file.name, type: 'import' },
               ...prev
             ]);
-            alert(`Đã liên kết tệp "${file.name}" thành công! Từ bây giờ bạn có thể sửa và bấm Ctrl + S để tự động cập nhật trực tiếp lên tệp.`);
+            alert(t("Đã liên kết tệp \"{name}\" thành công! Từ bây giờ bạn có thể sửa và bấm Ctrl + S để tự động cập nhật trực tiếp lên tệp.", { name: file.name }));
           } else {
-            alert("Nội dung tệp thiếu các thông số cấu trúc (labelConfig/objects). Vui lòng kiểm tra lại.");
+            alert(t("Nội dung tệp thiếu các thông số cấu trúc (labelConfig/objects). Vui lòng kiểm tra lại."));
           }
         } catch (err: any) {
-          alert("Lỗi khi đọc tệp tin: " + err.message);
+          alert(t("Lỗi khi đọc tệp tin: ") + err.message);
         }
       })
       .catch((err: any) => {
@@ -3280,7 +3282,7 @@ export default function App() {
             const decodedStr = decodeURIComponent(escape(atob(rawContent.trim())));
             parsedData = JSON.parse(decodedStr);
           } catch (b64Err) {
-            throw new Error("Định dạng file không hợp lệ. Vui lòng nạp file .kvl hoặc .json chính xác.");
+            throw new Error(t("Định dạng file không hợp lệ. Vui lòng nạp file .kvl hoặc .json chính xác."));
           }
         }
 
@@ -3291,10 +3293,10 @@ export default function App() {
           setCurrentLocalStorageKey(null);
           setActiveFileHandle(null);
         } else {
-          alert("Nội dung tệp thiếu các thông số cấu trúc (labelConfig/objects). Vui lòng kiểm tra lại.");
+          alert(t("Nội dung tệp thiếu các thông số cấu trúc (labelConfig/objects). Vui lòng kiểm tra lại."));
         }
       } catch (err: any) {
-        alert("Không thể đọc tệp này: " + err.message);
+        alert(t("Không thể đọc tệp này: ") + err.message);
       }
       
       // Reset the file input value so same file can be selected again
@@ -3306,7 +3308,7 @@ export default function App() {
   // Delete saved design from database
   const handleDeleteSavedDesign = (e: React.MouseEvent, index: number) => {
     e.stopPropagation();
-    if (window.confirm("Bạn muốn xóa mẫu thiết kế đã lưu này?")) {
+    if (window.confirm(t("Bạn muốn xóa mẫu thiết kế đã lưu này?"))) {
       const updated = savedDesigns.filter((_, idx) => idx !== index);
       safeLocalStorage.setItem("barcode_designer_saved_v1", JSON.stringify(updated));
       setSavedDesigns(updated);
@@ -3567,7 +3569,7 @@ export default function App() {
   const buildPrinterPayload = async (lang: "zpl" | "tspl" = printerLang, dpi: number = printerDpi): Promise<{ bytes: Uint8Array; total: number } | null> => {
     const jobs = buildPrinterCommandJobs();
     if (jobs.length === 0) {
-      alert("Chưa có nhãn nào để xuất. Hãy thêm đối tượng lên tem (hoặc liên kết file Excel) trước.");
+      alert(t("Chưa có nhãn nào để xuất. Hãy thêm đối tượng lên tem (hoặc liên kết file Excel) trước."));
       return null;
     }
     const cfg = { dpi, labelWidthMm: labelConfig.width, labelHeightMm: labelConfig.height, gapMm: tsplGapMm };
@@ -3584,7 +3586,7 @@ export default function App() {
     }
     const body = parts.join("\n");
     if (failedImages.size > 0) {
-      alert(`Có ${failedImages.size} đối tượng không dựng được cho máy in: hình ảnh (kể cả ảnh nền tem) từ địa chỉ web chặn truy cập sẽ bị bỏ qua (hãy tải ảnh lên từ máy tính); đối tượng xoay hoặc nét đứt không dựng được sẽ in ở dạng không xoay/nét liền.`);
+      alert(t("Có {size} đối tượng không dựng được cho máy in: hình ảnh (kể cả ảnh nền tem) từ địa chỉ web chặn truy cập sẽ bị bỏ qua (hãy tải ảnh lên từ máy tính); đối tượng xoay hoặc nét đứt không dựng được sẽ in ở dạng không xoay/nét liền.", { size: failedImages.size }));
     }
     const total = jobs.reduce((sum, j) => sum + j.copies, 0);
     const bytes = lang === "tspl" ? tsplToBytes(body) : new TextEncoder().encode(body);
@@ -3621,7 +3623,7 @@ export default function App() {
         // Máy in thường (A4/A5...): dựng danh sách lệnh vẽ từ CÙNG bộ bố cục của PDF vector rồi để KiotLabel.exe vẽ bằng GDI ở độ phân giải gốc của máy in
         const { buildVectorOps } = await import("./utils/vectorPdf/render");
         const totalItems = getTotalLabelCount();
-        if (totalItems <= 0) { setDirectPrintMsg({ ok: false, text: "Chưa có nhãn nào để in." }); return; }
+        if (totalItems <= 0) { setDirectPrintMsg({ ok: false, text: t("Chưa có nhãn nào để in.") }); return; }
         handleSelectObject(null);
         const job = await buildVectorOps({
           labelConfig,
@@ -3635,8 +3637,8 @@ export default function App() {
         const r = await printSheetDesktop(effectivePrintTarget, job, `${labelConfig.name || "KiotLabel"}_${totalItems}tem`);
         const extra = [...job.warnings, ...(r.data?.warnings || [])];
         setDirectPrintMsg(r.ok
-          ? { ok: true, text: `Đã gửi ${r.data?.pages ?? job.pages.length} trang (${totalItems} tem) tới "${effectivePrintTarget}" bằng in trực tiếp.${extra.length ? " Lưu ý: " + extra.join(" ") : ""}` }
-          : { ok: false, text: r.error || "Không in được trang." });
+          ? { ok: true, text: t("Đã gửi {v} trang ({totalItems} tem) tới \"{effectivePrintTarget}\" bằng in trực tiếp.{v2}", { v: r.data?.pages ?? job.pages.length, totalItems, effectivePrintTarget, v2: extra.length ? t(" Lưu ý: ") + extra.join(" ") : "" }) }
+          : { ok: false, text: r.error || t("Không in được trang.") });
         return;
       }
       // Máy in tem: gửi lệnh gốc theo ngôn ngữ và độ phân giải tự nhận diện (hoặc người dùng đã chọn). Chữ có dấu được dựng thành ảnh (needsRaster).
@@ -3645,8 +3647,8 @@ export default function App() {
       if (!payload) return;
       const r = await printRawDesktop(effectivePrintTarget, payload.bytes, `${labelConfig.name || "KiotLabel"}_${payload.total}tem`);
       setDirectPrintMsg(r.ok
-        ? { ok: true, text: `Đã gửi ${payload.total} tem (${lang.toUpperCase()}, ${printDpi} DPI) tới "${effectivePrintTarget}".` }
-        : { ok: false, text: r.error || "Không gửi được lệnh in." });
+        ? { ok: true, text: t("Đã gửi {total} tem ({v}, {printDpi} DPI) tới \"{effectivePrintTarget}\".", { total: payload.total, v: lang.toUpperCase(), printDpi, effectivePrintTarget }) }
+        : { ok: false, text: r.error || t("Không gửi được lệnh in.") });
     } finally {
       setIsDirectPrinting(false);
     }
@@ -3680,7 +3682,7 @@ export default function App() {
     setIsSavingFile(true);
     setIsVectorExporting(true);
     if (autoOpen) setIsPreparingPrint(true);
-    setSaveFileProgress("Đang dựng PDF vector...");
+    setSaveFileProgress(t("Đang dựng PDF vector..."));
     handleSelectObject(null);
     let fallbackToRaster = false;
     try {
@@ -3709,7 +3711,7 @@ export default function App() {
       if (lastPdfBlobUrlRef.current) URL.revokeObjectURL(lastPdfBlobUrlRef.current);
       lastPdfBlobUrlRef.current = blobUrl;
       lastPdfStateRef.current = JSON.stringify({ displayObjects, labelConfig, sheetConfig, printCopies, excelData, pdfEngine });
-      if (result.warnings.length > 0) alert("Lưu ý khi dựng PDF vector:\n- " + result.warnings.join("\n- "));
+      if (result.warnings.length > 0) alert(t("Lưu ý khi dựng PDF vector:\n- ") + result.warnings.join("\n- "));
       if (autoOpen) {
         setPopupBlobUrl(blobUrl);
         const newWindow = window.open(blobUrl, "_blank");
@@ -3724,7 +3726,7 @@ export default function App() {
     } catch (err) {
       console.error("Xuất PDF vector lỗi:", err);
       // Tự chuyển sang PDF ảnh (dự phòng) để người dùng vẫn có bản in; thông báo lý do ở console và hộp thoại
-      alert("Không dựng được PDF vector (" + String((err as Error)?.message || err) + "). Hệ thống chuyển sang PDF ảnh (dự phòng) cho lần này.");
+      alert(t("Không dựng được PDF vector (") + String((err as Error)?.message || err) + t("). Hệ thống chuyển sang PDF ảnh (dự phòng) cho lần này."));
       fallbackToRaster = true;
     } finally {
       document.querySelectorAll("[data-live-progress]").forEach((el) => { el.textContent = ""; });
@@ -3777,7 +3779,7 @@ export default function App() {
 
     // PDF ảnh/PNG chụp từng trang nên giới hạn thấp hơn PDF vector và lệnh máy in
     if ((format === 'pdf' || format === 'png') && getTotalLabelCount() > MAX_LABELS_RASTER) {
-      alert(`Lô này có ${getTotalLabelCount().toLocaleString("vi-VN")} tem, vượt giới hạn ${MAX_LABELS_RASTER.toLocaleString("vi-VN")} tem của PDF ảnh/PNG (chụp từng trang, rất chậm). Hãy chọn "Kiểu PDF: Vector" hoặc xuất lệnh máy in, hoặc chia lô nhỏ hơn.`);
+      alert(t("Lô này có {v} tem, vượt giới hạn {v2} tem của PDF ảnh/PNG (chụp từng trang, rất chậm). Hãy chọn \"Kiểu PDF: Vector\" hoặc xuất lệnh máy in, hoặc chia lô nhỏ hơn.", { v: getTotalLabelCount().toLocaleString("vi-VN"), v2: MAX_LABELS_RASTER.toLocaleString("vi-VN") }));
       return;
     }
     // Trên điện thoại khung tem có thể đang ẩn: phải hiện ra thì mới chụp được.
@@ -3788,7 +3790,7 @@ export default function App() {
     if (autoOpen) {
       setIsPreparingPrint(true);
     }
-    setSaveFileProgress(autoOpen ? "Đang xử lý và chuyển đổi tem sang PDF chất lượng cao..." : "Đang chuẩn bị và đồng bộ hóa chế bản thiết kế...");
+    setSaveFileProgress(autoOpen ? t("Đang xử lý và chuyển đổi tem sang PDF chất lượng cao...") : t("Đang chuẩn bị và đồng bộ hóa chế bản thiết kế..."));
 
     // Deselect currently selected items to clear design-focused helper boxes and sizing outlines
     handleSelectObject(null);
@@ -3806,7 +3808,7 @@ export default function App() {
     setTimeout(async () => {
       try {
         if (format === 'zpl') {
-          setSaveFileProgress("Đang biên dịch mã máy ZPL...");
+          setSaveFileProgress(t("Đang biên dịch mã máy ZPL..."));
           const activeObjs = displayObjects;
           const zplPrep = await prepareObjectBitmaps(activeObjs, 203, labelConfig.width, labelConfig.height, { image: labelConfig.bgImagePrint === false ? undefined : labelConfig.bgImage, opacity: labelConfig.bgImageOpacity, size: labelConfig.bgImageSize });
           const zplContent = convertToZPL(activeObjs, {
@@ -3831,7 +3833,7 @@ export default function App() {
         }
 
         if (format === 'tspl') {
-          setSaveFileProgress("Đang biên dịch mã máy TSPL...");
+          setSaveFileProgress(t("Đang biên dịch mã máy TSPL..."));
           const activeObjs = displayObjects;
           const tsplPrep = await prepareObjectBitmaps(activeObjs, 203, labelConfig.width, labelConfig.height, { image: labelConfig.bgImagePrint === false ? undefined : labelConfig.bgImage, opacity: labelConfig.bgImageOpacity, size: labelConfig.bgImageSize });
           const tsplContent = convertToTSPL(activeObjs, {
@@ -3857,7 +3859,7 @@ export default function App() {
         }
 
         // For PNG & PDF: Target the active on-screen perfectly rendered elements directly
-        setSaveFileProgress("Đang phân tích cấu trúc nhãn thiết kế...");
+        setSaveFileProgress(t("Đang phân tích cấu trúc nhãn thiết kế..."));
         
         let totalCount = 0;
         let isSingleCanvas = false;
@@ -3875,7 +3877,7 @@ export default function App() {
         }
 
         if (totalCount === 0) {
-          alert("Không tìm thấy mẫu thiết kế nhãn để xuất file!");
+          alert(t("Không tìm thấy mẫu thiết kế nhãn để xuất file!"));
           if (format === 'png' || format === 'pdf') {
             setInterfaceZoom(originalZoom);
             setOfficePreviewMode(originalPreviewMode);
@@ -4152,7 +4154,7 @@ export default function App() {
 
         const canvases = tempCanvases.filter((c): c is HTMLCanvasElement => c !== null);
 
-        setSaveFileProgress("Đang xuất tệp tin...");
+        setSaveFileProgress(t("Đang xuất tệp tin..."));
 
         const activeObjs = displayObjects;
         const silentZpl = convertToZPL(activeObjs, {
@@ -4283,7 +4285,7 @@ export default function App() {
         }
       } catch (err) {
         console.error("Save file error:", err);
-        alert("Đã xảy ra lỗi khi tạo tệp: " + String(err));
+        alert(t("Đã xảy ra lỗi khi tạo tệp: ") + String(err));
         if (format === 'png' || format === 'pdf') {
           setInterfaceZoom(originalZoom);
           setOfficePreviewMode(originalPreviewMode);
@@ -4401,12 +4403,12 @@ export default function App() {
                   ? "bg-amber-100 text-amber-950 border-amber-500 ring-1 ring-amber-500/20" 
                   : "bg-white hover:bg-amber-50 text-amber-850 border-amber-300 hover:border-amber-500"
               }`}
-              title="Chọn mẫu thiết kế ứng dụng có sẵn (Click để ghim hiển thị)"
+              title={t("Chọn mẫu thiết kế ứng dụng có sẵn (Click để ghim hiển thị)")}
             >
               <BookOpen className={`w-3.5 h-3.5 shrink-0 ${isPresetDropdownPinned ? "text-amber-800 animate-pulse" : "text-amber-600"}`} />
-              <span>Chọn Mẫu có sẵn</span>
+              <span>{t("Chọn Mẫu có sẵn")}</span>
               <span className={`text-[8.5px] px-1 py-0.5 rounded font-mono font-black ${isPresetDropdownPinned ? "bg-amber-200 text-amber-950" : "bg-amber-100 text-amber-900"}`}>
-                {isPresetDropdownPinned ? "Ghim" : "Preset"}
+                {isPresetDropdownPinned ? t("Ghim") : "Preset"}
               </span>
             </button>
             {showPresetDropdown && (
@@ -4421,20 +4423,20 @@ export default function App() {
             <button
               onClick={() => setShowSavedList(!showSavedList)}
               className="h-7 px-2 rounded-lg bg-white hover:bg-emerald-50 text-[11px] font-black text-emerald-850 tracking-wide flex items-center space-x-1.5 border border-emerald-300 hover:border-emerald-500 transition cursor-pointer shadow-xs active:scale-[0.98]"
-              title="Danh sách thiết kế của bạn đã lưu"
+              title={t("Danh sách thiết kế của bạn đã lưu")}
             >
               <FolderHeart className="w-3.5 h-3.5 text-rose-500" />
-              <span>Mẫu đã lưu ({savedDesigns.length})</span>
+              <span>{t("Mẫu đã lưu ({length})", { length: savedDesigns.length })}</span>
             </button>
             
             {showSavedList && (
               <div className="absolute right-0 mt-2 w-76 bg-white text-slate-800 rounded-lg shadow-2xl border border-gray-200/85 p-3 z-50 text-left max-h-[300px] overflow-y-auto animate-fadeIn">
                 <h4 className="font-extrabold text-xs pb-2 border-b border-gray-150 text-kiot-navy uppercase tracking-wider flex items-center space-x-1.5">
                   <FolderHeart className="w-4 h-4 text-rose-500" />
-                  <span>Bộ sưu tập mẫu đã lưu</span>
+                  <span>{t("Bộ sưu tập mẫu đã lưu")}</span>
                 </h4>
                 {savedDesigns.length === 0 ? (
-                  <p className="text-xs text-gray-400 py-4 text-center italic">Chưa có bản ghi lưu nào trên máy này!</p>
+                  <p className="text-xs text-gray-400 py-4 text-center italic">{t("Chưa có bản ghi lưu nào trên máy này!")}</p>
                 ) : (
                   <div className="divide-y divide-gray-100 mt-1.5">
                     {savedDesigns.map((sd, i) => (
@@ -4450,7 +4452,7 @@ export default function App() {
                         <button
                           onClick={(e) => handleDeleteSavedDesign(e, i)}
                           className="p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-md transition shrink-0"
-                          title="Xóa mẫu lưu"
+                          title={t("Xóa mẫu lưu")}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -4472,10 +4474,10 @@ export default function App() {
                 setShowSaveDialog(true);
               }}
               className="h-7 px-2 bg-indigo-600 hover:bg-indigo-700 text-white transition rounded-lg text-[11px] font-black uppercase flex items-center space-x-1 cursor-pointer shadow-md shadow-indigo-600/20 shrink-0 hover:scale-[1.02] active:scale-[0.98]"
-              title="Lưu bản thiết kế này sang loại khác hoặc tên mới hoàn toàn (Save As)"
+              title={t("Lưu bản thiết kế này sang loại khác hoặc tên mới hoàn toàn (Save As)")}
             >
               <Save className="w-3.5 h-3.5" />
-              <span>Lưu thành...</span>
+              <span>{t("Lưu thành...")}</span>
             </button>
           </div>
 
@@ -4483,7 +4485,7 @@ export default function App() {
           <div className="flex items-center space-x-1.5 border-l border-gray-150 pl-2">
             <label
               className="h-7 px-2 rounded-lg bg-white hover:bg-emerald-50 text-[11px] font-black text-emerald-900 tracking-wide flex items-center space-x-1.5 border border-emerald-300 hover:border-emerald-450 transition cursor-pointer shadow-sm shrink-0 hover:scale-[1.02] active:scale-[0.98]"
-              title="Chọn file thiết kế .kvl để khôi phục lại mẫu tem, khổ tem, khổ giấy và dữ liệu Excel đã lưu"
+              title={t("Chọn file thiết kế .kvl để khôi phục lại mẫu tem, khổ tem, khổ giấy và dữ liệu Excel đã lưu")}
               onClick={(e) => {
                 // @ts-ignore
                 if (window.pywebview && window.pywebview.api && window.pywebview.api.load_file_native) {
@@ -4493,7 +4495,7 @@ export default function App() {
               }}
             >
               <Upload className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Mở tệp</span>
+              <span>{t("Mở tệp")}</span>
               <input
                 id="file-import-input"
                 type="file"
@@ -4504,14 +4506,19 @@ export default function App() {
             </label>
           </div>
         </div>
+        <div id="lang-switch" role="group" aria-label={t("Ngôn ngữ")} className="flex items-center rounded-lg border border-gray-300 overflow-hidden text-[11px] font-black shrink-0">
+          {(["vi", "en"] as const).map((l) => (
+            <button key={l} type="button" aria-pressed={uiLang === l} onClick={() => setLang(l)} className={`px-2 py-1 cursor-pointer transition ${uiLang === l ? "bg-kiot-cyan text-white" : "bg-white text-slate-500 hover:bg-slate-50"}`}>{l === "vi" ? "VI" : "EN"}</button>
+          ))}
+        </div>
       </header>
 
       {/* 2. MAIN SPLIT AREA (LEFT SIDEBAR & RIGHT WORKSPACE CANVAS) */}
       <div className="md:hidden flex shrink-0 no-print border-b border-gray-200 bg-white text-[12px] font-extrabold" role="tablist" id="mobile-pane-tabs">
         <button type="button" role="tab" aria-selected={mobilePane === "panel"} onClick={() => setMobilePane("panel")}
-          className={`flex-1 py-2 ${mobilePane === "panel" ? "text-kiot-cyan border-b-2 border-kiot-cyan" : "text-slate-500"}`}>Thiết lập</button>
+          className={`flex-1 py-2 ${mobilePane === "panel" ? "text-kiot-cyan border-b-2 border-kiot-cyan" : "text-slate-500"}`}>{t("Thiết lập")}</button>
         <button type="button" role="tab" aria-selected={mobilePane === "canvas"} onClick={() => setMobilePane("canvas")}
-          className={`flex-1 py-2 ${mobilePane === "canvas" ? "text-kiot-cyan border-b-2 border-kiot-cyan" : "text-slate-500"}`}>Tem &amp; in</button>
+          className={`flex-1 py-2 ${mobilePane === "canvas" ? "text-kiot-cyan border-b-2 border-kiot-cyan" : "text-slate-500"}`}>{t("Tem & in")}</button>
       </div>
       <div className="flex-1 flex overflow-hidden min-h-0">
         
@@ -4524,15 +4531,13 @@ export default function App() {
               <div className="h-[44px] border-b border-gray-200 bg-slate-50 px-3 flex items-center justify-between select-none shrink-0">
                 <div className="flex items-center space-x-1.5 text-kiot-navy">
                   <span className="font-extrabold text-[11.5px] uppercase text-kiot-navy tracking-wider select-none shrink-0">
-                    THUỘC TÍNH
-                  </span>
+                    {t("THUỘC TÍNH")}</span>
                   {selectedIds.length > 1 ? (
                     <span className="text-[9.5px] bg-amber-50 text-amber-700 border border-amber-200 font-bold px-1.5 py-0.5 rounded-md uppercase shrink-0 animate-pulse">
-                      Đã chọn {selectedIds.length} phần tử (Ctrl+Click)
-                    </span>
+                      {t("Đã chọn {length} phần tử (Ctrl+Click)", { length: selectedIds.length })}</span>
                   ) : (
                     <span className="text-[9px] bg-sky-50 text-kiot-cyan border border-kiot-cyan/20 font-extrabold px-1.5 py-0.5 rounded-md uppercase shrink-0">
-                      {selectedObject.type === 'text' ? 'Văn bản' : selectedObject.type === 'barcode' ? 'Mã vạch' : selectedObject.type === 'qrcode' ? 'QR Code' : 'Hình ảnh'}
+                      {selectedObject.type === 'text' ? t("Văn bản") : selectedObject.type === 'barcode' ? t("Mã vạch") : selectedObject.type === 'qrcode' ? 'QR Code' : t("Hình ảnh")}
                     </span>
                   )}
                 </div>
@@ -4541,10 +4546,10 @@ export default function App() {
                   type="button"
                   onClick={() => handleSelectObject(null)}
                   className="py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white border border-emerald-700 hover:border-emerald-800 font-black text-[11px] rounded-lg transition-all duration-150 flex items-center justify-center space-x-1 cursor-pointer shadow-sm hover:shadow-md hover:scale-[1.04] active:scale-[0.96] focus:outline-none select-none"
-                  title="Đóng thuộc tính & Hủy chọn (Trở về Menu công cụ)"
+                  title={t("Đóng thuộc tính & Hủy chọn (Trở về Menu công cụ)")}
                 >
                   <X className="w-3.5 h-3.5 stroke-[3]" />
-                  <span>ĐÓNG (EXIT)</span>
+                  <span>{t("ĐÓNG (EXIT)")}</span>
                 </button>
               </div>
 
@@ -4569,8 +4574,7 @@ export default function App() {
               <footer className="p-2 bg-gray-50 border-t border-gray-200 text-[9.5px] text-gray-500 leading-normal flex items-start space-x-1 shrink-0">
                 <Info className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
                 <p className="leading-relaxed">
-                  Thay đổi vị trí, kích thước, căn lề và thuộc tính liên kết Excel của đối tượng. Nhấp <strong>ĐÓNG</strong> hoặc click vùng trống để lưu &amp; quay lại Menu Công cụ.
-                </p>
+                  {t("Thay đổi vị trí, kích thước, căn lề và thuộc tính liên kết Excel của đối tượng. Nhấp")+" "}<strong>{t("ĐÓNG")}</strong> {" "+t("hoặc click vùng trống để lưu & quay lại Menu Công cụ.")}</p>
               </footer>
             </div>
           ) : (
@@ -4591,9 +4595,9 @@ export default function App() {
                     ? 'bg-white text-[#0070F4] ring-4 ring-white/10 scale-105'
                     : 'bg-sky-200 text-sky-850 font-black'
                 }`}>1</span>
-                <span className={`text-[13.5px] md:text-[14.5px] font-black tracking-wide leading-none ${activeSidebarTab === 'layout' ? 'text-white' : 'text-slate-750 font-black'}`}>KHỔ TEM & GIẤY</span>
+                <span className={`text-[13.5px] md:text-[14.5px] font-black tracking-wide leading-none ${activeSidebarTab === 'layout' ? 'text-white' : 'text-slate-750 font-black'}`}>{t("KHỔ TEM & GIẤY")}</span>
               </div>
-              <span className={`text-[10.5px] font-extrabold normal-case leading-none mt-0.5 ${activeSidebarTab === 'layout' ? 'text-sky-100' : 'text-slate-500'}`}>Thiết lập khổ tem in</span>
+              <span className={`text-[10.5px] font-extrabold normal-case leading-none mt-0.5 ${activeSidebarTab === 'layout' ? 'text-sky-100' : 'text-slate-500'}`}>{t("Thiết lập khổ tem in")}</span>
             </button>
             <button
               onClick={() => setActiveSidebarTab('design')}
@@ -4609,9 +4613,9 @@ export default function App() {
                     ? 'bg-white text-[#00B63E] ring-4 ring-white/10 scale-105'
                     : 'bg-emerald-200 text-emerald-850 font-black'
                 }`}>2</span>
-                <span className={`text-[13.5px] md:text-[14.5px] font-black tracking-wide leading-none ${activeSidebarTab === 'design' ? 'text-white' : 'text-slate-750 font-black'}`}>THIẾT KẾ TEM</span>
+                <span className={`text-[13.5px] md:text-[14.5px] font-black tracking-wide leading-none ${activeSidebarTab === 'design' ? 'text-white' : 'text-slate-750 font-black'}`}>{t("THIẾT KẾ TEM")}</span>
               </div>
-              <span className={`text-[10.5px] font-extrabold normal-case leading-none mt-0.5 ${activeSidebarTab === 'design' ? 'text-emerald-100' : 'text-slate-500'}`}>Vẽ &amp; chỉnh sửa chi tiết</span>
+              <span className={`text-[10.5px] font-extrabold normal-case leading-none mt-0.5 ${activeSidebarTab === 'design' ? 'text-emerald-100' : 'text-slate-500'}`}>{t("Vẽ & chỉnh sửa chi tiết")}</span>
             </button>
           </div>
 
@@ -4631,19 +4635,17 @@ export default function App() {
                         ? "bg-sky-100 text-sky-950 border-sky-300 shadow-sm"
                         : "bg-sky-50/90 text-sky-900 border-sky-200 hover:bg-sky-100/60 hover:border-sky-300 shadow-3xs"
                     }`}
-                    title="Cấu hình kích thước của tem nhãn dán, độ bo góc, đường viền"
+                    title={t("Cấu hình kích thước của tem nhãn dán, độ bo góc, đường viền")}
                   >
                     <div className="flex items-center space-x-2.5">
                       <span className={`px-2 py-0.5 rounded font-extrabold text-[10px] tracking-wide shrink-0 transition-colors border ${
                         isStep1Expanded ? "bg-sky-600 text-white border-sky-700" : "bg-sky-100 text-sky-800 border-sky-200"
                       }`}>
-                        BƯỚC 1
-                      </span>
+                        {t("BƯỚC 1")}</span>
                       <span className={`font-extrabold text-[12.5px] uppercase tracking-wider transition-colors font-sans ${
                         isStep1Expanded ? "text-sky-950" : "text-sky-900 group-hover:text-sky-950"
                       }`}>
-                        Xác định khổ tem
-                      </span>
+                        {t("Xác định khổ tem")}</span>
                     </div>
                     <div className={`transition-transform duration-150 ${isStep1Expanded ? "rotate-180 text-sky-600" : "text-sky-500 group-hover:text-sky-650"}`}>
                       <ChevronDown className="w-4 h-4" />
@@ -4656,7 +4658,7 @@ export default function App() {
                       <section className="pb-1 space-y-2.5">
                         <h2 className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider flex items-center space-x-2 select-none">
                           <Compass className="w-3.5 h-3.5 text-blue-500" />
-                          <span>Kích thước tem nhãn ( 1 tem )</span>
+                          <span>{t("Kích thước tem nhãn ( 1 tem )")}</span>
                         </h2>
 
                       {/* POPULAR TOMY LABELS PICKER PANEL */}
@@ -4673,13 +4675,13 @@ export default function App() {
                               className="sr-only peer"
                             />
                             <div className="w-8 h-4.5 bg-slate-200 hover:bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all peer-checked:bg-[#00B63E]"></div>
-                            <span className="ml-2.5 text-[12px] font-black text-slate-700">Sử dụng tem Tomy phổ biến</span>
+                            <span className="ml-2.5 text-[12px] font-black text-slate-700">{t("Sử dụng tem Tomy phổ biến")}</span>
                           </label>
                         </div>
 
                         {usePopularTomy && (
                           <div className="relative space-y-1 pt-0.5 select-none no-print">
-                            <label className="block text-[11px] text-slate-500 font-bold mb-0.5">Chọn dòng tem Tomy:</label>
+                            <label className="block text-[11px] text-slate-500 font-bold mb-0.5">{t("Chọn dòng tem Tomy:")}</label>
                             <div className="relative col-span-2">
                               <button
                                 type="button"
@@ -4687,7 +4689,7 @@ export default function App() {
                                 className="w-full flex items-center justify-between pl-3 pr-2 py-1.5 text-[12px] bg-slate-50 border border-slate-250 hover:border-[#00B63E] rounded-lg text-slate-800 font-bold transition shadow-3xs cursor-pointer focus:ring-1 focus:ring-[#00B63E] text-left"
                               >
                                 <span className="truncate">
-                                  {TOMY_TEMPLATES_DATA.find(item => item.name === labelConfig.name)?.name || "Bấm chọn dòng tem..."}
+                                  {TOMY_TEMPLATES_DATA.find(item => item.name === labelConfig.name)?.name || t("Bấm chọn dòng tem...")}
                                 </span>
                                 <ChevronDown className="w-4 h-4 text-slate-400 shrink-0 ml-1.5" />
                               </button>
@@ -4699,7 +4701,7 @@ export default function App() {
                                     <Search className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                                     <input
                                       type="text"
-                                      placeholder="Nhập mã Tomy (ví dụ: 138, 105, A4...)"
+                                      placeholder={t("Nhập mã Tomy (ví dụ: 138, 105, A4...)")}
                                       value={tomySearchQuery}
                                       onChange={(e) => setTomySearchQuery(e.target.value)}
                                       className="w-full bg-transparent border-0 text-xs focus:ring-0 focus:outline-none font-bold text-slate-700"
@@ -4730,8 +4732,7 @@ export default function App() {
                                       if (filtered.length === 0) {
                                         return (
                                           <div className="py-4 px-3 text-xs text-slate-450 font-semibold text-center italic">
-                                            Không tìm thấy dòng tem nào
-                                          </div>
+                                            {t("Không tìm thấy dòng tem nào")}</div>
                                         );
                                       }
 
@@ -4751,10 +4752,9 @@ export default function App() {
                                             <div className="flex flex-col">
                                               <span className="font-extrabold">{item.name}</span>
                                               <span className="text-[10px] text-slate-400 font-medium">
-                                                Giấy {item.paperSize} • {item.rows} hàng x {item.cols} cột ({item.width}x{item.height} mm)
-                                              </span>
+                                                {t("Giấy {paperSize} • {rows} hàng x {cols} cột ({width}x{height} mm)", { paperSize: item.paperSize, rows: item.rows, cols: item.cols, width: item.width, height: item.height })}</span>
                                             </div>
-                                            {isSelected && <span className="text-[10px] bg-[#00B63E] text-white px-1 py-0.5 rounded font-black shrink-0 ml-1.5">Đã chọn</span>}
+                                            {isSelected && <span className="text-[10px] bg-[#00B63E] text-white px-1 py-0.5 rounded font-black shrink-0 ml-1.5">{t("Đã chọn")}</span>}
                                           </button>
                                         );
                                       });
@@ -4769,7 +4769,7 @@ export default function App() {
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11.5px] text-slate-500 font-bold mb-1">Chiều rộng (mm)</label>
+                      <label className="block text-[11.5px] text-slate-500 font-bold mb-1">{t("Chiều rộng (mm)")}</label>
                       <div className="relative">
                         <input
                           id="width-input"
@@ -4784,7 +4784,7 @@ export default function App() {
                               setSizeError(SIZE_HINT);
                             } else {
                               setSizeError(null);
-                              applyPresetDimensions(w, labelConfig.height, "Cấu hình tự chọn");
+                              applyPresetDimensions(w, labelConfig.height, t("Cấu hình tự chọn"));
                             }
                           }}
                           onBlur={() => {
@@ -4799,7 +4799,7 @@ export default function App() {
                     </div>
 
                     <div>
-                      <label className="block text-[11.5px] text-slate-500 font-bold mb-1">Chiều cao (mm)</label>
+                      <label className="block text-[11.5px] text-slate-500 font-bold mb-1">{t("Chiều cao (mm)")}</label>
                       <div className="relative">
                         <input
                           id="height-input"
@@ -4814,7 +4814,7 @@ export default function App() {
                               setSizeError(SIZE_HINT);
                             } else {
                               setSizeError(null);
-                              applyPresetDimensions(labelConfig.width, h, "Cấu hình tự chọn");
+                              applyPresetDimensions(labelConfig.width, h, t("Cấu hình tự chọn"));
                             }
                           }}
                           onBlur={() => {
@@ -4836,7 +4836,7 @@ export default function App() {
 
                   {/* Quick Preset Dropdown List with Checkmark indicators */}
                   <div className="space-y-1.5 pt-1 relative">
-                    <span className="block text-[11.5px] text-gray-400 font-bold select-none">Thay đổi nhanh khổ tem</span>
+                    <span className="block text-[11.5px] text-gray-400 font-bold select-none">{t("Thay đổi nhanh khổ tem")}</span>
                     
                     <button
                       type="button"
@@ -4844,13 +4844,13 @@ export default function App() {
                       className="w-full flex items-center justify-between bg-white border border-gray-300 hover:border-kiot-cyan rounded-lg px-2.5 py-2 text-sm font-bold text-slate-800 focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan outline-none text-left cursor-pointer transition shadow-xs"
                     >
                       <span className="truncate">
-                        {labelConfig.width === 65 && labelConfig.height === 45 ? "65x45mm (Tem Kệ)" :
-                         labelConfig.width === 75 && labelConfig.height === 100 ? "75x100mm (Shipping)" :
-                         labelConfig.width === 100 && labelConfig.height === 150 ? "100x150mm (Shipping)" :
-                         labelConfig.width === 40 && labelConfig.height === 30 ? "40x30mm (Nhãn Giá)" :
-                         labelConfig.width === 50 && labelConfig.height === 30 ? "50x30mm (Tài Sản)" :
-                         labelConfig.width === 50 && labelConfig.height === 50 ? "50x50mm (Mã QR)" :
-                         `Khổ tự chọn (${labelConfig.width}x${labelConfig.height}mm)`}
+                        {labelConfig.width === 65 && labelConfig.height === 45 ? t("65x45mm (Tem Kệ)") :
+                         labelConfig.width === 75 && labelConfig.height === 100 ? t("75x100mm (Shipping Trung)") :
+                         labelConfig.width === 100 && labelConfig.height === 150 ? t("100x150mm (Shipping Lớn - TMĐT)") :
+                         labelConfig.width === 40 && labelConfig.height === 30 ? t("40x30mm (Nhãn Giá)") :
+                         labelConfig.width === 50 && labelConfig.height === 30 ? t("50x30mm (Tài Sản)") :
+                         labelConfig.width === 50 && labelConfig.height === 50 ? t("50x50mm (Mã QR)") :
+                         t("Khổ tự chọn ({width}x{height}mm)", { width: labelConfig.width, height: labelConfig.height })}
                       </span>
                       <ChevronDown className="w-4 h-4 text-gray-400 shrink-0 ml-1" />
                     </button>
@@ -4868,14 +4868,14 @@ export default function App() {
                           <button
                             type="button"
                             onClick={() => {
-                              applyPresetDimensions(65, 45, "Tem Kệ Siêu Thị");
+                              applyPresetDimensions(65, 45, t("Tem Kệ Siêu Thị"));
                               setIsQuickSizeOpen(false);
                             }}
                             className={`w-full flex items-center justify-between px-3 py-2.5 hover:bg-slate-50 text-left font-semibold transition cursor-pointer ${
                               labelConfig.width === 65 && labelConfig.height === 45 ? "text-kiot-navy bg-sky-50/35" : "text-slate-700"
                             }`}
                           >
-                            <span>65x45mm (Tem Kệ - Nhãn Siêu Thị)</span>
+                            <span>{t("65x45mm (Tem Kệ - Nhãn Siêu Thị)")}</span>
                             {labelConfig.width === 65 && labelConfig.height === 45 && (
                               <span className="text-kiot-cyan font-bold text-sm">✓</span>
                             )}
@@ -4884,14 +4884,14 @@ export default function App() {
                           <button
                             type="button"
                             onClick={() => {
-                              applyPresetDimensions(75, 100, "Nhãn Giao hàng 75x100");
+                              applyPresetDimensions(75, 100, t("Nhãn Giao hàng 75x100"));
                               setIsQuickSizeOpen(false);
                             }}
                             className={`w-full flex items-center justify-between px-3 py-2.5 hover:bg-slate-50 text-left font-semibold transition cursor-pointer ${
                               labelConfig.width === 75 && labelConfig.height === 100 ? "text-kiot-navy bg-sky-50/35" : "text-slate-700"
                             }`}
                           >
-                            <span>75x100mm (Shipping Trung)</span>
+                            <span>{t("75x100mm (Shipping Trung)")}</span>
                             {labelConfig.width === 75 && labelConfig.height === 100 && (
                               <span className="text-kiot-cyan font-bold text-sm">✓</span>
                             )}
@@ -4900,14 +4900,14 @@ export default function App() {
                           <button
                             type="button"
                             onClick={() => {
-                              applyPresetDimensions(100, 150, "Nhãn Giao hàng 100x150");
+                              applyPresetDimensions(100, 150, t("Nhãn Giao hàng 100x150"));
                               setIsQuickSizeOpen(false);
                             }}
                             className={`w-full flex items-center justify-between px-3 py-2.5 hover:bg-slate-50 text-left font-semibold transition cursor-pointer ${
                               labelConfig.width === 100 && labelConfig.height === 150 ? "text-kiot-navy bg-sky-50/35" : "text-slate-700"
                             }`}
                           >
-                            <span>100x150mm (Shipping Lớn - TMĐT)</span>
+                            <span>{t("100x150mm (Shipping Lớn - TMĐT)")}</span>
                             {labelConfig.width === 100 && labelConfig.height === 150 && (
                               <span className="text-kiot-cyan font-bold text-sm">✓</span>
                             )}
@@ -4916,14 +4916,14 @@ export default function App() {
                           <button
                             type="button"
                             onClick={() => {
-                              applyPresetDimensions(40, 30, "Mã giá lẻ");
+                              applyPresetDimensions(40, 30, t("Mã giá lẻ"));
                               setIsQuickSizeOpen(false);
                             }}
                             className={`w-full flex items-center justify-between px-3 py-2.5 hover:bg-slate-50 text-left font-semibold transition cursor-pointer ${
                               labelConfig.width === 40 && labelConfig.height === 30 ? "text-kiot-navy bg-sky-50/35" : "text-slate-700"
                             }`}
                           >
-                            <span>40x30mm (Nhãn Giá Bán)</span>
+                            <span>{t("40x30mm (Nhãn Giá Bán)")}</span>
                             {labelConfig.width === 40 && labelConfig.height === 30 && (
                               <span className="text-kiot-cyan font-bold text-sm">✓</span>
                             )}
@@ -4932,14 +4932,14 @@ export default function App() {
                           <button
                             type="button"
                             onClick={() => {
-                              applyPresetDimensions(50, 30, "Mẫu TSCĐ");
+                              applyPresetDimensions(50, 30, t("Mẫu TSCĐ"));
                               setIsQuickSizeOpen(false);
                             }}
                             className={`w-full flex items-center justify-between px-3 py-2.5 hover:bg-slate-50 text-left font-semibold transition cursor-pointer ${
                               labelConfig.width === 50 && labelConfig.height === 30 ? "text-kiot-navy bg-sky-50/35" : "text-slate-700"
                             }`}
                           >
-                            <span>50x30mm (Mã Tài Sản)</span>
+                            <span>{t("50x30mm (Mã Tài Sản)")}</span>
                             {labelConfig.width === 50 && labelConfig.height === 30 && (
                               <span className="text-kiot-cyan font-bold text-sm">✓</span>
                             )}
@@ -4948,14 +4948,14 @@ export default function App() {
                           <button
                             type="button"
                             onClick={() => {
-                              applyPresetDimensions(50, 50, "QR Thanh toán");
+                              applyPresetDimensions(50, 50, t("QR Thanh toán"));
                               setIsQuickSizeOpen(false);
                             }}
                             className={`w-full flex items-center justify-between px-3 py-2.5 hover:bg-slate-50 text-left font-semibold transition cursor-pointer ${
                               labelConfig.width === 50 && labelConfig.height === 50 ? "text-kiot-navy bg-sky-50/35" : "text-slate-700"
                             }`}
                           >
-                            <span>50x50mm (Mã QR Thanh Toán)</span>
+                            <span>{t("50x50mm (Mã QR Thanh Toán)")}</span>
                             {labelConfig.width === 50 && labelConfig.height === 50 && (
                               <span className="text-kiot-cyan font-bold text-sm">✓</span>
                             )}
@@ -4970,7 +4970,7 @@ export default function App() {
                 <section className="space-y-3.5">
                   <h2 className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider flex items-center space-x-2 select-none">
                     <CheckSquare className="w-3.5 h-3.5 text-kiot-cyan" />
-                    <span>Viền tem &amp; Bo góc</span>
+                    <span>{t("Viền tem & Bo góc")}</span>
                   </h2>
                   
                   <div className="flex items-center space-x-2 text-xs">
@@ -4982,25 +4982,24 @@ export default function App() {
                       className="w-4.5 h-4.5 text-kiot-cyan focus:ring-kiot-cyan/50 border-gray-300 rounded cursor-pointer"
                     />
                     <label htmlFor="showBorderCheckbox" className="font-bold text-[12.5px] text-slate-700 cursor-pointer select-none">
-                      Viền tem nhãn
-                    </label>
+                      {t("Viền tem nhãn")}</label>
                   </div>
 
                   {sheetConfig.showBorder && (
                     <div className="grid grid-cols-2 gap-3 text-xs pl-6 transition-all duration-150">
                       <div>
-                        <label className="block text-[11.5px] text-slate-500 font-bold mb-1">Hình dáng viền</label>
+                        <label className="block text-[11.5px] text-slate-500 font-bold mb-1">{t("Hình dáng viền")}</label>
                         <select
                           value={sheetConfig.borderRadius === 0 ? "square" : "rounded"}
                           onChange={(e) => setSheetConfig(prev => ({ ...prev, borderRadius: e.target.value === "square" ? 0 : 2 }))}
                           className="w-full bg-white border border-gray-300 rounded-lg p-1.5 text-sm outline-none cursor-pointer text-slate-800 font-bold focus:border-kiot-cyan"
                         >
-                          <option value="square">Vuông góc</option>
-                          <option value="rounded">Bo tròn</option>
+                          <option value="square">{t("Vuông góc")}</option>
+                          <option value="rounded">{t("Bo tròn")}</option>
                         </select>
                       </div>
                       <div>
-                        <label className="block text-[11.5px] text-slate-500 font-bold mb-1">Độ bo góc (Radius)</label>
+                        <label className="block text-[11.5px] text-slate-500 font-bold mb-1">{t("Độ bo góc (Radius)")}</label>
                         <input
                           id="border-radius-input"
                           type="text"
@@ -5028,7 +5027,7 @@ export default function App() {
                         />
                       </div>
                       <div className="col-span-2">
-                        <label className="block text-[11.5px] text-slate-500 font-bold mb-1">Màu đường viền</label>
+                        <label className="block text-[11.5px] text-slate-500 font-bold mb-1">{t("Màu đường viền")}</label>
                         <div className="flex items-center space-x-2">
                           <input
                             type="color"
@@ -5064,7 +5063,7 @@ export default function App() {
                         </div>
                       </div>
                       <div className="col-span-2">
-                        <label className="block text-[11.5px] text-slate-500 font-bold mb-1">Độ dày nét kẻ viền (px)</label>
+                        <label className="block text-[11.5px] text-slate-500 font-bold mb-1">{t("Độ dày nét kẻ viền (px)")}</label>
                         <input
                           type="range"
                           min={1}
@@ -5075,9 +5074,9 @@ export default function App() {
                           className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer mt-1"
                         />
                         <div className="flex justify-between text-[10.5px] text-gray-500 font-bold mt-1 select-none">
-                          <span>Mỏng (1px)</span>
-                          <span>Dày ({sheetConfig.borderWidth}px)</span>
-                          <span>Dày nhất (4px)</span>
+                          <span>{t("Mỏng (1px)")}</span>
+                          <span>{t("Dày ({borderWidth}px)", { borderWidth: sheetConfig.borderWidth })}</span>
+                          <span>{t("Dày nhất (4px)")}</span>
                         </div>
                       </div>
                     </div>
@@ -5098,19 +5097,17 @@ export default function App() {
                         ? "bg-indigo-100 text-indigo-950 border-indigo-300 shadow-sm"
                         : "bg-indigo-50/90 text-indigo-900 border-indigo-200 hover:bg-indigo-100/60 hover:border-indigo-300 shadow-3xs"
                     }`}
-                    title="Cấu hình kích thước khổ giấy văn phòng (A4/A5) hoặc thiết lập cuộn tem nhiệt"
+                    title={t("Cấu hình kích thước khổ giấy văn phòng (A4/A5) hoặc thiết lập cuộn tem nhiệt")}
                   >
                     <div className="flex items-center space-x-2.5">
                       <span className={`px-2 py-0.5 rounded font-extrabold text-[10px] tracking-wide shrink-0 transition-colors border ${
                         isStep2Expanded ? "bg-indigo-600 text-white border-indigo-700" : "bg-indigo-100 text-indigo-800 border-indigo-200"
                       }`}>
-                        BƯỚC 2
-                      </span>
+                        {t("BƯỚC 2")}</span>
                       <span className={`font-extrabold text-[12.5px] uppercase tracking-wider transition-colors font-sans ${
                         isStep2Expanded ? "text-indigo-950" : "text-indigo-900 group-hover:text-indigo-950"
                       }`}>
-                        Thiết lập khổ giấy và máy in
-                      </span>
+                        {t("Thiết lập khổ giấy và máy in")}</span>
                     </div>
                     <div className={`transition-transform duration-150 ${isStep2Expanded ? "rotate-180 text-indigo-600" : "text-indigo-500 group-hover:text-indigo-600"}`}>
                       <ChevronDown className="w-4 h-4" />
@@ -5123,8 +5120,8 @@ export default function App() {
                         <div className="p-2.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11.5px] rounded-lg font-semibold flex items-start space-x-1.5 shadow-3xs animate-fadeIn no-print">
                           <span className="text-sm mt-0.5">⚡</span>
                           <div className="flex-1">
-                            <span className="text-emerald-950 font-extrabold block text-xs">Đã đồng bộ mẫu Tomy mặc định!</span>
-                            <span className="text-emerald-700 text-[10.5px] leading-tight block mt-0.5">Hệ thống đã tự động áp dụng khổ giấy <strong>{TOMY_TEMPLATES_DATA.find(t => t.name === labelConfig.name)?.paperSize || "A4/A5"}</strong> ({TOMY_TEMPLATES_DATA.find(t => t.name === labelConfig.name)?.orientation === "landscape" ? "Khổ ngang" : "Khổ dọc"}), các lề giấy chuẩn, số ô lưới và khe hở chính xác cho <strong className="text-emerald-950 font-bold">{labelConfig.name}</strong>.</span>
+                            <span className="text-emerald-950 font-extrabold block text-xs">{t("Đã đồng bộ mẫu Tomy mặc định!")}</span>
+                            <span className="text-emerald-700 text-[10.5px] leading-tight block mt-0.5">{t("Hệ thống đã tự động áp dụng khổ giấy")+" "}<strong>{TOMY_TEMPLATES_DATA.find(t => t.name === labelConfig.name)?.paperSize || "A4/A5"}</strong> ({TOMY_TEMPLATES_DATA.find(t => t.name === labelConfig.name)?.orientation === "landscape" ? t("Khổ ngang") : t("Khổ dọc")}{t("), các lề giấy chuẩn, số ô lưới và khe hở chính xác cho")+" "}<strong className="text-emerald-950 font-bold">{labelConfig.name}</strong>.</span>
                           </div>
                         </div>
                       )}
@@ -5133,7 +5130,7 @@ export default function App() {
                       <section className="space-y-2.5">
                         <h2 className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center space-x-1.5 select-none mb-1">
                           <Grid3X3 className="w-3.5 h-3.5 text-slate-400" />
-                          <span>Khổ giấy và máy in</span>
+                          <span>{t("Khổ giấy và máy in")}</span>
                         </h2>
                   <div className="grid grid-cols-2 gap-3 text-[12px]">
                     <button
@@ -5144,11 +5141,11 @@ export default function App() {
                           ? 'bg-sky-50/50 border-kiot-cyan text-kiot-navy ring-1 ring-kiot-cyan/50 shadow-xs'
                           : 'bg-white border-gray-200 hover:bg-slate-50 text-slate-550'
                       }`}
-                      title="Sử dụng máy in nhãn chuyên dụng / máy in chuyển nhiệt in 1 nhãn liên tiếp trên cuộn giấy dán."
+                      title={t("Sử dụng máy in nhãn chuyên dụng / máy in chuyển nhiệt in 1 nhãn liên tiếp trên cuộn giấy dán.")}
                     >
                       <span className="text-base shrink-0">📠</span>
                       <div className="min-w-0 flex-1">
-                        <p className="font-extrabold text-[12.5px] leading-tight text-slate-800">In nhãn cuộn</p>
+                        <p className="font-extrabold text-[12.5px] leading-tight text-slate-800">{t("In nhãn cuộn")}</p>
                         <p className="text-[10px] text-slate-400 font-medium truncate mt-1">Xprinter/Zebra...</p>
                       </div>
                     </button>
@@ -5160,12 +5157,12 @@ export default function App() {
                           ? 'bg-sky-50/50 border-kiot-cyan text-kiot-navy ring-1 ring-kiot-cyan/50 shadow-xs'
                           : 'bg-white border-gray-200 hover:bg-slate-50 text-slate-550'
                       }`}
-                      title="Sử dụng máy in văn phòng tiêu chuẩn (A4/A5...). Nhãn được sắp xếp thành mạng lưới cột/hàng trên tờ giấy dán."
+                      title={t("Sử dụng máy in văn phòng tiêu chuẩn (A4/A5...). Nhãn được sắp xếp thành mạng lưới cột/hàng trên tờ giấy dán.")}
                     >
                       <span className="text-base shrink-0">🖨️</span>
                       <div className="min-w-0 flex-1">
-                        <p className="font-extrabold text-[12.5px] leading-tight text-slate-800">In văn phòng</p>
-                        <p className="text-[10px] text-slate-400 font-medium truncate mt-1">Giấy Decal A4/A5</p>
+                        <p className="font-extrabold text-[12.5px] leading-tight text-slate-800">{t("In văn phòng")}</p>
+                        <p className="text-[10px] text-slate-400 font-medium truncate mt-1">{t("Giấy Decal A4/A5")}</p>
                       </div>
                     </button>
                   </div>
@@ -5175,11 +5172,10 @@ export default function App() {
                   <>
                     <section className="border-b border-gray-150 pb-4 space-y-3.5">
                       <h2 className="text-[12.5px] font-black text-[#475569] uppercase tracking-wider select-none">
-                        Khổ giấy văn phòng
-                      </h2>
+                        {t("Khổ giấy văn phòng")}</h2>
                       <div className="grid grid-cols-2 gap-3 text-xs">
                         <div>
-                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">Khổ giấy</label>
+                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">{t("Khổ giấy")}</label>
                           <select
                             value={sheetConfig.paperSize}
                             onChange={(e) => setSheetConfig(prev => ({ ...prev, paperSize: e.target.value as any }))}
@@ -5187,19 +5183,19 @@ export default function App() {
                           >
                             <option value="A4">A4 (210x297mm)</option>
                             <option value="A5">A5 (148x210mm)</option>
-                            <option value="custom">Kích thước riêng</option>
+                            <option value="custom">{t("Kích thước riêng")}</option>
                           </select>
                         </div>
 
                         <div>
-                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">Chiều giấy</label>
+                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">{t("Chiều giấy")}</label>
                           <select
                             value={sheetConfig.orientation}
                             onChange={(e) => setSheetConfig(prev => ({ ...prev, orientation: e.target.value as any }))}
                             className="w-full bg-white border border-gray-300 rounded-lg p-1.5 text-sm outline-none cursor-pointer text-slate-800 font-bold focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan"
                           >
-                            <option value="portrait">Khổ dọc</option>
-                            <option value="landscape">Khổ ngang</option>
+                            <option value="portrait">{t("Khổ dọc")}</option>
+                            <option value="landscape">{t("Khổ ngang")}</option>
                           </select>
                         </div>
                       </div>
@@ -5207,7 +5203,7 @@ export default function App() {
                       {sheetConfig.paperSize === 'custom' && (
                         <div className="grid grid-cols-2 gap-3 text-xs">
                           <div>
-                            <label className="block text-[11px] text-slate-500 font-bold mb-1">Ch.rộng giấy (mm)</label>
+                            <label className="block text-[11px] text-slate-500 font-bold mb-1">{t("Ch.rộng giấy (mm)")}</label>
                             <input
                               id="custom-width-input"
                               type="text"
@@ -5234,7 +5230,7 @@ export default function App() {
                             />
                           </div>
                           <div>
-                            <label className="block text-[11px] text-slate-500 font-bold mb-1">Ch.cao giấy (mm)</label>
+                            <label className="block text-[11px] text-slate-500 font-bold mb-1">{t("Ch.cao giấy (mm)")}</label>
                             <input
                               id="custom-height-input"
                               type="text"
@@ -5267,11 +5263,10 @@ export default function App() {
                     {/* 3. BỐ CỤC LƯỚI */}
                     <section className="border-b border-gray-150 pb-4 space-y-3.5">
                       <h2 className="text-[12.5px] font-black text-[#475569] uppercase tracking-wider select-none">
-                        Bố cục tem nhãn
-                      </h2>
+                        {t("Bố cục tem nhãn")}</h2>
                       <div className="grid grid-cols-2 gap-3 text-xs">
                         <div>
-                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">Số Cột (Cols)</label>
+                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">{t("Số Cột (Cols)")}</label>
                           <input
                             id="cols-input"
                             type="text"
@@ -5298,7 +5293,7 @@ export default function App() {
                           />
                         </div>
                         <div>
-                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">Số Hàng (Rows)</label>
+                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">{t("Số Hàng (Rows)")}</label>
                           <input
                             id="rows-input"
                             type="text"
@@ -5327,7 +5322,7 @@ export default function App() {
                       </div>
 
                       <div className="p-3 border border-blue-100 bg-blue-50/25 text-[12px] text-blue-900 rounded-lg font-bold flex items-center justify-between shadow-2xs">
-                        <span>Số lượng tem tối đa trên trang: <strong className="text-blue-600 font-black">{sheetConfig.cols * sheetConfig.rows} tem</strong></span>
+                        <span>{t("Số lượng tem tối đa trên trang:")+" "}<strong className="text-blue-600 font-black">{sheetConfig.cols * sheetConfig.rows} {t("tem")}</strong></span>
                       </div>
 
                       {/* Cảnh báo lưới tem vượt khổ giấy */}
@@ -5344,10 +5339,9 @@ export default function App() {
                         const maxRows = Math.max(0, Math.floor((netH + sheetConfig.rowGap) / (labelConfig.height + sheetConfig.rowGap)));
                         return (
                           <div className="p-2.5 border border-amber-200 bg-amber-50 text-[11.5px] text-amber-900 rounded-lg font-bold leading-snug" role="alert">
-                            ⚠️ Lưới {sheetConfig.cols} cột × {sheetConfig.rows} hàng cần {needW.toFixed(1)} × {needH.toFixed(1)} mm nhưng vùng in chỉ có {netW.toFixed(1)} × {netH.toFixed(1)} mm
-                            {maxCols === 0 || maxRows === 0
-                              ? ` — tem ${labelConfig.width} × ${labelConfig.height} mm lớn hơn vùng in, hãy đổi khổ giấy, hướng giấy hoặc giảm lề.`
-                              : ` — khổ giấy này chỉ đủ tối đa ${maxCols} cột × ${maxRows} hàng (${maxCols * maxRows} tem).`}
+                            {t("⚠️ Lưới {cols} cột × {rows} hàng cần {v} × {v2} mm nhưng vùng in chỉ có {v3} × {v4} mm", { cols: sheetConfig.cols, rows: sheetConfig.rows, v: needW.toFixed(1), v2: needH.toFixed(1), v3: netW.toFixed(1), v4: netH.toFixed(1) })}{maxCols === 0 || maxRows === 0
+                              ? t(" — tem {width} × {height} mm lớn hơn vùng in, hãy đổi khổ giấy, hướng giấy hoặc giảm lề.", { width: labelConfig.width, height: labelConfig.height })
+                              : t(" — khổ giấy này chỉ đủ tối đa {maxCols} cột × {maxRows} hàng ({v} tem).", { maxCols, maxRows, v: maxCols * maxRows })}
                           </div>
                         );
                       })()}
@@ -5367,24 +5361,23 @@ export default function App() {
                           applyPresetDimensions(
                             Math.max(10, Math.floor(optW * 10) / 10),
                             Math.max(10, Math.floor(optH * 10) / 10),
-                            `Khớp Lưới ${sheetConfig.cols}x${sheetConfig.rows}`
+                            t("Khớp Lưới {cols}x{rows}", { cols: sheetConfig.cols, rows: sheetConfig.rows })
                           );
                         }}
                         className="w-full py-2 bg-kiot-cyan hover:bg-sky-600 text-white rounded-lg text-[11.5px] font-black text-center select-none cursor-pointer transition border border-kiot-cyan flex items-center justify-center space-x-1.5 shadow-sm"
-                        title="Tính toán kích thước Chiều rộng và Chiều cao của tem nhãn dán tối ưu nhất dựa theo lề giấy và khe hở, giúp nhãn khít khịt với tờ đề can in ấn sẵn."
+                        title={t("Tính toán kích thước Chiều rộng và Chiều cao của tem nhãn dán tối ưu nhất dựa theo lề giấy và khe hở, giúp nhãn khít khịt với tờ đề can in ấn sẵn.")}
                       >
-                        ⚡ <span>Khớp vừa nhãn vào lưới giấy</span>
+                        ⚡ <span>{t("Khớp vừa nhãn vào lưới giấy")}</span>
                       </button>
                     </section>
 
                     {/* 4. KHOẢNG CÁCH LỀ GIẤY */}
                     <section className="border-b border-gray-150 pb-4 space-y-3">
                       <h2 className="text-[12.5px] font-black text-[#475569] uppercase tracking-wider select-none">
-                        Lề trang
-                      </h2>
+                        {t("Lề trang")}</h2>
                       <div className="grid grid-cols-2 gap-3 text-xs">
                         <div>
-                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">Lề trái (mm)</label>
+                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">{t("Lề trái (mm)")}</label>
                           <input
                             id="margin-left-input"
                             type="text"
@@ -5411,7 +5404,7 @@ export default function App() {
                           />
                         </div>
                         <div>
-                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">Lề phải (mm)</label>
+                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">{t("Lề phải (mm)")}</label>
                           <input
                             id="margin-right-input"
                             type="text"
@@ -5438,7 +5431,7 @@ export default function App() {
                           />
                         </div>
                         <div>
-                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">Lề trên (mm)</label>
+                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">{t("Lề trên (mm)")}</label>
                           <input
                             id="margin-top-input"
                             type="text"
@@ -5465,7 +5458,7 @@ export default function App() {
                           />
                         </div>
                         <div>
-                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">Lề dưới (mm)</label>
+                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">{t("Lề dưới (mm)")}</label>
                           <input
                             id="margin-bottom-input"
                             type="text"
@@ -5497,11 +5490,10 @@ export default function App() {
                     {/* 5. KHE HỞ GIỮA CÁC Ô */}
                     <section className="space-y-3">
                       <h2 className="text-[12.5px] font-black text-[#475569] uppercase tracking-wider select-none">
-                        Khoảng cách giữa các tem
-                      </h2>
+                        {t("Khoảng cách giữa các tem")}</h2>
                       <div className="grid grid-cols-2 gap-3 text-xs">
                         <div>
-                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">Khoảng cách cột (mm)</label>
+                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">{t("Khoảng cách cột (mm)")}</label>
                           <input
                             id="col-gap-office-input"
                             type="text"
@@ -5528,7 +5520,7 @@ export default function App() {
                           />
                         </div>
                         <div>
-                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">Khoảng cách hàng (mm)</label>
+                          <label className="block text-[11.5px] text-slate-500 font-bold mb-1">{t("Khoảng cách hàng (mm)")}</label>
                           <input
                             id="row-gap-office-input"
                             type="text"
@@ -5563,18 +5555,15 @@ export default function App() {
                     {/* INFO BOX */}
                     <div className="p-3 bg-sky-50/50 border border-kiot-cyan/25 rounded-lg text-kiot-navy text-[12px] leading-relaxed shadow-xs">
                       <p className="font-bold text-kiot-navy flex items-center mb-1 text-[12.5px]">
-                        <span className="mr-1.5 text-base">📠</span> Thiết lập khổ tem nhãn cuộn
-                      </p>
+                        <span className="mr-1.5 text-base">📠</span> {" "+t("Thiết lập khổ tem nhãn cuộn")}</p>
                       <p className="text-[10.5px]">
-                        Dùng cho máy in mã vạch chuyên dụng in cuộn chuyển nhiệt. Hỗ trợ chia cột tem tự do và khoảng trống gap đứt dòng.
-                      </p>
+                        {t("Dùng cho máy in mã vạch chuyên dụng in cuộn chuyển nhiệt. Hỗ trợ chia cột tem tự do và khoảng trống gap đứt dòng.")}</p>
                     </div>
 
                     {/* SET COLS */}
                     <div className="space-y-1.5">
                       <label className="block text-[11px] text-slate-900 font-black uppercase tracking-wider select-none">
-                        Thiết lập số tem 1 hàng
-                      </label>
+                        {t("Thiết lập số tem 1 hàng")}</label>
                       <div className="relative">
                         <input
                           id="cols-roll-input"
@@ -5599,9 +5588,9 @@ export default function App() {
                             }
                           }}
                           className="w-full pl-2 pr-7 py-1.5 text-sm bg-white border border-gray-300 rounded-lg text-slate-800 font-bold font-mono focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan outline-none"
-                          placeholder="Nhập số tem ví dụ: 1, 2, 3, 4..."
+                          placeholder={t("Nhập số tem ví dụ: 1, 2, 3, 4...")}
                         />
-                        <span className="absolute right-2 top-2 text-[11px] text-gray-400 font-extrabold select-none">tem</span>
+                        <span className="absolute right-2 top-2 text-[11px] text-gray-400 font-extrabold select-none">{t("tem")}</span>
                       </div>
                     </div>
 
@@ -5612,10 +5601,9 @@ export default function App() {
                     <div className="space-y-1.5">
                       <label className="block text-[10px] text-gray-500 font-bold uppercase tracking-wider select-none flex justify-between items-center">
                         <span className="flex items-center gap-1">
-                          Bề rộng cuộn tem (mm)
-                          <InfoTooltip content="Tổng chiều rộng của cuộn giấy. Khi nhập số này, lề 2 bên sẽ tự động tính toán ngược lại." />
+                          {t("Bề rộng cuộn tem (mm)")}<InfoTooltip content={t("Tổng chiều rộng của cuộn giấy. Khi nhập số này, lề 2 bên sẽ tự động tính toán ngược lại.")} />
                         </span>
-                        <span className="text-kiot-cyan select-none capitalize">Tính ngược lề</span>
+                        <span className="text-kiot-cyan select-none capitalize">{t("Tính ngược lề")}</span>
                       </label>
                       <div className="relative">
                         <input
@@ -5651,7 +5639,7 @@ export default function App() {
                              setSheetConfig(prev => ({ ...prev, rollSideMargin: computedSideMargin }));
                           }}
                           className="w-full pl-2 pr-7 py-1.5 text-sm bg-white border border-gray-300 rounded-lg text-slate-800 font-bold font-mono focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan outline-none"
-                          placeholder="Ví dụ: 75, 110..."
+                          placeholder={t("Ví dụ: 75, 110...")}
                         />
                         <span className="absolute right-2 top-2 text-[11px] text-gray-400 font-extrabold select-none">mm</span>
                       </div>
@@ -5660,8 +5648,8 @@ export default function App() {
                     {/* SET ROLL SIDE MARGIN */}
                     <div className="space-y-1.5">
                       <label className="block text-[10px] text-gray-500 font-bold uppercase tracking-wider select-none flex items-center gap-1">
-                        <span>Lề 2 bên (mm)</span>
-                        <InfoTooltip content="Khoảng trống lề từ hai viền mép ngoài của phôi cuộn giấy đến viền ngoài của tem dán." />
+                        <span>{t("Lề 2 bên (mm)")}</span>
+                        <InfoTooltip content={t("Khoảng trống lề từ hai viền mép ngoài của phôi cuộn giấy đến viền ngoài của tem dán.")} />
                       </label>
                       <div className="relative">
                         <input
@@ -5691,7 +5679,7 @@ export default function App() {
                             }
                           }}
                           className="w-full pl-2 pr-7 py-1.5 text-sm bg-white border border-gray-300 rounded-lg text-slate-800 font-bold font-mono focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan outline-none"
-                          placeholder="Ví dụ: 1.5, 2, 5..."
+                          placeholder={t("Ví dụ: 1.5, 2, 5...")}
                         />
                         <span className="absolute right-2 top-2 text-[11px] text-gray-400 font-extrabold select-none">mm</span>
                       </div>
@@ -5706,12 +5694,9 @@ export default function App() {
                           return (
                             <div className="mt-2.5 p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-[11px] leading-relaxed">
                               <p className="flex items-center text-amber-955 font-black mb-1 select-none">
-                                <span className="mr-1.5 text-xs text-amber-600">⚠️</span> Cảnh báo kích thước
-                              </p>
+                                <span className="mr-1.5 text-xs text-amber-600">⚠️</span> {" "+t("Cảnh báo kích thước")}</p>
                               <span>
-                                Bề rộng cuộn tem (<strong>{desiredRollWidth}mm</strong>) đang nhỏ hơn tổng chiều rộng hàng tem dán (<strong>{totalLabelWidth}mm</strong>).
-                                Vui lòng điều chỉnh lại bề rộng cuộn tem lớn hơn!
-                              </span>
+                                {t("Bề rộng cuộn tem (")}<strong>{desiredRollWidth}mm</strong>{t(") đang nhỏ hơn tổng chiều rộng hàng tem dán (")}<strong>{totalLabelWidth}mm</strong>{t("). Vui lòng điều chỉnh lại bề rộng cuộn tem lớn hơn!")}</span>
                             </div>
                           );
                         }
@@ -5724,8 +5709,8 @@ export default function App() {
                     {/* SET COL GAP */}
                     <div className="space-y-1.5">
                       <label className="block text-[10px] text-gray-500 font-bold uppercase tracking-wider select-none flex items-center gap-1">
-                        <span>Khoảng cách giữa các tem 1 hàng</span>
-                        <InfoTooltip content="Khoảng hở ngang giữa các tem cạnh nhau trên cùng một dòng." />
+                        <span>{t("Khoảng cách giữa các tem 1 hàng")}</span>
+                        <InfoTooltip content={t("Khoảng hở ngang giữa các tem cạnh nhau trên cùng một dòng.")} />
                       </label>
                       <div className="flex border border-gray-300 rounded-lg overflow-hidden focus-within:ring-1 focus-within:ring-kiot-cyan focus-within:ring-offset-0 focus-within:border-kiot-cyan">
                         <input
@@ -5780,13 +5765,13 @@ export default function App() {
                         applyPresetDimensions(
                           Math.max(10, Math.floor(optW * 10) / 10),
                           labelConfig.height,
-                          `Khớp Cuộn ${sheetConfig.cols} Tem`
+                          t("Khớp Cuộn {cols} Tem", { cols: sheetConfig.cols })
                         );
                       }}
                       className="w-full py-1.5 bg-kiot-cyan hover:bg-sky-600 text-white rounded text-[11px] font-bold text-center select-none cursor-pointer transition border border-kiot-cyan flex items-center justify-center space-x-1 shadow-xs font-sans"
-                      title="Tính toán kích thước Chiều rộng của tem nhãn dán tối ưu nhất dựa theo số cột tem và khoảng cách để khít với cuộn decal."
+                      title={t("Tính toán kích thước Chiều rộng của tem nhãn dán tối ưu nhất dựa theo số cột tem và khoảng cách để khít với cuộn decal.")}
                     >
-                      ⚡ <span>Khớp vừa khổ giấy</span>
+                      ⚡ <span>{t("Khớp vừa khổ giấy")}</span>
                     </button>
                   </div>
                 )}
@@ -5804,20 +5789,19 @@ export default function App() {
                         ? "bg-orange-100 text-orange-950 border-orange-300 shadow-sm"
                         : "bg-orange-50/90 text-orange-900 border-orange-200 hover:bg-orange-100/60 hover:border-orange-300 shadow-3xs"
                     }`}
-                    title="Nhận diện mẫu tem thông minh bằng AI từ ảnh chụp hoặc sao chép"
+                    title={t("Nhận diện mẫu tem thông minh bằng AI từ ảnh chụp hoặc sao chép")}
                   >
                     <div className="flex items-center space-x-2.5 font-sans">
                       <span className={`px-2 py-0.5 rounded font-extrabold text-[10px] tracking-wide shrink-0 transition-colors border flex items-center space-x-1 ${
                         isAiRecognizerExpanded ? "bg-orange-600 text-white border-orange-700" : "bg-orange-100 text-orange-800 border-orange-200"
                       }`}>
                         <Sparkles className="w-3 h-3" />
-                        <span>NÂNG CAO</span>
+                        <span>{t("NÂNG CAO")}</span>
                       </span>
                       <span className={`font-extrabold text-[12.5px] uppercase tracking-wider transition-colors leading-none ${
                         isAiRecognizerExpanded ? "text-orange-955" : "text-orange-900 group-hover:text-orange-955"
                       }`}>
-                        Nhận diện mẫu tem AI
-                      </span>
+                        {t("Nhận diện mẫu tem AI")}</span>
                     </div>
                     <div className={`transition-transform duration-150 ${isAiRecognizerExpanded ? "rotate-180 text-orange-600" : "text-orange-500 group-hover:text-orange-600"}`}>
                       <ChevronDown className="w-4 h-4" />
@@ -5839,9 +5823,9 @@ export default function App() {
                             <div className="flex items-center justify-between">
                               <span className="font-extrabold text-slate-700 flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
                                 <Key className="w-3.5 h-3.5 text-orange-600" />
-                                <span>Cấu hình Gemini API Key</span>
+                                <span>{t("Cấu hình Gemini API Key")}</span>
                               </span>
-                              <span className="text-[10px] text-orange-500 font-bold">Tự động lưu</span>
+                              <span className="text-[10px] text-orange-500 font-bold">{t("Tự động lưu")}</span>
                             </div>
                             <div className="flex gap-2">
                               <div className="relative flex-1">
@@ -5857,14 +5841,14 @@ export default function App() {
                                       safeLocalStorage.removeItem("barcode_designer_gemini_key");
                                     }
                                   }}
-                                  placeholder="Dán API Key của bạn tại đây để dùng hạn ngạch riêng..."
+                                  placeholder={t("Dán API Key của bạn tại đây để dùng hạn ngạch riêng...")}
                                   className="w-full pl-2 pr-8 py-1.5 text-xs bg-white border border-gray-300 rounded-md text-slate-800 font-medium font-mono focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none"
                                 />
                                 <button
                                   type="button"
                                   onClick={() => setShowCustomApiKey(!showCustomApiKey)}
                                   className="absolute right-2 top-2.5 text-gray-400 hover:text-slate-600 cursor-pointer"
-                                  title={showCustomApiKey ? "Ẩn Key" : "Hiển thị Key"}
+                                  title={showCustomApiKey ? t("Ẩn Key") : t("Hiển thị Key")}
                                 >
                                   {showCustomApiKey ? (
                                     <EyeOff className="w-3.5 h-3.5" />
@@ -5878,26 +5862,24 @@ export default function App() {
                                 onClick={() => {
                                   if (userCustomApiKey.trim()) {
                                     safeLocalStorage.setItem("barcode_designer_gemini_key", userCustomApiKey.trim());
-                                    alert("✓ Đã xác nhận lưu Gemini API Key cá nhân của bạn!");
+                                    alert(t("✓ Đã xác nhận lưu Gemini API Key cá nhân của bạn!"));
                                   } else {
                                     safeLocalStorage.removeItem("barcode_designer_gemini_key");
-                                    alert("✓ Đã xóa API Key cá nhân. Hệ thống sẽ sử dụng API của ứng dụng.");
+                                    alert(t("✓ Đã xóa API Key cá nhân. Hệ thống sẽ sử dụng API của ứng dụng."));
                                   }
                                 }}
                                 className="px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white rounded-md text-[11px] font-extrabold select-none cursor-pointer transition border border-orange-600 shadow-sm shrink-0"
                               >
-                                Lưu Key
-                              </button>
+                                {t("Lưu Key")}</button>
                             </div>
 
                             {/* Hướng dẫn cách lấy API Key chi tiết theo yêu cầu của người dùng */}
                             <div className="bg-orange-50/70 border border-orange-100 rounded-lg p-2.5 space-y-1.5 text-[10px] text-orange-950 font-medium">
                               <p className="font-extrabold text-[10.5px] text-orange-850 flex items-center gap-1">
-                                🔑 Hướng dẫn cách lấy API Key:
-                              </p>
+                                {t("🔑 Hướng dẫn cách lấy API Key:")}</p>
                               <ol className="list-decimal pl-3.5 space-y-1 leading-relaxed text-orange-900">
                                 <li>
-                                  Truy cập website Google AI Studio:{" "}
+                                  {t("Truy cập website Google AI Studio:")}{" "}
                                   <a 
                                     href="https://aistudio.google.com/app/apikey" 
                                     target="_blank" 
@@ -5907,14 +5889,13 @@ export default function App() {
                                     aistudio.google.com <ExternalLink className="w-2.5 h-2.5 inline" />
                                   </a>
                                 </li>
-                                <li>Đăng nhập bằng <strong>tài khoản Google</strong> của bạn.</li>
-                                <li>Click nút <strong className="bg-orange-100 px-1 py-0.5 rounded text-orange-950">"Create API Key"</strong> (Tạo khóa API mới).</li>
-                                <li>Chọn một Google Cloud Project bất kỳ rồi bấm <strong className="bg-orange-100 px-1 py-0.5 rounded text-orange-950">"Create API key in existing project"</strong>.</li>
-                                <li>Sao chép chuỗi mã (bắt đầu bằng <code className="bg-slate-100 text-slate-800 px-1 font-mono text-[9px] rounded">AIzaSy...</code>) và dán vào ô bên trên.</li>
+                                <li>{t("Đăng nhập bằng")+" "}<strong>{t("tài khoản Google")}</strong> {" "+t("của bạn.")}</li>
+                                <li>{t("Click nút")+" "}<strong className="bg-orange-100 px-1 py-0.5 rounded text-orange-950">"Create API Key"</strong> {" "+t("(Tạo khóa API mới).")}</li>
+                                <li>{t("Chọn một Google Cloud Project bất kỳ rồi bấm")+" "}<strong className="bg-orange-100 px-1 py-0.5 rounded text-orange-950">"Create API key in existing project"</strong>.</li>
+                                <li>{t("Sao chép chuỗi mã (bắt đầu bằng")+" "}<code className="bg-slate-100 text-slate-800 px-1 font-mono text-[9px] rounded">AIzaSy...</code>{t(") và dán vào ô bên trên.")}</li>
                               </ol>
                               <p className="text-[9.5px] text-slate-500 font-bold leading-normal pt-1 border-t border-orange-100/60">
-                                💡 <strong>Mẹo cực hay:</strong> Hệ thống tự động lưu Key của bạn vào trình duyệt ngay khi bạn dán/gõ. Hãy mở tab mới nếu đang chạy trong khung AI Studio để tránh các giới hạn bảo mật!
-                              </p>
+                                💡 <strong>{t("Mẹo cực hay:")}</strong> {" "+t("Hệ thống tự động lưu Key của bạn vào trình duyệt ngay khi bạn dán/gõ. Hãy mở tab mới nếu đang chạy trong khung AI Studio để tránh các giới hạn bảo mật!")}</p>
                             </div>
                           </div>
 
@@ -5926,8 +5907,7 @@ export default function App() {
                               <div className="flex items-center justify-between gap-3 bg-slate-50/50 px-2.5 py-1.5 rounded-lg border border-slate-100">
                                 <span className="flex items-center gap-1.5">
                                   <span className="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
-                                  Tải tệp ảnh từ máy tính:
-                                </span>
+                                  {t("Tải tệp ảnh từ máy tính:")}</span>
                                 <button
                                   type="button"
                                   onClick={(e) => {
@@ -5954,7 +5934,7 @@ export default function App() {
                                   className="px-2.5 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded-md text-[10px] font-black select-none cursor-pointer transition border border-orange-600 shadow-3xs flex items-center gap-1 shrink-0"
                                 >
                                   <CloudUpload className="w-3 h-3" />
-                                  <span>Chọn tệp ảnh</span>
+                                  <span>{t("Chọn tệp ảnh")}</span>
                                 </button>
                               </div>
 
@@ -5962,12 +5942,11 @@ export default function App() {
                               <div className="flex items-center justify-between gap-3 bg-slate-50/50 px-2.5 py-1.5 rounded-lg border border-slate-100 overflow-hidden">
                                 <span className="flex items-center gap-1.5 shrink-0">
                                   <span className="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
-                                  Chèn URL ảnh:
-                                </span>
+                                  {t("Chèn URL ảnh:")}</span>
                                 <div className="flex items-center gap-1 flex-1 max-w-[180px] sm:max-w-[220px] overflow-hidden">
                                   <input
                                     type="text"
-                                    placeholder="Dán link ảnh tại đây..."
+                                    placeholder={t("Dán link ảnh tại đây...")}
                                     value={aiImageUrlInput}
                                     onChange={(e) => setAiImageUrlInput(e.target.value)}
                                     onKeyDown={(e) => {
@@ -5990,8 +5969,7 @@ export default function App() {
                                     }}
                                     className="px-2 py-1 bg-orange-50 hover:bg-orange-100 text-orange-700 border border-orange-200 rounded-md text-[9px] font-black transition select-none cursor-pointer shrink-0"
                                   >
-                                    Lưu
-                                  </button>
+                                    {t("Lưu")}</button>
                                 </div>
                               </div>
                             </div>
@@ -6113,7 +6091,7 @@ export default function App() {
                             >
                               {showSuccessBadge && (
                                 <div className="absolute top-2 right-2 bg-emerald-500 text-white font-extrabold text-[9px] px-2 py-0.5 rounded-full flex items-center space-x-1 shadow-sm animate-bounce z-10">
-                                  <span>✓ Đã tải ảnh mẫu tem!</span>
+                                  <span>{t("✓ Đã tải ảnh mẫu tem!")}</span>
                                 </div>
                               )}
 
@@ -6132,19 +6110,18 @@ export default function App() {
                                       setAiImage(null);
                                     }}
                                     className="absolute top-1.5 right-1.5 p-1 bg-rose-600 text-white rounded-full hover:bg-rose-700 shadow-md transition transform scale-90 opacity-0 group-hover/img:opacity-100 group-hover/img:scale-100 cursor-pointer z-20"
-                                    title="Xóa ảnh"
+                                    title={t("Xóa ảnh")}
                                   >
                                     <X className="w-3 h-3" />
                                   </button>
                                   <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 bg-slate-900/80 backdrop-blur-xs text-white text-[8px] font-black px-2 py-0.5 rounded-full select-none shadow-sm pointer-events-none opacity-80 whitespace-nowrap">
-                                    Thả hoặc Ctrl + V để thay đổi
-                                  </div>
+                                    {t("Thả hoặc Ctrl + V để thay đổi")}</div>
                                 </div>
                               ) : (
                                 <div className="text-center select-none w-full flex flex-col items-center justify-center space-y-1">
                                   <CloudUpload className={`w-6 h-6 transition-colors ${isHoveringDropzone ? 'text-orange-600 animate-pulse' : 'text-slate-400'}`} />
                                   <p className={`font-black text-xs transition-colors ${isHoveringDropzone ? 'text-orange-600' : 'text-slate-600'}`}>
-                                    {isHoveringDropzone ? "Sẵn sàng dán! Ấn Ctrl + V" : "Kéo thả hoặc Dán ảnh (Ctrl + V)"}
+                                    {isHoveringDropzone ? t("Sẵn sàng dán! Ấn Ctrl + V") : t("Kéo thả hoặc Dán ảnh (Ctrl + V)")}
                                   </p>
                                 </div>
                               )}
@@ -6159,9 +6136,9 @@ export default function App() {
                                   <RefreshCw className="w-4 h-4 text-orange-600 animate-spin" />
                                 </div>
                                 <div className="flex-1 text-left min-w-0">
-                                  <p className="font-black text-orange-950 text-xs">AI Gemini đang bóc tách mẫu tem...</p>
+                                  <p className="font-black text-orange-950 text-xs">{t("AI Gemini đang bóc tách mẫu tem...")}</p>
                                   <p className="text-[10.5px] text-orange-700 font-medium leading-relaxed truncate mt-0.5">
-                                    {aiStatusMessage || "Đang kết nối tới máy chủ..."}
+                                    {aiStatusMessage || t("Đang kết nối tới máy chủ...")}
                                   </p>
                                 </div>
                               </div>
@@ -6173,19 +6150,19 @@ export default function App() {
                               onClick={async () => {
                                 if (!aiImage) return;
                                 setIsAiAnalyzing(true);
-                                setAiStatusMessage("Khởi chạy trợ lý AI Gemini 3.5 Flash...");
+                                setAiStatusMessage(t("Khởi chạy trợ lý AI Gemini 3.5 Flash..."));
                                 
                                 try {
-                                  setAiStatusMessage("Đang tối ưu dung lượng ảnh để phân tích siêu tốc...");
+                                  setAiStatusMessage(t("Đang tối ưu dung lượng ảnh để phân tích siêu tốc..."));
                                   const optimizedImg = await resizeImage(aiImage, 1024);
                                   
                                   // Step-by-step progress simulation to keep user engaged
                                   const progressSteps = [
-                                    "Đang nén và truyền ảnh nhãn siêu nhẹ (~100KB)...",
-                                    "Đang kết nối API Gemini 3.5 Flash...",
-                                    "Gemini đang nhận diện các đối tượng (Text, Barcode, QR, Hình kẻ)...",
-                                    "Chuẩn hóa tọa độ dựa trên kích thước thật " + labelConfig.width + "x" + labelConfig.height + "mm...",
-                                    "Kiểm thử lề căn chỉnh và tối ưu hóa vị trí..."
+                                    t("Đang nén và truyền ảnh nhãn siêu nhẹ (~100KB)..."),
+                                    t("Đang kết nối API Gemini 3.5 Flash..."),
+                                    t("Gemini đang nhận diện các đối tượng (Text, Barcode, QR, Hình kẻ)..."),
+                                    t("Chuẩn hóa tọa độ dựa trên kích thước thật ") + labelConfig.width + "x" + labelConfig.height + "mm...",
+                                    t("Kiểm thử lề căn chỉnh và tối ưu hóa vị trí...")
                                   ];
                                   
                                   let stepIdx = 0;
@@ -6202,7 +6179,7 @@ export default function App() {
                                   if (trimmedUserApiKey) {
                                     // If user has supplied their own API key, bypass server/proxy and call Gemini REST API directly in-browser
                                     // This guarantees success on platforms like Vercel which lack server-side handlers
-                                    setAiStatusMessage("Đang gọi trực tiếp API Gemini từ trình duyệt...");
+                                    setAiStatusMessage(t("Đang gọi trực tiếp API Gemini từ trình duyệt..."));
                                     try {
                                       result = await callGeminiClientSide(
                                         optimizedImg,
@@ -6227,7 +6204,7 @@ export default function App() {
                                       });
                                       if (!response.ok) {
                                         const errData = await response.json().catch(() => ({}));
-                                        throw new Error(errData.error || errData.message || `Lỗi máy chủ (${response.status}): ${directErr.message || directErr}`);
+                                        throw new Error(errData.error || errData.message || t("Lỗi máy chủ ({status}): {v}", { status: response.status, v: directErr.message || directErr }));
                                       }
                                       result = await response.json();
                                     }
@@ -6248,9 +6225,9 @@ export default function App() {
                                     if (!response.ok) {
                                       const errData = await response.json().catch(() => ({}));
                                       if (response.status === 404) {
-                                        throw new Error("Để sử dụng tính năng phân tích tem bằng AI trên phiên bản Web (Vercel), vui lòng cấu hình API Key cá nhân của bạn trong phần 'Cấu hình Gemini API Key' ở thanh bên trái.");
+                                        throw new Error(t("Để sử dụng tính năng phân tích tem bằng AI trên phiên bản Web (Vercel), vui lòng cấu hình API Key cá nhân của bạn trong phần 'Cấu hình Gemini API Key' ở thanh bên trái."));
                                       }
-                                      throw new Error(errData.error || errData.message || `Lỗi máy chủ: ${response.status}`);
+                                      throw new Error(errData.error || errData.message || t("Lỗi máy chủ: {status}", { status: response.status }));
                                     }
                                     result = await response.json();
                                   }
@@ -6258,11 +6235,11 @@ export default function App() {
                                   clearInterval(progressInterval);
                                   
                                   if (!result.objects || !Array.isArray(result.objects)) {
-                                    throw new Error("Không nhận được danh sách đối tượng hợp lệ từ AI.");
+                                    throw new Error(t("Không nhận được danh sách đối tượng hợp lệ từ AI."));
                                   }
 
                                   if (result.objects.length === 0) {
-                                    throw new Error("Gemini không phát hiện được bất kỳ phần tử nào trên ảnh mẫu nhãn này.");
+                                    throw new Error(t("Gemini không phát hiện được bất kỳ phần tử nào trên ảnh mẫu nhãn này."));
                                   }
 
                                   // Map results to type-safe LabelObjects
@@ -6312,7 +6289,7 @@ export default function App() {
                                   });
 
                                   setObjectsWithHistory(mappedObjects);
-                                  alert(`✓ Nhận diện thành công!\n\nAI Gemini đã phân tích ảnh nhãn và khôi phục thành công ${mappedObjects.length} đối tượng thiết kế trực tiếp lên bàn thiết kế.\n\nHệ thống sẽ tự động chuyển sang tab THIẾT KẾ TEM để bạn chỉnh sửa chi tiết!`);
+                                  alert(t("✓ Nhận diện thành công!\n\nAI Gemini đã phân tích ảnh nhãn và khôi phục thành công {length} đối tượng thiết kế trực tiếp lên bàn thiết kế.\n\nHệ thống sẽ tự động chuyển sang tab THIẾT KẾ TEM để bạn chỉnh sửa chi tiết!", { length: mappedObjects.length }));
                                   
                                   // Smooth transition to design tab
                                   setActiveSidebarTab('design');
@@ -6326,18 +6303,18 @@ export default function App() {
                                   
                                   if (errMsg.includes("prepayment credits") || errMsg.includes("RESOURCE_EXHAUSTED") || errMsg.includes("429")) {
                                     if (isUsingCustomKey) {
-                                      friendlyMessage = "API Key cá nhân của bạn hiện đã hết hạn ngạch miễn phí hoặc thiếu số dư (prepayment credits).\n\n💡 CÁCH KHẮC PHỤC:\n- Hãy tạo một API Key mới bằng tài khoản Google khác vẫn còn nguyên hạn ngạch.\n- Hoặc kiểm tra lại thiết lập thanh toán (billing) trên Google Cloud Console của tài khoản đó.";
+                                      friendlyMessage = t("API Key cá nhân của bạn hiện đã hết hạn ngạch miễn phí hoặc thiếu số dư (prepayment credits).\n\n💡 CÁCH KHẮC PHỤC:\n- Hãy tạo một API Key mới bằng tài khoản Google khác vẫn còn nguyên hạn ngạch.\n- Hoặc kiểm tra lại thiết lập thanh toán (billing) trên Google Cloud Console của tài khoản đó.");
                                     } else {
-                                      friendlyMessage = "Hạn ngạch của máy chủ hệ thống tạm thời hết tài khoản trả trước (prepayment credits).\n\n💡 CÁCH KHẮC PHỤC RẤT DỄ DÀNG:\nBạn chỉ cần tự nhập API Key Gemini cá nhân (hoàn toàn miễn phí, tạo trong 30 giây) vào mục 'Cấu hình API Key' ở phía dưới để được phân tích mẫu nhãn hoàn toàn không giới hạn và siêu nhanh nhé!";
+                                      friendlyMessage = t("Hạn ngạch của máy chủ hệ thống tạm thời hết tài khoản trả trước (prepayment credits).\n\n💡 CÁCH KHẮC PHỤC RẤT DỄ DÀNG:\nBạn chỉ cần tự nhập API Key Gemini cá nhân (hoàn toàn miễn phí, tạo trong 30 giây) vào mục 'Cấu hình API Key' ở phía dưới để được phân tích mẫu nhãn hoàn toàn không giới hạn và siêu nhanh nhé!");
                                     }
                                   } else if (errMsg.includes("UNAVAILABLE") || errMsg.includes("high demand") || errMsg.includes("503")) {
-                                    friendlyMessage = "Máy chủ Gemini của Google hiện đang quá tải tạm thời (High demand/Unavailable).\n\n💡 CÁCH KHẮC PHỤC:\n- Vui lòng bấm lại nút 'Bắt đầu Phân tích' sau vài giây.\n- Hoặc tự nhập API Key cá nhân của bạn ở phía dưới để được tối ưu hóa băng thông riêng!";
+                                    friendlyMessage = t("Máy chủ Gemini của Google hiện đang quá tải tạm thời (High demand/Unavailable).\n\n💡 CÁCH KHẮC PHỤC:\n- Vui lòng bấm lại nút 'Bắt đầu Phân tích' sau vài giây.\n- Hoặc tự nhập API Key cá nhân của bạn ở phía dưới để được tối ưu hóa băng thông riêng!");
                                   } else if (errMsg.includes("API_KEY_INVALID") || errMsg.includes("invalid") || errMsg.includes("not valid") || errMsg.includes("API key not found")) {
                                     if (isUsingCustomKey) {
-                                      friendlyMessage = "API Key cá nhân bạn vừa nhập KHÔNG HỢP LỆ hoặc đã bị Google khóa/thu hồi.\n\n💡 CÁCH KHẮC PHỤC:\n- Hãy kiểm tra xem bạn đã sao chép đủ và chính xác chuỗi API Key chưa.\n- Hoặc click vào liên kết dưới 'Hướng dẫn cách lấy API Key' để tạo một khóa mới hoàn toàn.";
+                                      friendlyMessage = t("API Key cá nhân bạn vừa nhập KHÔNG HỢP LỆ hoặc đã bị Google khóa/thu hồi.\n\n💡 CÁCH KHẮC PHỤC:\n- Hãy kiểm tra xem bạn đã sao chép đủ và chính xác chuỗi API Key chưa.\n- Hoặc click vào liên kết dưới 'Hướng dẫn cách lấy API Key' để tạo một khóa mới hoàn toàn.");
                                     }
                                   }
-                                  alert(`⚠️ Lỗi phân tích mẫu nhãn:\n\n${friendlyMessage}`);
+                                  alert(t("⚠️ Lỗi phân tích mẫu nhãn:\n\n{friendlyMessage}", { friendlyMessage }));
                                 } finally {
                                   setIsAiAnalyzing(false);
                                 }
@@ -6349,7 +6326,7 @@ export default function App() {
                               }`}
                             >
                               <Sparkles className={`w-4 h-4 ${isAiAnalyzing ? "animate-pulse" : ""}`} />
-                              <span>⚡ Bắt đầu Phân tích mẫu tem AI</span>
+                              <span>{t("⚡ Bắt đầu Phân tích mẫu tem AI")}</span>
                             </button>
                           </div>
 
@@ -6371,10 +6348,9 @@ export default function App() {
                       <div className="bg-amber-100 text-amber-800 p-2.5 rounded-full border border-amber-200/65 shadow-xs mb-2">
                         <Lock className="w-4 h-4 text-amber-600" />
                       </div>
-                      <p className="font-extrabold text-[11px] text-amber-950 uppercase tracking-widest text-center">Bàn thiết kế tạm khóa</p>
+                      <p className="font-extrabold text-[11px] text-amber-950 uppercase tracking-widest text-center">{t("Bàn thiết kế tạm khóa")}</p>
                       <p className="text-[10px] text-amber-900 text-center max-w-[210px] mt-1.5 font-medium leading-relaxed">
-                        Vui lòng chuyển sang chế độ <strong>"Bàn Thiết Kế (1 Tem)"</strong> phía trên để chỉnh sửa nội dung hoặc thêm đối tượng mới!
-                      </p>
+                        {t("Vui lòng chuyển sang chế độ")+" "}<strong>{t("\"Bàn Thiết Kế (1 Tem)\"")}</strong> {" "+t("phía trên để chỉnh sửa nội dung hoặc thêm đối tượng mới!")}</p>
                     </div>
                   )}
 
@@ -6388,19 +6364,17 @@ export default function App() {
                           ? "bg-emerald-100 text-emerald-950 border-emerald-300 shadow-sm"
                           : "bg-emerald-50/90 text-emerald-900 border-emerald-200 hover:bg-emerald-100/60 hover:border-emerald-300 shadow-3xs"
                       }`}
-                      title="Cấu hình nội dung thiết kế, thêm văn bản, mã vạch, QR, ảnh nền, watermark"
+                      title={t("Cấu hình nội dung thiết kế, thêm văn bản, mã vạch, QR, ảnh nền, watermark")}
                     >
                       <div className="flex items-center space-x-2.5 font-sans">
                         <span className={`px-2 py-0.5 rounded font-extrabold text-[10px] tracking-wide shrink-0 transition-colors border ${
                           isStep3Expanded ? "bg-emerald-600 text-white border-emerald-700" : "bg-emerald-100 text-emerald-800 border-emerald-200"
                         }`}>
-                          BƯỚC 3
-                        </span>
+                          {t("BƯỚC 3")}</span>
                         <span className={`font-extrabold text-[12.5px] uppercase tracking-wider transition-colors leading-none ${
                           isStep3Expanded ? "text-emerald-950" : "text-emerald-900 group-hover:text-emerald-950"
                         }`}>
-                          Thiết kế mẫu tem
-                        </span>
+                          {t("Thiết kế mẫu tem")}</span>
                       </div>
                       <div className={`transition-transform duration-150 ${isStep3Expanded ? "rotate-180 text-emerald-650" : "text-emerald-500 group-hover:text-emerald-600"}`}>
                         <ChevronDown className="w-4 h-4" />
@@ -6414,7 +6388,7 @@ export default function App() {
                           <div className="flex items-center justify-between">
                             <h2 className="text-[12.5px] font-black text-kiot-navy uppercase tracking-wider flex items-center space-x-2 select-none">
                               <Plus className="w-3.5 h-3.5 text-kiot-cyan" />
-                              <span>Thêm thông tin vào tem</span>
+                              <span>{t("Thêm thông tin vào tem")}</span>
                             </h2>
                           </div>
 
@@ -6422,11 +6396,11 @@ export default function App() {
                             <button
                               onClick={() => handleAddObject("text")}
                               className="group py-2 px-3.5 bg-white hover:bg-slate-50 border border-gray-200 hover:border-kiot-cyan text-kiot-charcoal hover:text-kiot-cyan text-[13px] font-extrabold rounded-lg transition duration-150 flex items-center justify-between cursor-pointer shadow-xs focus:ring-1 focus:ring-kiot-cyan focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-50 disabled:border-gray-200 disabled:text-gray-400"
-                              title="Thêm một đoạn dòng văn bản mới ở giữa nhãn"
+                              title={t("Thêm một đoạn dòng văn bản mới ở giữa nhãn")}
                             >
                               <span className="flex items-center space-x-2">
                                  <FileText className="w-4 h-4 text-kiot-cyan" />
-                                 <span>Văn bản</span>
+                                 <span>{t("Văn bản")}</span>
                               </span>
                               <span className="p-0.5 rounded-full bg-sky-50 text-kiot-cyan border border-kiot-cyan/30 group-hover:bg-kiot-cyan group-hover:text-white transition-colors duration-150 shadow-2xs">
                                  <Plus className="w-3.5 h-3.5" strokeWidth={3.5} />
@@ -6436,11 +6410,11 @@ export default function App() {
                             <button
                               onClick={() => handleAddObject("barcode")}
                               className="group py-2 px-3.5 bg-white hover:bg-slate-50 border border-gray-200 hover:border-kiot-cyan text-kiot-charcoal hover:text-kiot-cyan text-[13px] font-extrabold rounded-lg transition duration-150 flex items-center justify-between cursor-pointer shadow-xs focus:ring-1 focus:ring-kiot-cyan focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-50 disabled:border-gray-200 disabled:text-gray-400"
-                              title="Thêm một hình vẽ mã vạch chuẩn 1D ở giữa nhãn"
+                              title={t("Thêm một hình vẽ mã vạch chuẩn 1D ở giữa nhãn")}
                             >
                               <span className="flex items-center space-x-2">
                                 <Barcode className="w-4 h-4 text-emerald-500" />
-                                <span>Mã vạch</span>
+                                <span>{t("Mã vạch")}</span>
                               </span>
                               <span className="p-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-500/30 group-hover:bg-emerald-500 group-hover:text-white transition-colors duration-150 shadow-2xs">
                                 <Plus className="w-3.5 h-3.5" strokeWidth={3.5} />
@@ -6450,11 +6424,11 @@ export default function App() {
                             <button
                               onClick={() => handleAddObject("qrcode")}
                               className="group py-2 px-3.5 bg-white hover:bg-slate-50 border border-gray-200 hover:border-kiot-cyan text-kiot-charcoal hover:text-kiot-cyan text-[13px] font-extrabold rounded-lg transition duration-150 flex items-center justify-between cursor-pointer shadow-xs focus:ring-1 focus:ring-kiot-cyan focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-50 disabled:border-gray-200 disabled:text-gray-400"
-                              title="Thêm một hình vẽ mã QR code ở giữa nhãn"
+                              title={t("Thêm một hình vẽ mã QR code ở giữa nhãn")}
                             >
                               <span className="flex items-center space-x-2">
                                 <QrCode className="w-4 h-4 text-blue-500" />
-                                <span>Mã QR</span>
+                                <span>{t("Mã QR")}</span>
                               </span>
                               <span className="p-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-500/30 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-150 shadow-2xs">
                                 <Plus className="w-3.5 h-3.5" strokeWidth={3.5} />
@@ -6464,11 +6438,11 @@ export default function App() {
                             <button
                               onClick={() => setShowImageImportModal(true)}
                               className="group py-2 px-3.5 bg-white hover:bg-slate-50 border border-gray-200 hover:border-kiot-cyan text-kiot-charcoal hover:text-kiot-cyan text-[13px] font-extrabold rounded-lg transition duration-150 flex items-center justify-between cursor-pointer shadow-xs focus:ring-1 focus:ring-kiot-cyan focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-50 disabled:border-gray-200 disabled:text-gray-400"
-                              title="Chèn logo, con dấu hoặc hình ảnh bất kỳ vào nhãn"
+                              title={t("Chèn logo, con dấu hoặc hình ảnh bất kỳ vào nhãn")}
                             >
                               <span className="flex items-center space-x-2">
                                 <Image className="w-4 h-4 text-rose-500" />
-                                <span>Hình ảnh</span>
+                                <span>{t("Hình ảnh")}</span>
                               </span>
                               <span className="p-0.5 rounded-full bg-rose-50 text-rose-650 border border-rose-500/30 group-hover:bg-rose-500 group-hover:text-white transition-colors duration-150 shadow-2xs">
                                 <Plus className="w-3.5 h-3.5" strokeWidth={3.5} />
@@ -6478,11 +6452,11 @@ export default function App() {
                             <button
                               onClick={() => handleAddObject("shape", "line")}
                               className="group py-2 px-3.5 bg-white hover:bg-slate-50 border border-gray-200 hover:border-kiot-cyan text-kiot-charcoal hover:text-kiot-cyan text-[13px] font-extrabold rounded-lg transition duration-150 flex items-center justify-between cursor-pointer shadow-xs focus:ring-1 focus:ring-kiot-cyan focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-50 disabled:border-gray-200 disabled:text-gray-400"
-                              title="Thêm nét kẻ ngang / dọc hoặc hình khối bất kỳ vào nhãn"
+                              title={t("Thêm nét kẻ ngang / dọc hoặc hình khối bất kỳ vào nhãn")}
                             >
                               <span className="flex items-center space-x-2">
                                 <Shapes className="w-4 h-4 text-indigo-500" />
-                                <span>Đường kẻ &amp; Hình khối</span>
+                                <span>{t("Đường kẻ & Hình khối")}</span>
                               </span>
                               <span className="p-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-500/30 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-150 shadow-2xs">
                                 <Plus className="w-3.5 h-3.5" strokeWidth={3.5} />
@@ -6496,14 +6470,13 @@ export default function App() {
                     <div className="flex items-center space-x-2">
                       <Palette className="w-4 h-4 text-kiot-cyan" />
                       <span className="font-extrabold text-[12px] text-[#1E293B] uppercase tracking-wider font-sans select-none">
-                        🎨 Chế độ nền &amp; Watermark
-                      </span>
+                        {t("🎨 Chế độ nền & Watermark")}</span>
                     </div>
 
                     <div className="space-y-3 pt-2 text-[13px] border-t border-slate-200/80">
                       {/* 1. Background Color selector */}
                       <div className="flex items-center justify-between">
-                        <label className="font-bold text-[#475569] select-none">Màu nền tem nhãn:</label>
+                        <label className="font-bold text-[#475569] select-none">{t("Màu nền tem nhãn:")}</label>
                         <div className="flex items-center space-x-2 font-sans">
                           {/* Nút 1: Chọn màu (Mặc định là Màu trắng #ffffff) */}
                           <div className={`relative w-8 h-8 rounded-md border flex items-center justify-center transition duration-150 cursor-pointer shrink-0 ${
@@ -6522,7 +6495,7 @@ export default function App() {
                                 });
                               }}
                               className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-20"
-                              title="Chọn mã màu nền tùy ý"
+                              title={t("Chọn mã màu nền tùy ý")}
                             />
                             <span 
                               className="w-5 h-5 rounded-full border border-slate-350 shrink-0 shadow-sm z-10 transition-transform duration-100 hover:scale-110"
@@ -6544,7 +6517,7 @@ export default function App() {
                                 ? "border-kiot-cyan bg-kiot-cyan/5 ring-1 ring-kiot-cyan"
                                 : "border-slate-250 bg-white hover:bg-slate-50"
                             }`}
-                            title="Nền trong suốt"
+                            title={t("Nền trong suốt")}
                           >
                             {/* Caro mô phỏng trong suốt */}
                             <div className="absolute inset-1.5 opacity-30 grid grid-cols-2 grid-rows-2">
@@ -6561,7 +6534,7 @@ export default function App() {
 
                       {/* 2. Watermark / Background Image Upload */}
                       <div className="space-y-1.5">
-                        <label className="block font-bold text-[#475569] select-none">Ảnh nền hoặc Watermark:</label>
+                        <label className="block font-bold text-[#475569] select-none">{t("Ảnh nền hoặc Watermark:")}</label>
                         <div className="flex items-center space-x-1.5">
                           <input
                             type="file"
@@ -6592,7 +6565,7 @@ export default function App() {
                             className="flex-1 py-1.5 px-2.5 border border-dashed border-slate-300 bg-white hover:bg-slate-50 text-slate-700 hover:text-kiot-cyan rounded font-bold text-center transition flex items-center justify-center space-x-1 cursor-pointer select-none text-[12.5px]"
                           >
                             <Upload className="w-3.5 h-3.5 shrink-0" />
-                            <span className="truncate">{labelConfig.bgImage ? "Thay ảnh nền" : "Tải ảnh nền/Watermark"}</span>
+                            <span className="truncate">{labelConfig.bgImage ? t("Thay ảnh nền") : t("Tải ảnh nền/Watermark")}</span>
                           </button>
                           {labelConfig.bgImage && (
                             <button
@@ -6608,7 +6581,7 @@ export default function App() {
                                 if (inp) inp.value = "";
                               }}
                               className="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded transition border border-red-200 cursor-pointer animate-scaleIn"
-                              title="Xóa ảnh nền/watermark"
+                              title={t("Xóa ảnh nền/watermark")}
                             >
                               <X className="w-3.5 h-3.5" />
                             </button>
@@ -6621,7 +6594,7 @@ export default function App() {
                           {/* 3. Watermark Opacity Slider */}
                           <div className="space-y-1 bg-slate-50 p-2 rounded border border-slate-100 animate-fadeIn">
                             <div className="flex items-center justify-between">
-                              <span className="font-bold text-slate-500">Độ mờ ảnh (Watermark):</span>
+                              <span className="font-bold text-slate-500">{t("Độ mờ ảnh (Watermark):")}</span>
                               <span className="font-mono text-[10px] font-bold text-slate-750 bg-slate-200 px-1.5 py-0.5 rounded leading-tight select-none">
                                 {Math.round((labelConfig.bgImageOpacity !== undefined ? labelConfig.bgImageOpacity : 0.3) * 100)}%
                               </span>
@@ -6657,18 +6630,18 @@ export default function App() {
                               className="mt-0.5 w-3.5 h-3.5 accent-kiot-cyan cursor-pointer shrink-0"
                             />
                             <span className="leading-snug">
-                              <span className="font-bold text-slate-700">In ảnh nền</span>
+                              <span className="font-bold text-slate-700">{t("In ảnh nền")}</span>
                               <span className="block text-[10.5px] text-slate-500">
                                 {labelConfig.bgImagePrint !== false
-                                  ? "Ảnh nền được in cùng tem (PDF, ZPL, TSPL)."
-                                  : "Chỉ hiện khi thiết kế để định vị, không in ra tem."}
+                                  ? t("Ảnh nền được in cùng tem (PDF, ZPL, TSPL).")
+                                  : t("Chỉ hiện khi thiết kế để định vị, không in ra tem.")}
                               </span>
                             </span>
                           </label>
 
                           {/* 4. Background Image Fitting */}
                           <div className="flex items-center justify-between animate-fadeIn">
-                            <span className="font-bold text-slate-500">Tỷ lệ tương thích:</span>
+                            <span className="font-bold text-slate-500">{t("Tỷ lệ tương thích:")}</span>
                             <div className="relative">
                               <select
                                 value={labelConfig.bgImageSize || "contain"}
@@ -6680,10 +6653,10 @@ export default function App() {
                                 }}
                                 className="appearance-none pl-2.5 pr-7 py-1 bg-white border border-slate-250 rounded text-[11.5px] font-bold text-slate-700 focus:outline-none cursor-pointer"
                               >
-                                <option value="contain">Co giãn vừa (Contain)</option>
-                                <option value="cover">Lấp đầy (Cover)</option>
-                                <option value="repeat">Lặp lại (Repeat)</option>
-                                <option value="auto">Kích thước gốc (Auto)</option>
+                                <option value="contain">{t("Co giãn vừa (Contain)")}</option>
+                                <option value="cover">{t("Lấp đầy (Cover)")}</option>
+                                <option value="repeat">{t("Lặp lại (Repeat)")}</option>
+                                <option value="auto">{t("Kích thước gốc (Auto)")}</option>
                               </select>
                               <ChevronDown className="absolute right-2 top-2 w-3 h-3 text-slate-400 pointer-events-none" />
                             </div>
@@ -6718,11 +6691,9 @@ export default function App() {
                       <FileSpreadsheet className="w-4.5 h-4.5 text-emerald-600 shrink-0" />
                       <div className="flex flex-col min-w-0">
                         <span className="font-extrabold text-[12.5px] text-emerald-800 uppercase tracking-wider group-hover:text-emerald-950 transition-colors font-sans truncate">
-                          🔗 LIÊN KẾT FILE DATA
-                        </span>
+                          {t("🔗 LIÊN KẾT FILE DATA")}</span>
                         <span className="text-[11px] text-emerald-650 font-bold select-none leading-none mt-0.5 w-max">
-                          In hàng loạt (Lựa chọn)
-                        </span>
+                          {t("In hàng loạt (Lựa chọn)")}</span>
                       </div>
                     </button>
 
@@ -6730,11 +6701,10 @@ export default function App() {
                     <div className="flex items-center space-x-2 ml-2 shrink-0">
                       {!excelFileName ? (
                         <span className="text-[10.5px] font-bold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded select-none">
-                          Chưa liên kết
-                        </span>
+                          {t("Chưa liên kết")}</span>
                       ) : (
                         <div className="flex items-center space-x-1.5 bg-emerald-650 text-white px-2 py-1 rounded shadow-inner text-[11px] font-mono font-bold select-none">
-                          <span>✓ {excelData.length} dòng</span>
+                          <span>{t("✓ {length} dòng", { length: excelData.length })}</span>
                         </div>
                       )}
                     </div>
@@ -6746,8 +6716,7 @@ export default function App() {
                       NOTE
                     </span>
                     <span className="leading-relaxed font-bold text-emerald-950">
-                      Định dạng .xlsx, .xls, .csv (UTF-8/UTF-16/ANSI). Dòng 1 chứa tiêu đề cột, dòng 2 trở đi chứa dữ liệu tem
-                    </span>
+                      {t("Định dạng .xlsx, .xls, .csv (UTF-8/UTF-16/ANSI). Dòng 1 chứa tiêu đề cột, dòng 2 trở đi chứa dữ liệu tem")}</span>
                   </div>
 
                   {isExcelExpanded && (
@@ -6790,7 +6759,7 @@ export default function App() {
                                     };
                                     reader.readAsArrayBuffer(file);
                                   } else {
-                                    alert("Định dạng tệp không được hỗ trợ! Vui lòng chỉ kéo thả tệp Excel hoặc CSV (.xlsx, .xls, .csv).");
+                                    alert(t("Định dạng tệp không được hỗ trợ! Vui lòng chỉ kéo thả tệp Excel hoặc CSV (.xlsx, .xls, .csv)."));
                                   }
                                 }
                               }}
@@ -6801,8 +6770,8 @@ export default function App() {
                                 <span>Upload file</span>
                               </div>
                               <div className="space-y-1 pb-1">
-                                <span className="text-[13px] font-extrabold text-slate-850 block">Chọn tệp Excel từ máy</span>
-                                <span className="text-[11.5px] text-slate-500 font-extrabold block">Hoặc kéo thả file vào vùng upload</span>
+                                <span className="text-[13px] font-extrabold text-slate-850 block">{t("Chọn tệp Excel từ máy")}</span>
+                                <span className="text-[11.5px] text-slate-500 font-extrabold block">{t("Hoặc kéo thả file vào vùng upload")}</span>
                               </div>
                             </label>
                             
@@ -6813,8 +6782,7 @@ export default function App() {
                                 onClick={handleDownloadExcelTemplate}
                                 className="text-[11.5px] font-bold text-emerald-600 hover:text-emerald-700 hover:underline inline-flex items-center gap-1 cursor-pointer transition select-none"
                               >
-                                📥 Tải File Excel Mẫu để Điền Dữ Liệu
-                              </button>
+                                {t("📥 Tải File Excel Mẫu để Điền Dữ Liệu")}</button>
                             </div>
                           </div>
                         ) : (
@@ -6823,18 +6791,18 @@ export default function App() {
                               <div className="min-w-0 pr-2 flex-1">
                                 <p className="font-extrabold text-emerald-950 truncate text-[13px] flex items-center gap-1.5 leading-tight">
                                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
-                                  <span>Đã liên kết dữ liệu Excel</span>
+                                  <span>{t("Đã liên kết dữ liệu Excel")}</span>
                                 </p>
                                 <p className="text-[11px] text-emerald-850 truncate font-black font-mono mt-1 border-b border-emerald-200/50 pb-1.5" title={excelFileName}>{excelFileName}</p>
                                 <p className="text-[11px] text-zinc-650 font-bold mt-2">
-                                  Sẵn sàng in hàng loạt: <span className="text-emerald-700 font-extrabold font-mono">{excelData.length} dòng dữ liệu</span>.
+                                  {t("Sẵn sàng in hàng loạt:")+" "}<span className="text-emerald-700 font-extrabold font-mono">{t("{length} dòng dữ liệu", { length: excelData.length })}</span>.
                                 </p>
                               </div>
                               <button
                                 type="button"
                                 onClick={handleClearExcel}
                                 className="p-1 hover:bg-emerald-100 text-emerald-700 hover:text-red-650 rounded transition shrink-0 cursor-pointer ml-1 animate-fadeIn"
-                                title="Hủy kết nối file Excel hiện tại"
+                                title={t("Hủy kết nối file Excel hiện tại")}
                               >
                                 <X className="w-4 h-4" />
                               </button>
@@ -6847,14 +6815,13 @@ export default function App() {
                                   type="button"
                                   onClick={handleDirectExcelSync}
                                   className="w-full text-[10.5px] bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-1.5 px-2.5 rounded-md inline-flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-[0.98] cursor-pointer select-none border border-emerald-700"
-                                  title="Tự động đồng bộ / làm mới tất cả thông tin trực tiếp từ tệp tin mà không hiển thị lại hộp thoại thoại"
+                                  title={t("Tự động đồng bộ / làm mới tất cả thông tin trực tiếp từ tệp tin mà không hiển thị lại hộp thoại thoại")}
                                 >
                                   <RefreshCw className="w-3 h-3 text-white animate-[spin_10s_linear_infinite]" />
-                                  <span>Đồng bộ dữ liệu</span>
+                                  <span>{t("Đồng bộ dữ liệu")}</span>
                                 </button>
                                 <p className="text-[9.5px] text-zinc-500 font-bold leading-normal pl-1.5 border-l border-emerald-400">
-                                  Hệ thống tự động phát hiện, cập nhật dữ liệu ngầm và giữ nguyên liên kết.
-                                </p>
+                                  {t("Hệ thống tự động phát hiện, cập nhật dữ liệu ngầm và giữ nguyên liên kết.")}</p>
                               </div>
 
                               {/* 2. Nút Cập nhật File mới */}
@@ -6863,14 +6830,13 @@ export default function App() {
                                   type="button"
                                   onClick={() => triggerExcelLoadDialog('new')}
                                   className="w-full text-[10.5px] bg-white hover:bg-slate-50 text-slate-800 font-bold py-1.5 px-2.5 rounded-md inline-flex items-center justify-center gap-1.5 transition-all shadow-3xs active:scale-[0.98] border border-slate-300 cursor-pointer select-none"
-                                  title="Thay đổi bằng file Excel hoàn toàn mới"
+                                  title={t("Thay đổi bằng file Excel hoàn toàn mới")}
                                 >
                                   <Upload className="w-3 h-3 text-zinc-650" />
-                                  <span>Cập nhật File mới</span>
+                                  <span>{t("Cập nhật File mới")}</span>
                                 </button>
                                 <p className="text-[9.5px] text-zinc-500 font-bold leading-normal pl-1.5 border-l border-slate-300">
-                                  Nếu chọn file khác, các liên kết tem với cột cũ sẽ bị xóa hết.
-                                </p>
+                                  {t("Nếu chọn file khác, các liên kết tem với cột cũ sẽ bị xóa hết.")}</p>
                               </div>
 
                               {/* 3. Nút Tải tệp đang liên kết */}
@@ -6879,10 +6845,10 @@ export default function App() {
                                   type="button"
                                   onClick={handleDownloadExcelTemplate}
                                   className="w-full text-[10px] bg-emerald-100/60 hover:bg-emerald-100 text-emerald-800 font-extrabold py-1 px-2 rounded inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer select-none border border-emerald-200/50"
-                                  title="Tải tệp Excel đang chạy trong mẫu thiết kế này"
+                                  title={t("Tải tệp Excel đang chạy trong mẫu thiết kế này")}
                                 >
                                   <Download className="w-2.5 h-2.5 text-emerald-700" />
-                                  <span>Tải tệp đang liên kết</span>
+                                  <span>{t("Tải tệp đang liên kết")}</span>
                                 </button>
                               </div>
                             </div>
@@ -6902,9 +6868,9 @@ export default function App() {
                         onClick={handleFitObjectsToLabel}
                         disabled={objects.length === 0}
                         className="w-full py-2.5 bg-gradient-to-r from-kiot-cyan to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white rounded-lg text-xs font-black text-center select-none cursor-pointer transition flex items-center justify-center space-x-1.5 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transform active:scale-[0.98]"
-                        title="Tự động co giãn tất cả đối tượng vừa vặn vào khổ tem và giữ nguyên vị trí cân đối"
+                        title={t("Tự động co giãn tất cả đối tượng vừa vặn vào khổ tem và giữ nguyên vị trí cân đối")}
                       >
-                        ⚡ <span>Khớp vừa với nhãn</span>
+                        ⚡ <span>{t("Khớp vừa với nhãn")}</span>
                       </button>
                     </div>
                   </div>
@@ -6922,22 +6888,22 @@ export default function App() {
                 type="button"
                 onClick={() => setIsPrintExpanded(!isPrintExpanded)}
                 className="mx-3 mt-3 mb-2 px-4 py-3 flex items-center justify-between cursor-pointer select-none group rounded-xl shadow-md transition-all duration-150 bg-gradient-to-r from-kiot-cyan to-sky-500 hover:from-sky-500 hover:to-sky-400 text-white scale-[1.01] hover:scale-[1.02] active:scale-[0.99] border border-sky-600/30 border-b-[3px] border-b-sky-700/80"
-                title="Nhấn để thiết lập số lượng bản in và thực hiện in nhãn"
+                data-step4-print="1"
+                title={t("Nhấn để thiết lập số lượng bản in và thực hiện in nhãn")}
               >
                 <div className="flex items-center space-x-2.5">
                   <span className="px-2 py-0.5 rounded font-extrabold text-[10px] tracking-wide shrink-0 border bg-white/20 text-white border-white/30 group-hover:bg-white/30 transition-colors">
-                    BƯỚC 4
-                  </span>
+                    {t("BƯỚC 4")}</span>
                   <div className="flex items-center space-x-1.5">
                     <Printer className="w-4 h-4 animate-pulse select-none shrink-0 text-white" />
                     <span className="font-extrabold text-[12.5px] uppercase tracking-wider font-sans text-white leading-none">
-                      IN TEM
+                      {t("IN TEM")}
                     </span>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className="text-[10px] px-2 py-0.5 rounded font-black border font-mono transition-colors duration-150 bg-white/20 text-white border-white/30">
-                    {printQuantityMode === "constant" ? `${printCopies} bản` : 'Theo Excel'}
+                    {printQuantityMode === "constant" ? t("{printCopies} bản", { printCopies }) : t("Theo Excel")}
                   </span>
                   <div className={`transition-transform duration-150 text-white ${isPrintExpanded ? "rotate-180" : ""}`}>
                     <ChevronDown className="w-4 h-4 text-white" />
@@ -6951,8 +6917,7 @@ export default function App() {
                   <div className="space-y-2 pb-1.5">
                     <div className="flex items-center justify-between mb-1.5">
                       <label className="block text-[10px] font-black text-slate-500 uppercase tracking-wider select-none">
-                        CHẾ ĐỘ SỐ LƯỢNG IN
-                      </label>
+                        {t("CHẾ ĐỘ SỐ LƯỢNG IN")}</label>
                     </div>
 
                     {/* Two options selection button layout */}
@@ -6968,8 +6933,7 @@ export default function App() {
                             : "text-slate-500 hover:text-slate-800 font-semibold"
                         }`}
                       >
-                        Số lượng cố định
-                      </button>
+                        {t("Số lượng cố định")}</button>
                       <button
                         type="button"
                         disabled={excelData.length === 0}
@@ -6983,10 +6947,10 @@ export default function App() {
                             ? "bg-white text-emerald-700 shadow-xs border border-emerald-250 font-extrabold"
                             : "text-slate-500 hover:text-slate-800 cursor-pointer font-semibold"
                         }`}
-                        title={excelData.length === 0 ? "Hãy tải dữ liệu Excel trước" : "Lấy số bản in theo cột Excel"}
+                        title={excelData.length === 0 ? t("Hãy tải dữ liệu Excel trước") : t("Lấy số bản in theo cột Excel")}
                       >
-                        <span>SL theo file</span>
-                        {excelData.length === 0 && <span className="text-[8px] bg-slate-200 text-slate-500 px-1 rounded font-bold">Khóa</span>}
+                        <span>{t("SL theo file")}</span>
+                        {excelData.length === 0 && <span className="text-[8px] bg-slate-200 text-slate-500 px-1 rounded font-bold">{t("Khóa")}</span>}
                       </button>
                     </div>
 
@@ -6994,8 +6958,7 @@ export default function App() {
                     {printQuantityMode === 'constant' ? (
                       <div className="space-y-1 pt-1">
                         <label className="block text-[10px] text-slate-500 font-bold uppercase select-none mb-0.5">
-                          Nhập số bản sao cần in:
-                        </label>
+                          {t("Nhập số bản sao cần in:")}</label>
                         <div className="relative">
                           <input
                             id="print-copies-input"
@@ -7020,7 +6983,7 @@ export default function App() {
                             }}
                             className="w-full pl-2 pr-8 py-1.5 text-sm bg-white border border-gray-300 rounded-lg text-slate-800 font-bold font-mono focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan outline-none"
                           />
-                          <span className="absolute right-2 top-2 text-[11px] text-gray-400 font-extrabold select-none">bản</span>
+                          <span className="absolute right-2 top-2 text-[11px] text-gray-400 font-extrabold select-none">{t("bản")}</span>
                         </div>
                       </div>
                     ) : (
@@ -7028,35 +6991,32 @@ export default function App() {
                         {excelData.length > 0 ? (
                           <>
                             <label className="block text-[10px] text-slate-500 font-bold uppercase select-none mb-0.5">
-                              Chọn cột số lượng từ Excel:
-                            </label>
+                              {t("Chọn cột số lượng từ Excel:")}</label>
                             <select
                               value={printQuantityColumn || ""}
                               onChange={(e) => setPrintQuantityColumn(e.target.value || null)}
                               className="w-full text-xs font-extrabold font-mono py-1.5 px-2 bg-white border border-gray-300 rounded-lg text-slate-800 focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan outline-none cursor-pointer"
                             >
-                              <option value="">-- Tự động in mỗi dòng 1 tem --</option>
+                              <option value="">{t("-- Tự động in mỗi dòng 1 tem --")}</option>
                               {numericExcelColumns.map((col) => (
                                 <option key={col} value={col}>
-                                  Cột: [{col}]
-                                </option>
+                                  {t("Cột: [{col}]", { col })}</option>
                               ))}
                             </select>
                             {numericExcelColumns.length === 0 ? (
                               <span className="block text-[10px] text-amber-950 font-semibold leading-normal bg-amber-50 p-1.5 rounded-md border border-amber-200 mt-1">
-                                ⚠️ Không tìm thấy cột số lượng phù hợp. Đảm bảo Excel chứa cột SL / Số lượng dạng số.
-                              </span>
+                                {t("⚠️ Không tìm thấy cột số lượng phù hợp. Đảm bảo Excel chứa cột SL / Số lượng dạng số.")}</span>
                             ) : (
                               <span className="block text-[10px] text-emerald-700 font-semibold leading-relaxed bg-emerald-50 p-1 rounded-md border border-emerald-150 mt-1">
                                 {printQuantityColumn
-                                  ? `In dựa vào cột: ${printQuantityColumn}. Tổng in: ${printManifest.length} bản.`
-                                  : `Mỗi dòng trong Excel sẽ được in đúng 1 bản. Tổng in: ${printManifest.length} bản.`}
+                                  ? t("In dựa vào cột: {printQuantityColumn}. Tổng in: {length} bản.", { printQuantityColumn, length: printManifest.length })
+                                  : t("Mỗi dòng trong Excel sẽ được in đúng 1 bản. Tổng in: {length} bản.", { length: printManifest.length })}
                               </span>
                             )}
                           </>
                         ) : (
                           <div className="text-[10px] font-semibold text-yellow-850 bg-yellow-50 border border-yellow-250 p-1.5 rounded-md leading-normal">
-                            Cần liên kết file dữ liệu trước trong tab <strong>"KHỔ TEM & GIẤY"</strong>.
+                            {t("Cần liên kết file dữ liệu trước trong tab")+" "}<strong>{t("\"KHỔ TEM & GIẤY\"")}</strong>.
                           </div>
                         )}
                       </div>
@@ -7064,7 +7024,7 @@ export default function App() {
 
                     {printLimitWarning && (
                       <div className="p-2.5 bg-rose-50 border border-rose-200 text-rose-800 text-[11px] rounded-lg leading-relaxed font-semibold animate-pulse shadow-xs max-h-[140px] overflow-y-auto select-text font-sans">
-                        ⚠️ <span className="font-bold">Cảnh báo an toàn:</span> {printLimitWarning}
+                        ⚠️ <span className="font-bold">{t("Cảnh báo an toàn:")}</span> {printLimitWarning}
                       </div>
                     )}
                   </div>
@@ -7080,11 +7040,11 @@ export default function App() {
                       >
                         <div className="flex items-center space-x-1.5 min-w-0">
                           <Settings className="w-3.5 h-3.5 text-kiot-cyan shrink-0" />
-                          <span className="uppercase tracking-wider text-[10px] text-slate-800">Thiết lập mở rộng</span>
+                          <span className="uppercase tracking-wider text-[10px] text-slate-800">{t("Thiết lập mở rộng")}</span>
                         </div>
                         <div className="flex items-center space-x-1 text-slate-400">
                           <span className="text-[9px] font-medium text-slate-500">
-                            {isExtendedSettingsOpen ? "Ẩn" : "Hiện"}
+                            {isExtendedSettingsOpen ? t("Ẩn") : t("Hiện")}
                           </span>
                           {isExtendedSettingsOpen ? (
                             <ChevronUp className="w-3.5 h-3.5 text-slate-500 shrink-0" />
@@ -7100,13 +7060,12 @@ export default function App() {
                           <div className="flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-slate-200/60 shadow-2xs">
                             <div className="flex items-center space-x-1.5 min-w-0">
                               <label htmlFor="sidebar-optimize-thermal-toggle" className="text-[10px] font-black text-slate-700 uppercase tracking-wide cursor-pointer select-none truncate">
-                                Tối ưu in nhiệt (Đơn sắc nét)
-                              </label>
+                                {t("Tối ưu in nhiệt (Đơn sắc nét)")}</label>
                               <InfoTooltip content={
                                 <div>
-                                  <p className="font-bold mb-1">Tính năng binarize ảnh đơn sắc:</p>
-                                  <p>Loại bỏ hoàn toàn các điểm ảnh mờ/xám (anti-aliasing) xung quanh chữ và nét vẽ. Toàn bộ nét vẽ sẽ được chuyển thành màu đen tuyền tuyệt đối trên nền trắng tinh khiết.</p>
-                                  <p className="mt-1 font-semibold text-kiot-cyan">Giúp bản in trên máy in nhiệt cực kỳ sắc nét, không bị dính nét, xước hoặc nhòe mờ mã vạch/chữ viết!</p>
+                                  <p className="font-bold mb-1">{t("Tính năng binarize ảnh đơn sắc:")}</p>
+                                  <p>{t("Loại bỏ hoàn toàn các điểm ảnh mờ/xám (anti-aliasing) xung quanh chữ và nét vẽ. Toàn bộ nét vẽ sẽ được chuyển thành màu đen tuyền tuyệt đối trên nền trắng tinh khiết.")}</p>
+                                  <p className="mt-1 font-semibold text-kiot-cyan">{t("Giúp bản in trên máy in nhiệt cực kỳ sắc nét, không bị dính nét, xước hoặc nhòe mờ mã vạch/chữ viết!")}</p>
                                 </div>
                               } />
                             </div>
@@ -7123,8 +7082,7 @@ export default function App() {
                           <div className="p-2.5 bg-white border border-slate-200 rounded-lg space-y-1.5">
                             <div className="flex items-center justify-between gap-2">
                               <label htmlFor="sidebar-pdf-engine" className="text-[10px] font-black text-slate-700 uppercase tracking-wide select-none truncate">
-                                Kiểu PDF
-                              </label>
+                                {t("Kiểu PDF")}</label>
                               <select
                                 id="sidebar-pdf-engine"
                                 value={pdfEngine}
@@ -7135,22 +7093,21 @@ export default function App() {
                                 }}
                                 className="text-[10.5px] font-bold border border-slate-300 rounded px-1.5 py-1 bg-white"
                               >
-                                <option value="vector">Vector (nét, nhẹ, nhanh)</option>
-                                <option value="raster">Ảnh (dự phòng)</option>
+                                <option value="vector">{t("Vector (nét, nhẹ, nhanh)")}</option>
+                                <option value="raster">{t("Ảnh (dự phòng)")}</option>
                               </select>
                             </div>
                             <p className="text-[10px] text-slate-500 leading-snug">
                               {pdfEngine === "vector"
-                                ? "Chữ, mã vạch, QR là nét vẽ thật (font Arial/Times khớp với bản thiết kế). Không phụ thuộc cỡ chữ tối thiểu của trình duyệt."
-                                : "Chụp màn hình thành ảnh, dùng khi PDF vector lệch bản thiết kế. Độ phân giải chọn ở ô bên dưới."}
+                                ? t("Chữ, mã vạch, QR là nét vẽ thật (font Arial/Times khớp với bản thiết kế). Không phụ thuộc cỡ chữ tối thiểu của trình duyệt.")
+                                : t("Chụp màn hình thành ảnh, dùng khi PDF vector lệch bản thiết kế. Độ phân giải chọn ở ô bên dưới.")}
                             </p>
                           </div>
 
                           {/* Độ phân giải PDF/PNG (chỉ dùng cho PDF ảnh và PNG) */}
                           <div className="flex items-center justify-between gap-2 p-2.5 bg-white border border-slate-200 rounded-lg">
                             <label htmlFor="sidebar-pdf-dpi" className="text-[10px] font-black text-slate-700 uppercase tracking-wide select-none truncate">
-                              Độ phân giải PDF/PNG
-                            </label>
+                              {t("Độ phân giải PDF/PNG")}</label>
                             <select
                               id="sidebar-pdf-dpi"
                               value={pdfDpi}
@@ -7161,11 +7118,11 @@ export default function App() {
                               }}
                               className="text-[10.5px] font-bold border border-slate-300 rounded px-1.5 py-1 bg-white"
                             >
-                              <option value={150}>150 DPI (nhẹ)</option>
-                              <option value={203}>203 DPI (máy in 8 dot/mm)</option>
-                              <option value={288}>288 DPI (mặc định)</option>
-                              <option value={300}>300 DPI (máy in 12 dot/mm)</option>
-                              <option value={600}>600 DPI (rất nặng)</option>
+                              <option value={150}>{t("150 DPI (nhẹ)")}</option>
+                              <option value={203}>{t("203 DPI (máy in 8 dot/mm)")}</option>
+                              <option value={288}>{t("288 DPI (mặc định)")}</option>
+                              <option value={300}>{t("300 DPI (máy in 12 dot/mm)")}</option>
+                              <option value={600}>{t("600 DPI (rất nặng)")}</option>
                             </select>
                           </div>
 
@@ -7174,17 +7131,16 @@ export default function App() {
                             <div className="flex items-center justify-between">
                               <div className="flex items-center space-x-1">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <span className="font-extrabold text-slate-700 uppercase tracking-wider text-[9.5px]">Độ ổn định RAM/Bộ nhớ</span>
+                                <span className="font-extrabold text-slate-700 uppercase tracking-wider text-[9.5px]">{t("Độ ổn định RAM/Bộ nhớ")}</span>
                               </div>
                               <span className="font-mono font-bold text-sky-800 bg-sky-100/80 px-1.5 py-0.5 rounded text-[10px]">
-                                Cache: {cachedPagesCount} trang
+                                {t("Cache: {n} trang", { n: cachedPagesCount })}
                               </span>
                             </div>
                             
                             <div className="flex items-center justify-between">
                               <label htmlFor="sidebar-auto-release-ram-toggle" className="text-[10px] font-bold text-slate-600 cursor-pointer select-none">
-                                Tự động xả RAM sau khi in
-                              </label>
+                                {t("Tự động xả RAM sau khi in")}</label>
                               <input
                                 id="sidebar-auto-release-ram-toggle"
                                 type="checkbox"
@@ -7198,13 +7154,12 @@ export default function App() {
                               type="button"
                               onClick={() => {
                                 clearCanvasMemory();
-                                alert("Đã giải phóng toàn bộ RAM cache ảnh thành công! Bộ nhớ trình duyệt đã được đưa về trạng thái tối ưu.");
+                                alert(t("Đã giải phóng toàn bộ RAM cache ảnh thành công! Bộ nhớ trình duyệt đã được đưa về trạng thái tối ưu."));
                               }}
                               className="w-full py-1 px-2 text-center text-[10px] font-extrabold text-white bg-kiot-cyan hover:bg-sky-600 transition-colors rounded-md cursor-pointer select-none active:scale-[0.98]"
-                              title="Giải phóng ngay lập tức toàn bộ bộ nhớ đệm GPU và RAM trình duyệt bằng cách dọn sạch các đối tượng canvas độ phân giải cao"
+                              title={t("Giải phóng ngay lập tức toàn bộ bộ nhớ đệm GPU và RAM trình duyệt bằng cách dọn sạch các đối tượng canvas độ phân giải cao")}
                             >
-                              ⚡ XẢ RAM & DỌN CACHED CANVASES
-                            </button>
+                              {t("⚡ XẢ RAM & DỌN CACHED CANVASES")}</button>
                           </div>
                         </div>
                       )}
@@ -7213,19 +7168,18 @@ export default function App() {
                     {desktop && (
                       <div id="desktop-print-panel" className="rounded-xl border border-orange-200 bg-orange-50/70 p-2.5 space-y-2 text-[10.5px]">
                         <div className="flex items-center justify-between">
-                          <span className="font-extrabold text-slate-800 uppercase tracking-wider text-[10px]">In trực tiếp ra máy in</span>
+                          <span className="font-extrabold text-slate-800 uppercase tracking-wider text-[10px]">{t("In trực tiếp ra máy in")}</span>
                           <button
                             type="button"
                             onClick={async () => {
                               const r = await listDesktopPrinters(true);
                               if (r.ok) { setDesktopPrinters(r.data || []); setDirectPrintMsg(null); }
-                              else setDirectPrintMsg({ ok: false, text: r.error || "Không đọc được danh sách máy in." });
+                              else setDirectPrintMsg({ ok: false, text: r.error || t("Không đọc được danh sách máy in.") });
                             }}
                             className="text-[9.5px] font-bold text-sky-700 hover:underline cursor-pointer"
-                            title="Quét lại danh sách máy in của máy tính"
+                            title={t("Quét lại danh sách máy in của máy tính")}
                           >
-                            Làm mới
-                          </button>
+                            {t("Làm mới")}</button>
                         </div>
                         <select
                           id="desktop-printer-select"
@@ -7237,26 +7191,26 @@ export default function App() {
                           }}
                           className="w-full px-2 py-1.5 text-xs font-bold bg-white border border-gray-300 rounded-lg text-slate-800 focus:border-kiot-cyan focus:outline-none cursor-pointer"
                         >
-                          <option value={PDF_TARGET}>💾 Lưu thành PDF (không in)</option>
+                          <option value={PDF_TARGET}>{t("💾 Lưu thành PDF (không in)")}</option>
                           {desktopPrinters.map((p) => (
-                            <option key={p.name} value={p.name}>🖨 {p.name}{p.isDefault ? " (mặc định)" : ""}</option>
+                            <option key={p.name} value={p.name}>🖨 {p.name}{p.isDefault ? t(" (mặc định)") : ""}</option>
                           ))}
                         </select>
                         {effectivePrintTarget === PDF_TARGET ? (
-                          <p className="text-[9.5px] text-slate-600 leading-snug">Xuất tệp PDF để lưu hoặc in bằng phần mềm khác.</p>
+                          <p className="text-[9.5px] text-slate-600 leading-snug">{t("Xuất tệp PDF để lưu hoặc in bằng phần mềm khác.")}</p>
                         ) : (
                           <div id="desktop-mode-info" className="text-[9.5px] text-slate-600 leading-snug space-y-1">
                             <p title={printerProfile?.reason}>
-                              <span className="font-black text-slate-800">Tự chọn: {MODE_LABEL[printMode]}{printMode !== "sheet" ? ` · ${printDpi} DPI` : ""}</span>
-                              {printerModes[effectivePrintTarget] ? " (do bạn chọn)" : ""}
-                              {isOfficeSheet ? " · giấy văn phòng luôn vẽ trang" : ""}
+                              <span className="font-black text-slate-800">{t("Tự chọn: {v}", { v: t(MODE_LABEL[printMode]) })}{printMode !== "sheet" ? ` · ${printDpi} DPI` : ""}</span>
+                              {printerModes[effectivePrintTarget] ? t(" (do bạn chọn)") : ""}
+                              {isOfficeSheet ? t(" · giấy văn phòng luôn vẽ trang") : ""}
                               {!printerModes[effectivePrintTarget] && !isOfficeSheet && printerProfile ? ` · ${printerProfile.reason}` : ""}
                             </p>
                             {!isOfficeSheet && (
                               <details id="desktop-mode-details" className="text-[9.5px]">
-                                <summary className="cursor-pointer font-bold text-sky-700 hover:underline select-none">Đổi cách in</summary>
-                                <div className="grid grid-cols-2 gap-1 pt-1" role="radiogroup" aria-label="Cách in">
-                                  {([[undefined, "Tự động", "Theo máy in"], ["zpl", "Lệnh ZPL", "Máy in Zebra"], ["tspl", "Lệnh TSPL", "TSC, Xprinter..."], ["sheet", "Vẽ trang", "Mọi máy in"]] as const).map(([m, name, hint]) => (
+                                <summary className="cursor-pointer font-bold text-sky-700 hover:underline select-none">{t("Đổi cách in")}</summary>
+                                <div className="grid grid-cols-2 gap-1 pt-1" role="radiogroup" aria-label={t("Cách in")}>
+                                  {([[undefined, t("Tự động"), t("Theo máy in")], ["zpl", t("Lệnh ZPL"), t("Máy in Zebra")], ["tspl", t("Lệnh TSPL"), "TSC, Xprinter..."], ["sheet", t("Vẽ trang"), t("Mọi máy in")]] as const).map(([m, name, hint]) => (
                                     <button
                                       key={String(m)}
                                       type="button"
@@ -7287,7 +7241,7 @@ export default function App() {
                           }`}
                         >
                           {isDirectPrinting ? <RefreshCw className="w-3.5 h-3.5 stroke-[3.5] animate-spin" /> : <Printer className="w-3.5 h-3.5 stroke-[2.5]" />}
-                          <span className="uppercase tracking-wider">{isDirectPrinting ? "Đang gửi lệnh in..." : effectivePrintTarget === PDF_TARGET ? "Lưu PDF" : "In ngay"}</span>
+                          <span className="uppercase tracking-wider">{isDirectPrinting ? t("Đang gửi lệnh in...") : effectivePrintTarget === PDF_TARGET ? t("Lưu PDF") : t("In ngay")}</span>
                         </button>
                         {directPrintMsg && (
                           <div className="space-y-1">
@@ -7302,12 +7256,11 @@ export default function App() {
                                 onClick={() => {
                                   const next = alternativeMode(printerProfile, printMode);
                                   choosePrinterMode(effectivePrintTarget, next);
-                                  setDirectPrintMsg({ ok: true, text: `Đã đổi sang "${MODE_LABEL[next]}" cho máy in này. Bấm In ngay để in lại.` });
+                                  setDirectPrintMsg({ ok: true, text: t("Đã đổi sang \"{v}\" cho máy in này. Bấm In ngay để in lại.", { v: t(MODE_LABEL[next]) }) });
                                 }}
                                 className="text-[10px] font-bold text-sky-700 hover:underline cursor-pointer"
                               >
-                                Tem in chưa đúng? Thử cách khác
-                              </button>
+                                {t("Tem in chưa đúng? Thử cách khác")}</button>
                             )}
                           </div>
                         )}
@@ -7324,33 +7277,32 @@ export default function App() {
                             ? "bg-slate-50 text-slate-400 border-slate-200 cursor-not-allowed"
                             : "bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700 hover:shadow-sm active:scale-[0.98]"
                         }`}
-                        title="Lưu dưới dạng tệp PDF với kích thước gốc (mm)"
+                        title={t("Lưu dưới dạng tệp PDF với kích thước gốc (mm)")}
                       >
                         {isSavingFile && saveFileProgress.includes("PDF") ? (
                           <RefreshCw className="w-3.5 h-3.5 stroke-[3.5] animate-spin text-white" />
                         ) : (
                           <FileText className="w-3.5 h-3.5 stroke-[2.5]" />
                         )}
-                        <span className="uppercase tracking-wider">LƯU PDF</span>
+                        <span className="uppercase tracking-wider">{t("LƯU PDF")}</span>
                       </button>
 
                       {/* NÂNG CAO: tệp lệnh máy in nhiệt (ZPL / TSPL) cho kỹ thuật viên; người dùng thường không cần (in thẳng đã tự chọn đúng cách) */}
                       <details id="advanced-printer-commands" className="rounded-xl border border-slate-200/80 bg-slate-50/90 p-2.5 text-[10.5px]">
-                        <summary className="cursor-pointer select-none font-extrabold text-slate-500 uppercase tracking-wider text-[9.5px]">Nâng cao: tệp lệnh máy in nhiệt</summary>
+                        <summary className="cursor-pointer select-none font-extrabold text-slate-500 uppercase tracking-wider text-[9.5px]">{t("Nâng cao: tệp lệnh máy in nhiệt")}</summary>
                         <div className="space-y-2 pt-2">
                         <div className="flex items-center justify-between">
                           <span className="font-extrabold text-slate-800 uppercase tracking-wider text-[10px]">
-                            Xuất lệnh máy in nhiệt
-                          </span>
+                            {t("Xuất lệnh máy in nhiệt")}</span>
                           <span className="text-[9.5px] font-mono font-bold text-sky-800 bg-sky-100/80 px-1.5 py-0.5 rounded">
                             {(() => {
                               const jobs = buildPrinterCommandJobs();
-                              return `${jobs.reduce((n, j) => n + j.copies, 0)} nhãn`;
+                              return t("{v} nhãn", { v: jobs.reduce((n, j) => n + j.copies, 0) });
                             })()}
                           </span>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-1.5" role="radiogroup" aria-label="Ngôn ngữ máy in">
+                        <div className="grid grid-cols-2 gap-1.5" role="radiogroup" aria-label={t("Ngôn ngữ máy in")}>
                           {([["zpl", "ZPL", "Zebra"], ["tspl", "TSPL", "TSC, Xprinter, Gprinter"]] as const).map(([v, name, hint]) => (
                             <button
                               key={v}
@@ -7369,7 +7321,7 @@ export default function App() {
                         </div>
 
                         <div className="flex items-center justify-between gap-2">
-                          <span className="font-bold text-slate-600">Độ phân giải máy in</span>
+                          <span className="font-bold text-slate-600">{t("Độ phân giải máy in")}</span>
                           <div className="flex gap-1">
                             {[203, 300, 600].map((d) => (
                               <button
@@ -7388,7 +7340,7 @@ export default function App() {
 
                         {printerLang === "tspl" && (
                           <div className="flex items-center justify-between gap-2">
-                            <label htmlFor="tspl-gap-input" className="font-bold text-slate-600">Khoảng hở giữa 2 tem (mm)</label>
+                            <label htmlFor="tspl-gap-input" className="font-bold text-slate-600">{t("Khoảng hở giữa 2 tem (mm)")}</label>
                             <input
                               id="tspl-gap-input"
                               type="number"
@@ -7407,21 +7359,19 @@ export default function App() {
 
                         {objects.some((o) => o.type === "image") && (
                           <p className="text-[9.5px] font-bold text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-2 py-1">
-                            ⚠️ Hình ảnh không được xuất sang lệnh máy in (sẽ bị bỏ qua). Dùng PDF nếu tem có logo/ảnh.
-                          </p>
+                            {t("⚠️ Hình ảnh không được xuất sang lệnh máy in (sẽ bị bỏ qua). Dùng PDF nếu tem có logo/ảnh.")}</p>
                         )}
                         <p className="text-[9.5px] text-slate-500 leading-snug">
-                          Chữ tiếng Việt có dấu cần máy in đã nạp font TrueType. Nếu máy in chưa có font, hãy dùng PDF.
-                        </p>
+                          {t("Chữ tiếng Việt có dấu cần máy in đã nạp font TrueType. Nếu máy in chưa có font, hãy dùng PDF.")}</p>
 
                         <button
                           type="button"
                           onClick={handleExportPrinterCommands}
                           className="w-full py-2 px-2 rounded-lg flex items-center justify-center space-x-2 text-[11px] font-black border bg-slate-800 text-white border-slate-800 hover:bg-slate-900 hover:shadow-sm active:scale-[0.98] transition-all cursor-pointer"
-                          title="Tải tệp lệnh để gửi thẳng tới máy in nhiệt"
+                          title={t("Tải tệp lệnh để gửi thẳng tới máy in nhiệt")}
                         >
                           <Printer className="w-3.5 h-3.5 stroke-[2.5]" />
-                          <span className="uppercase tracking-wider">Xuất file .{printerLang}</span>
+                          <span className="uppercase tracking-wider">{t("Xuất file .{printerLang}", { printerLang })}</span>
                         </button>
                         </div>
                       </details>
@@ -7443,24 +7393,24 @@ export default function App() {
                         ? "bg-slate-300 text-slate-500 border-slate-400 cursor-not-allowed opacity-75 shadow-none scale-100"
                         : "bg-gradient-to-r from-kiot-cyan to-sky-500 hover:from-sky-500 hover:to-sky-600 text-white cursor-pointer shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-[0.98] border-sky-600"
                     }`}
-                    title={isPreparingPrint ? "Đang chuẩn bị vẽ nhãn & mã vạch..." : "Gọi lệnh in nhãn dán tiêu chuẩn (Ctrl + P)"}
+                    title={isPreparingPrint ? t("Đang chuẩn bị vẽ nhãn & mã vạch...") : t("Gọi lệnh in nhãn dán tiêu chuẩn (Ctrl + P)")}
                   >
                     {isPreparingPrint ? (
                       <>
                         <RefreshCw className="w-4.5 h-4.5 stroke-[3] animate-spin" />
-                        <span className="tracking-widest uppercase font-black font-sans">ĐANG CHUẨN BỊ IN...</span>
+                        <span className="tracking-widest uppercase font-black font-sans">{t("ĐANG CHUẨN BỊ IN...")}</span>
                       </>
                     ) : (
                       <>
                         <Printer className="w-4.5 h-4.5 stroke-[3]" />
-                        <span className="tracking-widest uppercase font-black font-sans">IN NHÃN (CTRL + P)</span>
+                        <span className="tracking-widest uppercase font-black font-sans">{t("IN NHÃN (CTRL + P)")}</span>
                       </>
                     )}
                   </button>
                   {!desktop && (
                     <p id="offline-print-hint" className="text-[10px] text-slate-500 leading-snug text-center px-1">
-                      Muốn in thẳng ra máy in tem, tự chọn đúng chế độ theo máy in và không qua PDF?{" "}
-                      <a href={OFFLINE_DOWNLOAD_URL} target="_blank" rel="noopener noreferrer" className="font-bold text-orange-600 hover:underline">Tải bản offline</a>
+                      {t("Muốn in thẳng ra máy in tem, tự chọn đúng chế độ theo máy in và không qua PDF?")}{" "}
+                      <a href={OFFLINE_DOWNLOAD_URL} target="_blank" rel="noopener noreferrer" className="font-bold text-orange-600 hover:underline">{t("Tải bản offline")}</a>
                     </p>
                   )}
                 </div>
@@ -7473,12 +7423,10 @@ export default function App() {
             <Info className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
             {activeSidebarTab === 'design' ? (
               <p className="leading-relaxed">
-                Chọn đối tượng văn bản, QR, hoặc mã vạch bất kỳ. Trong Panel Thuộc Tính hiện lên bên dưới cấu hình diện tích sẽ có nút <strong>Liên kết dữ liệu Excel</strong> để lấy thông tin tự động theo cột hàng!
-              </p>
+                {t("Chọn đối tượng văn bản, QR, hoặc mã vạch bất kỳ. Trong Panel Thuộc Tính hiện lên bên dưới cấu hình diện tích sẽ có nút")+" "}<strong>{t("Liên kết dữ liệu Excel")}</strong> {" "+t("để lấy thông tin tự động theo cột hàng!")}</p>
             ) : (
               <p className="leading-relaxed">
-                Nạp tệp Excel bán hàng, vật tư. Sau khi tải lên, tiêu đề cột (dòng 1) sẽ dùng để ánh xạ tự động vào cấu hình tem nhãn vô cùng dễ dàng.
-              </p>
+                {t("Nạp tệp Excel bán hàng, vật tư. Sau khi tải lên, tiêu đề cột (dòng 1) sẽ dùng để ánh xạ tự động vào cấu hình tem nhãn vô cùng dễ dàng.")}</p>
             )}
           </footer>
             </>
@@ -7494,7 +7442,7 @@ export default function App() {
               
               {(sheetConfig.mode === 'office' || sheetConfig.mode === 'thermal') && (
                 <div className="flex items-center bg-gray-50 px-2 py-1 rounded-lg border border-gray-200 space-x-2 shrink-0 select-none">
-                  <span className="text-[10.5px] text-gray-400 font-extrabold uppercase select-none tracking-wider">Chế độ xem</span>
+                  <span className="text-[10.5px] text-gray-400 font-extrabold uppercase select-none tracking-wider">{t("Chế độ xem")}</span>
                   <div className="flex bg-slate-100 p-0.5 rounded-md border border-gray-250">
                     <button
                       type="button"
@@ -7505,8 +7453,7 @@ export default function App() {
                           : 'text-slate-550 hover:text-slate-800'
                       }`}
                     >
-                      Bàn Thiết Kế (1 Tem)
-                    </button>
+                      {t("Bàn Thiết Kế (1 Tem)")}</button>
                     <button
                       type="button"
                       onClick={() => setOfficePreviewMode('sheet')}
@@ -7517,8 +7464,8 @@ export default function App() {
                       }`}
                     >
                       {sheetConfig.mode === 'office' 
-                        ? `Xem Trang In Lưới (${sheetConfig.paperSize})` 
-                        : `Xem Cuộn Tem (${sheetConfig.cols} Tem)`}
+                        ? t("Xem Trang In Lưới ({paperSize})", { paperSize: sheetConfig.paperSize }) 
+                        : t("Xem Cuộn Tem ({cols} Tem)", { cols: sheetConfig.cols })}
                     </button>
                   </div>
                 </div>
@@ -7526,12 +7473,12 @@ export default function App() {
               
               {/* Display Zoom controls */}
               <div className="flex items-center bg-gray-50 px-2 py-1 rounded-lg border border-gray-200 space-x-1.5 font-sans shrink-0">
-                <span className="text-[10.5px] text-gray-400 font-extrabold uppercase select-none tracking-wider">Zoom Tem</span>
+                <span className="text-[10.5px] text-gray-400 font-extrabold uppercase select-none tracking-wider">{t("Zoom Tem")}</span>
                 <button
                   type="button"
                   onClick={() => setPixelScale(Math.max(1.6983, pixelScale - 0.84915))}
                   className="p-1 rounded hover:bg-white text-gray-500 hover:text-gray-700 transition cursor-pointer"
-                  title="Thu nhỏ phôi dán"
+                  title={t("Thu nhỏ phôi dán")}
                 >
                   <ZoomOut className="w-3.5 h-3.5" />
                 </button>
@@ -7542,7 +7489,7 @@ export default function App() {
                   type="button"
                   onClick={() => setPixelScale(Math.min(25.4745, pixelScale + 0.84915))}
                   className="p-1 rounded hover:bg-white text-gray-500 hover:text-gray-700 transition cursor-pointer"
-                  title="Phóng to phôi dán"
+                  title={t("Phóng to phôi dán")}
                 >
                   <ZoomIn className="w-3.5 h-3.5" />
                 </button>
@@ -7551,7 +7498,7 @@ export default function App() {
               {/* Interface Zoom (UI Zoom) controls */}
               <div className="flex items-center bg-sky-50/70 px-2 py-1 rounded-lg border border-sky-200 space-x-1.5 font-sans shrink-0">
                 <span className="text-[10.5px] text-sky-700 font-extrabold uppercase select-none tracking-wider">
-                  <span className="hidden sm:inline">Zoom Giao Diện</span>
+                  <span className="hidden sm:inline">{t("Zoom Giao Diện")}</span>
                   <span className="sm:hidden">Zoom UI</span>
                 </span>
                 <button
@@ -7563,7 +7510,7 @@ export default function App() {
                     safeLocalStorage.setItem("kiotlabel_interface_zoom_override", "true");
                   }}
                   className="p-1 rounded hover:bg-white text-sky-700 hover:text-sky-900 transition cursor-pointer"
-                  title="Thu nhỏ toàn bộ giao diện ứng dụng (Thích hợp cho màn hình nhỏ)"
+                  title={t("Thu nhỏ toàn bộ giao diện ứng dụng (Thích hợp cho màn hình nhỏ)")}
                 >
                   <ZoomOut className="w-3.5 h-3.5" />
                 </button>
@@ -7579,7 +7526,7 @@ export default function App() {
                     safeLocalStorage.setItem("kiotlabel_interface_zoom_override", "true");
                   }}
                   className="p-1 rounded hover:bg-white text-sky-700 hover:text-sky-900 transition cursor-pointer"
-                  title="Phóng to toàn bộ giao diện ứng dụng"
+                  title={t("Phóng to toàn bộ giao diện ứng dụng")}
                 >
                   <ZoomIn className="w-3.5 h-3.5" />
                 </button>
@@ -7591,10 +7538,9 @@ export default function App() {
                       safeLocalStorage.removeItem("kiotlabel_interface_zoom_override");
                     }}
                     className="text-[9px] bg-sky-200/80 hover:bg-sky-200 text-sky-900 font-black px-1.5 py-0.5 rounded transition select-none uppercase tracking-wide leading-none"
-                    title="Khôi phục tự động scale theo độ phân giải màn hình của bạn"
+                    title={t("Khôi phục tự động scale theo độ phân giải màn hình của bạn")}
                   >
-                    Tự động
-                  </button>
+                    {t("Tự động")}</button>
                 )}
               </div>
 
@@ -7610,10 +7556,10 @@ export default function App() {
                     ? "bg-gray-55 border-gray-150 text-gray-300 cursor-not-allowed font-sans"
                     : "bg-white hover:bg-slate-50 border-gray-200 hover:border-gray-300 text-slate-700 cursor-pointer hover:scale-[1.02] active:scale-[0.98] font-sans"
                 }`}
-                title="Hoàn tác thao tác trước (Ctrl + Z)"
+                title={t("Hoàn tác thao tác trước (Ctrl + Z)")}
               >
                 <Undo2 className="w-4 h-4 shrink-0" />
-                <span className="hidden lg:inline">Hoàn tác</span>
+                <span className="hidden lg:inline">{t("Hoàn tác")}</span>
               </button>
 
               {/* Redo Button */}
@@ -7626,32 +7572,32 @@ export default function App() {
                     ? "bg-gray-55 border-gray-150 text-gray-300 cursor-not-allowed font-sans"
                     : "bg-white hover:bg-slate-50 border-gray-200 hover:border-gray-300 text-slate-700 cursor-pointer hover:scale-[1.02] active:scale-[0.98] font-sans"
                 }`}
-                title="Làm lại thao tác vừa hoàn tác (Ctrl + Y)"
+                title={t("Làm lại thao tác vừa hoàn tác (Ctrl + Y)")}
               >
                 <Redo2 className="w-4 h-4 shrink-0" />
-                <span className="hidden lg:inline">Làm lại</span>
+                <span className="hidden lg:inline">{t("Làm lại")}</span>
               </button>
 
               {/* Blank restart canvas button */}
               <button
                 onClick={handleClearCanvas}
                 className="px-2.5 md:px-3 py-1.5 bg-white hover:bg-red-50 border border-red-200 hover:border-red-300 text-red-600 transition-all duration-150 rounded-lg text-xs md:text-[13px] font-bold flex items-center space-x-1.5 leading-none cursor-pointer shadow-xs hover:scale-[1.02] active:scale-[0.98] font-sans"
-                title="Xóa toàn bộ các đối tượng hiện tại để bắt đầu thiết kế mới"
+                title={t("Xóa toàn bộ các đối tượng hiện tại để bắt đầu thiết kế mới")}
               >
                 <Trash2 className="w-4 h-4 shrink-0" />
-                <span className="hidden lg:inline">Xóa hết</span>
-                <span className="lg:hidden">Xóa</span>
+                <span className="hidden lg:inline">{t("Xóa hết")}</span>
+                <span className="lg:hidden">{t("Xóa")}</span>
               </button>
 
               {/* Reset to default template button */}
               <button
                 onClick={handleResetToDefault}
                 className="px-2.5 md:px-3 py-1.5 bg-white hover:bg-amber-50 border border-amber-200 hover:border-amber-300 text-amber-700 transition-all duration-150 rounded-lg text-xs md:text-[13px] font-bold flex items-center space-x-1.5 leading-none cursor-pointer shadow-xs hover:scale-[1.02] active:scale-[0.98] font-sans"
-                title="Khôi phục thiết kế và dữ liệu Excel liên kết về mẫu mặc định ban đầu"
+                title={t("Khôi phục thiết kế và dữ liệu Excel liên kết về mẫu mặc định ban đầu")}
               >
                 <RefreshCw className="w-4 h-4 shrink-0" />
-                <span className="hidden lg:inline">Khôi phục mẫu</span>
-                <span className="lg:hidden">Khôi phục</span>
+                <span className="hidden lg:inline">{t("Khôi phục mẫu")}</span>
+                <span className="lg:hidden">{t("Khôi phục")}</span>
               </button>
             </div>
           </section>
@@ -7679,28 +7625,29 @@ export default function App() {
                   type="button" 
                   onClick={() => setShowHowToUse(false)}
                   className="absolute top-2.5 right-2.5 p-1 hover:bg-slate-100 text-slate-400 hover:text-red-500 rounded-lg transition-colors cursor-pointer"
-                  title="Đóng bảng hướng dẫn"
+                  title={t("Đóng bảng hướng dẫn")}
                 >
                   <X className="w-4 h-4" />
                 </button>
                 
                 <div className="flex items-center justify-between pb-1 border-b border-slate-100 pr-8">
                   <div className="flex items-center space-x-2">
-                    <span className="text-[12.3px] font-black text-slate-800 uppercase tracking-widest">📌 HƯỚNG DẪN THIẾT KẾ VÀ IN TEM</span>
-                    <span className="text-[10.8px] bg-sky-50 text-kiot-cyan font-black px-1.5 py-0.5 rounded uppercase border border-kiot-cyan/15">Tuần tự 4 bước</span>
+                    <span className="text-[12.3px] font-black text-slate-800 uppercase tracking-widest">{t("📌 HƯỚNG DẪN THIẾT KẾ VÀ IN TEM")}</span>
+                    <span className="text-[10.8px] bg-sky-50 text-kiot-cyan font-black px-1.5 py-0.5 rounded uppercase border border-kiot-cyan/15">{t("Tuần tự 4 bước")}</span>
                   </div>
                   {!desktop && (
                     <a
                       id="download-offline-link"
                       href={OFFLINE_DOWNLOAD_URL}
+                     
                       download
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-[11px] font-black uppercase tracking-wide shadow-sm cursor-pointer transition-all active:scale-[0.98]"
-                      title="Tải KiotLabel bản offline cho Windows (một tệp KiotLabel.exe, khoảng 16 MB): bấm đúp là chạy, không cần cài đặt hay giải nén, không cần Internet và in thẳng ra máy in tem"
+                      title={t("Tải KiotLabel bản offline cho Windows (một tệp KiotLabel.exe, khoảng 16 MB): bấm đúp là chạy, không cần cài đặt hay giải nén, không cần Internet và in thẳng ra máy in tem")}
                     >
                       <Download className="w-3.5 h-3.5 stroke-[2.5]" />
-                      <span>Tải bản offline</span>
+                      <span>{t("Tải bản offline")}</span>
                     </a>
                   )}
                 </div>
@@ -7713,12 +7660,12 @@ export default function App() {
                       type="button"
                       onClick={() => setActiveSidebarTab('layout')}
                       className="w-full md:w-[130px] text-white bg-[#0070F4] hover:bg-[#0062d6] font-black py-2.5 px-2.5 flex items-center justify-center md:flex-col md:justify-center text-left md:text-center cursor-pointer transition-all active:scale-[0.99] border-0 outline-none shrink-0 rounded-t-xl md:rounded-tr-none md:rounded-l-xl rounded-b-none"
-                      title="Chuyển sang tab Thiết lập Khổ tem & Giấy"
+                      title={t("Chuyển sang tab Thiết lập Khổ tem & Giấy")}
                     >
                       <div className="w-4 h-4 rounded-full bg-white flex items-center justify-center text-[#0070F4] font-black text-[10.3px] shadow-sm shrink-0 mr-2 md:mr-0 md:mb-1 ring-2 ring-white/10">1</div>
                       <div className="flex flex-col md:items-center">
-                        <span className="text-[11.8px] font-black tracking-wider uppercase font-sans leading-none">KHỔ GIẤY IN</span>
-                        <span className="text-[9.3px] text-sky-100 font-bold normal-case leading-none mt-0.5 md:mt-1">Thiết lập khổ</span>
+                        <span className="text-[11.8px] font-black tracking-wider uppercase font-sans leading-none">{t("KHỔ GIẤY IN")}</span>
+                        <span className="text-[9.3px] text-sky-100 font-bold normal-case leading-none mt-0.5 md:mt-1">{t("Thiết lập khổ")}</span>
                       </div>
                     </button>
 
@@ -7726,19 +7673,19 @@ export default function App() {
                     <div className="flex-1 grid grid-cols-1 md:grid-cols-2 items-stretch bg-white rounded-b-xl md:rounded-bl-none md:rounded-r-xl">
                       {/* Bước 1 */}
                       <div className="py-2 px-3 flex items-start space-x-2 transition-all hover:bg-slate-50/50">
-                        <span className="px-1.5 py-[1px] mt-0.5 rounded bg-sky-100 text-sky-700 font-extrabold text-[11.3px] tracking-wide shrink-0 border border-sky-200">BƯỚC 1</span>
+                        <span className="px-1.5 py-[1px] mt-0.5 rounded bg-sky-100 text-sky-700 font-extrabold text-[11.3px] tracking-wide shrink-0 border border-sky-200">{t("BƯỚC 1")}</span>
                         <div className="text-[13.8px] leading-snug flex-1">
-                          <p className="font-extrabold text-[#0F172A] mb-0.5">Thiết lập kích thước khổ tem</p>
-                          <p className="text-slate-500 font-semibold text-[12.8px] leading-tight">Cấu hình cỡ nhãn thực tế (Rộng x Cao) ở cột bên trái.</p>
+                          <p className="font-extrabold text-[#0F172A] mb-0.5">{t("Thiết lập kích thước khổ tem")}</p>
+                          <p className="text-slate-500 font-semibold text-[12.8px] leading-tight">{t("Cấu hình cỡ nhãn thực tế (Rộng x Cao) ở cột bên trái.")}</p>
                         </div>
                       </div>
 
                       {/* Bước 2 */}
                       <div className="py-2 px-3 flex items-start space-x-2 transition-all hover:bg-slate-50/50 border-t md:border-t-0 md:border-l border-blue-100/60">
-                        <span className="px-1.5 py-[1px] mt-0.5 rounded bg-indigo-100 text-[#4338CA] font-extrabold text-[11.3px] tracking-wide shrink-0 border border-indigo-200">BƯỚC 2</span>
+                        <span className="px-1.5 py-[1px] mt-0.5 rounded bg-indigo-100 text-[#4338CA] font-extrabold text-[11.3px] tracking-wide shrink-0 border border-indigo-200">{t("BƯỚC 2")}</span>
                         <div className="text-[13.8px] leading-snug flex-1">
-                          <p className="font-extrabold text-[#0F172A] mb-0.5">Thiết lập khổ giấy và máy in</p>
-                          <p className="text-slate-500 font-semibold text-[12.8px] leading-tight">Chọn loại giấy lẻ hoặc A4/A5 và căn lề giấy phù hợp.</p>
+                          <p className="font-extrabold text-[#0F172A] mb-0.5">{t("Thiết lập khổ giấy và máy in")}</p>
+                          <p className="text-slate-500 font-semibold text-[12.8px] leading-tight">{t("Chọn loại giấy lẻ hoặc A4/A5 và căn lề giấy phù hợp.")}</p>
                         </div>
                       </div>
                     </div>
@@ -7751,12 +7698,12 @@ export default function App() {
                       type="button"
                       onClick={() => setActiveSidebarTab('design')}
                       className="w-full md:w-[130px] text-white bg-[#00B63E] hover:bg-[#009e35] font-black py-2 px-2.5 flex items-center justify-center md:flex-col md:justify-center text-left md:text-center cursor-pointer transition-all active:scale-[0.99] border-0 outline-none shrink-0 rounded-t-xl md:rounded-tr-none md:rounded-l-xl rounded-b-none"
-                      title="Chuyển sang tab Thiết kế tem"
+                      title={t("Chuyển sang tab Thiết kế tem")}
                     >
                       <div className="w-4 h-4 rounded-full bg-white flex items-center justify-center text-[#00B63E] font-black text-[10.3px] shadow-sm shrink-0 mr-2 md:mr-0 md:mb-1 ring-2 ring-white/10">2</div>
                       <div className="flex flex-col md:items-center">
-                        <span className="text-[11.8px] font-black tracking-wider uppercase font-sans leading-none">THIẾT KẾ TEM</span>
-                        <span className="text-[9.3px] text-emerald-100 font-bold normal-case leading-none mt-0.5 md:mt-1 font-sans">Vẽ & chỉnh sửa</span>
+                        <span className="text-[11.8px] font-black tracking-wider uppercase font-sans leading-none">{t("THIẾT KẾ TEM")}</span>
+                        <span className="text-[9.3px] text-emerald-100 font-bold normal-case leading-none mt-0.5 md:mt-1 font-sans">{t("Vẽ & chỉnh sửa")}</span>
                       </div>
                     </button>
 
@@ -7764,19 +7711,19 @@ export default function App() {
                     <div className="flex-1 grid grid-cols-1 md:grid-cols-2 items-stretch bg-white rounded-b-xl md:rounded-bl-none md:rounded-r-xl">
                       {/* Bước 3 */}
                       <div className="py-2 px-3 flex items-start space-x-2 transition-all hover:bg-slate-50/50">
-                        <span className="px-1.5 py-[1px] mt-0.5 rounded bg-emerald-100 text-emerald-800 font-extrabold text-[11.3px] tracking-wide shrink-0 border border-emerald-200">BƯỚC 3</span>
+                        <span className="px-1.5 py-[1px] mt-0.5 rounded bg-emerald-100 text-emerald-800 font-extrabold text-[11.3px] tracking-wide shrink-0 border border-emerald-200">{t("BƯỚC 3")}</span>
                         <div className="text-[13.8px] leading-snug flex-1">
-                          <p className="font-extrabold text-[#0F172A] mb-0.5">Thiết kế mẫu tem</p>
-                          <p className="text-slate-500 font-semibold text-[12.8px] leading-tight">Thêm nội dung, mã vạch, QR. Nhấp chọn để chỉnh tọa độ.</p>
+                          <p className="font-extrabold text-[#0F172A] mb-0.5">{t("Thiết kế mẫu tem")}</p>
+                          <p className="text-slate-500 font-semibold text-[12.8px] leading-tight">{t("Thêm nội dung, mã vạch, QR. Nhấp chọn để chỉnh tọa độ.")}</p>
                         </div>
                       </div>
 
                       {/* Bước 4 */}
                       <div className="py-2 px-3 flex items-start space-x-2 transition-all hover:bg-slate-50/50 border-t md:border-t-0 md:border-l border-emerald-100/60">
-                        <span className="px-1.5 py-[1px] mt-0.5 rounded bg-amber-100 text-amber-800 font-extrabold text-[11.3px] tracking-wide shrink-0 border border-amber-200">BƯỚC 4</span>
+                        <span className="px-1.5 py-[1px] mt-0.5 rounded bg-amber-100 text-amber-800 font-extrabold text-[11.3px] tracking-wide shrink-0 border border-amber-200">{t("BƯỚC 4")}</span>
                         <div className="text-[13.8px] leading-snug flex-1">
-                          <p className="font-extrabold text-[#0F172A] mb-0.5">In nhãn tem</p>
-                          <p className="text-slate-500 font-semibold text-[12.8px] leading-tight font-sans">Chọn số lượng in và bấm <strong className="text-slate-700">IN TEM</strong> hoặc <strong className="text-slate-700">Ctrl+P</strong> ở góc trái.</p>
+                          <p className="font-extrabold text-[#0F172A] mb-0.5">{t("In nhãn tem")}</p>
+                          <p className="text-slate-500 font-semibold text-[12.8px] leading-tight font-sans">{t("Chọn số lượng in và bấm")+" "}<strong className="text-slate-700">{t("IN TEM")}</strong> {" "+t("hoặc")+" "}<strong className="text-slate-700">Ctrl+P</strong> {" "+t("ở góc trái.")}</p>
                         </div>
                       </div>
                     </div>
@@ -7828,7 +7775,7 @@ export default function App() {
               setIsPrintExpanded(true);
               // Wait a split second to transition tabs and open accordion, then focus/scroll to the accordion component
               setTimeout(() => {
-                const step4Btn = document.querySelector('[title*="bản in và thực hiện in nhãn"]');
+                const step4Btn = document.querySelector("[data-step4-print]");
                 if (step4Btn) {
                   step4Btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
@@ -7885,7 +7832,7 @@ export default function App() {
                         ? "bg-white text-kiot-cyan font-black border-kiot-cyan shadow-sm scale-102 z-10"
                         : "bg-slate-100 text-slate-600 hover:text-slate-800 hover:bg-white border-slate-300"
                     }`}
-                    title={isEditing ? "" : "Nháy đúp chuột (Double click) để đổi tên bản thiết kế"}
+                    title={isEditing ? "" : t("Nháy đúp chuột (Double click) để đổi tên bản thiết kế")}
                   >
                     <FileText className={`w-3.5 h-3.5 shrink-0 ${isActive ? "text-kiot-cyan animate-pulse" : "text-slate-400"}`} />
                     {isEditing ? (
@@ -7915,8 +7862,7 @@ export default function App() {
                     {/* Rename tooltip or button on hover */}
                     {!isEditing && (
                       <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-slate-900 text-white text-[9px] px-2 py-0.5 rounded shadow-lg whitespace-nowrap z-50 font-bold">
-                        Đúp chuột để đổi tên
-                      </span>
+                        {t("Đúp chuột để đổi tên")}</span>
                     )}
 
                     {/* Delete tab button */}
@@ -7925,7 +7871,7 @@ export default function App() {
                         type="button"
                         onClick={(e) => handleDeleteTabClick(tab.id, tab.name, e)}
                         className="p-0.5 ml-2 transition-all relative z-30 cursor-pointer shrink-0 flex items-center justify-center text-slate-400 hover:text-red-600 hover:scale-110"
-                        title="Xóa mẫu thiết kế này"
+                        title={t("Xóa mẫu thiết kế này")}
                       >
                         <X className="w-5 h-5" strokeWidth={3} />
                       </button>
@@ -7939,10 +7885,10 @@ export default function App() {
                 type="button"
                 onClick={handleAddTab}
                 className="flex items-center space-x-1.5 px-3 py-1.5 text-[11px] font-bold text-slate-600 hover:text-kiot-cyan hover:bg-slate-100 rounded-lg transition border border-dashed border-slate-400 hover:border-kiot-cyan/50 cursor-pointer"
-                title="Thêm Mẫu Thiết Kế Mới"
+                title={t("Thêm Mẫu Thiết Kế Mới")}
               >
                 <Plus className="w-3.5 h-3.5 text-slate-500" />
-                <span className="hidden sm:inline font-sans">Mẫu mới</span>
+                <span className="hidden sm:inline font-sans">{t("Mẫu mới")}</span>
               </button>
             </div>
             
@@ -7950,9 +7896,9 @@ export default function App() {
             <div className="hidden md:flex items-center space-x-2 text-[10px] text-slate-500 font-bold font-sans pr-1">
               <span className="flex items-center space-x-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-ping"></span>
-                <span>Đa tab thiết kế hoạt động độc lập</span>
+                <span>{t("Đa tab thiết kế hoạt động độc lập")}</span>
               </span>
-              <span className="bg-sky-50 text-kiot-cyan px-2 py-0.5 rounded border border-kiot-cyan/25 text-[9px]">V3.5 - Ổn định</span>
+              <span className="bg-sky-50 text-kiot-cyan px-2 py-0.5 rounded border border-kiot-cyan/25 text-[9px]">{t("V3.5 - Ổn định")}</span>
             </div>
           </div>
 
@@ -7972,8 +7918,8 @@ export default function App() {
                 <Printer className="w-5 h-5 text-blue-600" />
               </div>
               <div className="space-y-1">
-                <h3 className="font-bold text-sm text-slate-900 leading-tight">Hướng Dẫn In Nhãn Nhiệt Chính Xác</h3>
-                <p className="text-xs text-slate-500">Mở ứng dụng rộng để được liên kết trực tiếp tới trình duyệt ẩn.</p>
+                <h3 className="font-bold text-sm text-slate-900 leading-tight">{t("Hướng Dẫn In Nhãn Nhiệt Chính Xác")}</h3>
+                <p className="text-xs text-slate-500">{t("Mở ứng dụng rộng để được liên kết trực tiếp tới trình duyệt ẩn.")}</p>
               </div>
             </div>
 
@@ -7981,21 +7927,19 @@ export default function App() {
             <div className="bg-amber-50/70 border border-amber-200/50 rounded-lg p-3 text-xs text-amber-900 flex items-start space-x-2.5">
               <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
               <div className="space-y-1">
-                <p className="font-bold">Hạn Chế Của Trình Duyệt Web (Sandbox Iframe)</p>
+                <p className="font-bold">{t("Hạn Chế Của Trình Duyệt Web (Sandbox Iframe)")}</p>
                 <p className="leading-normal text-[11px] text-amber-950">
-                  Bạn đang chạy ứng dụng trong màn hình Xem trước (Iframe) của Google AI Studio. Trình duyệt Chrome/Edge chặn lệnh in từ bên trong khung con này để bảo mật.
-                </p>
+                  {t("Bạn đang chạy ứng dụng trong màn hình Xem trước (Iframe) của Google AI Studio. Trình duyệt Chrome/Edge chặn lệnh in từ bên trong khung con này để bảo mật.")}</p>
               </div>
             </div>
 
             <div className="text-xs text-gray-650 leading-relaxed font-normal space-y-2">
               <p>
-                Để khởi chạy hộp thoại **Print Preview** của hệ điều hành Windows/macOS và in nhiệt trực tiếp ra máy in Brother/Xprinter/Zebra:
-              </p>
+                {t("Để khởi chạy hộp thoại **Print Preview** của hệ điều hành Windows/macOS và in nhiệt trực tiếp ra máy in Brother/Xprinter/Zebra:")}</p>
               <ol className="list-decimal list-inside space-y-1 pl-1 text-[11px] font-medium text-slate-700">
-                <li>Bấm vào nút **Mở Tab Mới** bên dưới</li>
-                <li>Ứng dụng sẽ hoạt động tại 1 tab độc lập đầy đủ chức năng</li>
-                <li>Trình duyệt hỗ trợ gọi hộp thoại in dán ngay lập tức!</li>
+                <li>{t("Bấm vào nút **Mở Tab Mới** bên dưới")}</li>
+                <li>{t("Ứng dụng sẽ hoạt động tại 1 tab độc lập đầy đủ chức năng")}</li>
+                <li>{t("Trình duyệt hỗ trợ gọi hộp thoại in dán ngay lập tức!")}</li>
               </ol>
             </div>
 
@@ -8010,7 +7954,7 @@ export default function App() {
                 className="w-full flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-4 rounded-lg shadow-sm hover:shadow-md transition text-center text-xs tracking-wider uppercase cursor-pointer"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
-                <span>Mở Trong Tab Mới Để In (Khuyên Dùng)</span>
+                <span>{t("Mở Trong Tab Mới Để In (Khuyên Dùng)")}</span>
               </a>
 
               {/* Best effort try now */}
@@ -8041,10 +7985,10 @@ export default function App() {
                 {isPreparingPrint ? (
                   <>
                     <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    <span>Đang chuẩn bị vẽ nhãn...</span>
+                    <span>{t("Đang chuẩn bị vẽ nhãn...")}</span>
                   </>
                 ) : (
-                  <span>Xem trước & In trực tiếp tại đây</span>
+                  <span>{t("Xem trước & In trực tiếp tại đây")}</span>
                 )}
               </button>
 
@@ -8054,8 +7998,7 @@ export default function App() {
                   onClick={() => setShowPrintModal(false)}
                   className="py-1 px-3 border border-transparent rounded hover:bg-slate-100 text-slate-500 text-[11px] font-semibold transition cursor-pointer"
                 >
-                  Bỏ qua
-                </button>
+                  {t("Bỏ qua")}</button>
               </div>
             </div>
           </div>
@@ -8075,17 +8018,15 @@ export default function App() {
                 <AlertCircle className="w-5 h-5" />
               </div>
               <div className="space-y-1">
-                <h3 className="font-bold text-sm text-slate-900 leading-tight">Xác Nhận Đóng Thiết Kế</h3>
-                <p className="text-xs text-slate-500">Mẫu: <strong className="text-slate-800 font-bold">{tabToDelete.name}</strong></p>
+                <h3 className="font-bold text-sm text-slate-900 leading-tight">{t("Xác Nhận Đóng Thiết Kế")}</h3>
+                <p className="text-xs text-slate-500">{t("Mẫu:")+" "}<strong className="text-slate-800 font-bold">{tabToDelete.name}</strong></p>
               </div>
             </div>
 
             {/* Modal Content */}
             <div className="text-xs text-slate-600 leading-relaxed">
               <p>
-                Bạn có chắc chắn muốn xóa bản thiết kế <strong className="text-red-600 font-semibold">"{tabToDelete.name}"</strong>? 
-                Hành động này sẽ xóa toàn bộ nội dung của mẫu thiết kế này và <strong>không thể hoàn tác</strong> lại.
-              </p>
+                {t("Bạn có chắc chắn muốn xóa bản thiết kế")+" "}<strong className="text-red-600 font-semibold">"{tabToDelete.name}"</strong>{t("? Hành động này sẽ xóa toàn bộ nội dung của mẫu thiết kế này và")+" "}<strong>{t("không thể hoàn tác")}</strong> {" "+t("lại.")}</p>
             </div>
 
             {/* Modal Actions */}
@@ -8095,15 +8036,14 @@ export default function App() {
                 onClick={() => setTabToDelete(null)}
                 className="py-2 px-4 border border-gray-300 rounded-lg hover:bg-slate-50 text-slate-700 text-xs font-semibold transition cursor-pointer"
               >
-                Hủy bỏ (Giữ lại)
-              </button>
+                {t("Hủy bỏ (Giữ lại)")}</button>
               <button
                 type="button"
                 onClick={handleConfirmDeleteTab}
                 className="py-2 px-4 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold transition shadow-sm hover:shadow cursor-pointer flex items-center space-x-1"
               >
                 <X className="w-3.5 h-3.5" />
-                <span>Đồng ý xóa mẫu</span>
+                <span>{t("Đồng ý xóa mẫu")}</span>
               </button>
             </div>
           </div>
@@ -8125,10 +8065,10 @@ export default function App() {
               </div>
               <div className="space-y-1">
                 <h3 className="font-bold text-sm text-slate-900 leading-tight">
-                  {isPopupBlocked ? "Yêu Cầu Cấp Quyền Mở Bản In PDF" : "Đã Khởi Tạo Bản In PDF Thành Công"}
+                  {isPopupBlocked ? t("Yêu Cầu Cấp Quyền Mở Bản In PDF") : t("Đã Khởi Tạo Bản In PDF Thành Công")}
                 </h3>
                 <p className="text-xs text-slate-500">
-                  {isPopupBlocked ? "Trình duyệt đã ngăn cửa sổ bật lên tự động" : "Bản in PDF chất lượng cao 300 DPI đã sẵn sàng"}
+                  {isPopupBlocked ? t("Trình duyệt đã ngăn cửa sổ bật lên tự động") : t("Bản in PDF chất lượng cao 300 DPI đã sẵn sàng")}
                 </p>
               </div>
             </div>
@@ -8137,29 +8077,26 @@ export default function App() {
             {isPopupBlocked ? (
               <div className="bg-amber-50 border border-amber-200/60 rounded-lg p-3 text-xs text-amber-900 space-y-2">
                 <p className="font-semibold leading-normal flex items-center space-x-1">
-                  <span>⚠️ Phát hiện trình duyệt chặn mở liên kết mới (Pop-up)!</span>
+                  <span>{t("⚠️ Phát hiện trình duyệt chặn mở liên kết mới (Pop-up)!")}</span>
                 </p>
                 <p className="leading-relaxed text-[11px] text-amber-950">
-                  Để tự động mở trực tiếp bản in trong những lần tiếp theo, bạn vui lòng bấm vào biểu tượng <strong>Chặn cửa sổ bật lên</strong> trên thanh địa chỉ trình duyệt (ở góc trên bên phải) và chọn <strong>"Luôn cho phép..."</strong> cho trang web này.
-                </p>
+                  {t("Để tự động mở trực tiếp bản in trong những lần tiếp theo, bạn vui lòng bấm vào biểu tượng")+" "}<strong>{t("Chặn cửa sổ bật lên")}</strong> {" "+t("trên thanh địa chỉ trình duyệt (ở góc trên bên phải) và chọn")+" "}<strong>{t("\"Luôn cho phép...\"")}</strong> {" "+t("cho trang web này.")}</p>
               </div>
             ) : (
               <div className="bg-emerald-50 border border-emerald-200/65 rounded-lg p-3 text-xs text-emerald-900 space-y-1.5">
                 <p className="font-semibold">
-                  🎉 Bản in đã được chuyển sang tab mới!
-                </p>
+                  {t("🎉 Bản in đã được chuyển sang tab mới!")}</p>
                 <p className="leading-relaxed text-[11px] text-emerald-950">
-                  Vui lòng chuyển sang tab trình duyệt mới vừa mở, kiểm tra nhãn dán hiển thị cực kỳ sắc nét và nhấn <strong>Ctrl + P</strong> (hoặc Cmd + P trên Mac) để in dán ngay lập tức.
-                </p>
+                  {t("Vui lòng chuyển sang tab trình duyệt mới vừa mở, kiểm tra nhãn dán hiển thị cực kỳ sắc nét và nhấn")+" "}<strong>Ctrl + P</strong> {" "+t("(hoặc Cmd + P trên Mac) để in dán ngay lập tức.")}</p>
               </div>
             )}
 
             <div className="text-xs text-gray-500 leading-relaxed font-normal bg-slate-50 border border-slate-100 rounded-lg p-2.5">
-              <p className="font-medium text-slate-700 mb-1">Mẹo in tem chuẩn xác nhất:</p>
+              <p className="font-medium text-slate-700 mb-1">{t("Mẹo in tem chuẩn xác nhất:")}</p>
               <ul className="list-disc list-inside space-y-0.5 text-[11px] pl-0.5">
-                <li>Chọn đúng máy in tem (máy in nhiệt hoặc máy văn phòng).</li>
-                <li>Phần kích thước giấy (Paper size) chọn đúng kích thước thực tế tem.</li>
-                <li>Phần Tỷ lệ (Scale) đặt là <strong>100%</strong> hoặc <strong>Fit to page (Vừa với trang)</strong>.</li>
+                <li>{t("Chọn đúng máy in tem (máy in nhiệt hoặc máy văn phòng).")}</li>
+                <li>{t("Phần kích thước giấy (Paper size) chọn đúng kích thước thực tế tem.")}</li>
+                <li>{t("Phần Tỷ lệ (Scale) đặt là")+" "}<strong>100%</strong> {" "+t("hoặc")+" "}<strong>{t("Fit to page (Vừa với trang)")}</strong>.</li>
               </ul>
             </div>
 
@@ -8176,7 +8113,7 @@ export default function App() {
                 className="w-full flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg shadow-sm transition text-center text-xs tracking-wider uppercase cursor-pointer"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
-                <span>{isPopupBlocked ? "Mở Bản In Thủ Công" : "Mở Lại Bản In (Tab Mới)"}</span>
+                <span>{isPopupBlocked ? t("Mở Bản In Thủ Công") : t("Mở Lại Bản In (Tab Mới)")}</span>
               </a>
 
               <button
@@ -8186,8 +8123,7 @@ export default function App() {
                 }}
                 className="w-full py-2 bg-white border border-gray-300 hover:bg-slate-50 text-slate-700 font-semibold rounded-lg text-xs transition cursor-pointer"
               >
-                Đóng thông báo
-              </button>
+                {t("Đóng thông báo")}</button>
             </div>
           </div>
         </div>
@@ -8207,8 +8143,8 @@ export default function App() {
                   <Image className="w-5 h-5 text-rose-600" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm text-slate-900 leading-tight">Chèn Hình Ảnh Vào Nhãn Dán</h3>
-                  <p className="text-[10.5px] text-slate-500 font-medium">Hỗ trợ tải lên logo, con dấu tròn, ký hiệu, ảnh sản phẩm...</p>
+                  <h3 className="font-bold text-sm text-slate-900 leading-tight">{t("Chèn Hình Ảnh Vào Nhãn Dán")}</h3>
+                  <p className="text-[10.5px] text-slate-500 font-medium">{t("Hỗ trợ tải lên logo, con dấu tròn, ký hiệu, ảnh sản phẩm...")}</p>
                 </div>
               </div>
               <button 
@@ -8232,7 +8168,7 @@ export default function App() {
 
             {/* Drag & Drop Zone */}
             <div className="space-y-1.5">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider text-[10px]">Cách 1: Tải lên từ máy tính (Khuyên dùng - Hoạt động Offline)</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider text-[10px]">{t("Cách 1: Tải lên từ máy tính (Khuyên dùng - Hoạt động Offline)")}</label>
               <div 
                 className="border-2 border-dashed border-gray-200 hover:border-kiot-cyan bg-gray-50/50 hover:bg-sky-50/5 rounded-xl p-5 text-center transition duration-150 cursor-pointer relative"
                 onClick={() => {
@@ -8271,21 +8207,21 @@ export default function App() {
                     };
                     reader.readAsDataURL(file);
                   } else {
-                    setImportError("Tệp tin thả vào không đúng định dạng hình ảnh!");
+                    setImportError(t("Tệp tin thả vào không đúng định dạng hình ảnh!"));
                   }
                 }}
               >
                 <div className="flex flex-col items-center justify-center space-y-2 select-none">
                   <Upload className="w-7 h-7 text-gray-400 active:text-kiot-cyan inline-block shrink-0" />
-                  <p className="text-xs font-bold text-gray-700">Kéo thả file hình ảnh vào đây hoặc click để chọn</p>
-                  <p className="text-[10px] text-gray-405">Hỗ trợ các tệp: JPEG, PNG, JPG, SVG, WebP, GIF...</p>
+                  <p className="text-xs font-bold text-gray-700">{t("Kéo thả file hình ảnh vào đây hoặc click để chọn")}</p>
+                  <p className="text-[10px] text-gray-405">{t("Hỗ trợ các tệp: JPEG, PNG, JPG, SVG, WebP, GIF...")}</p>
                 </div>
               </div>
             </div>
 
             {/* Google Drive Link Option (cần Internet: ẩn ở bản desktop offline) */}
             <div className={desktop ? "hidden" : "space-y-2 border-t border-gray-150 pt-3"}>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider text-[10px]">Cách 2: Chèn ảnh từ Google Drive</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider text-[10px]">{t("Cách 2: Chèn ảnh từ Google Drive")}</label>
               
               <div className="flex items-center space-x-1.5">
                 <div className="relative flex-1">
@@ -8293,7 +8229,7 @@ export default function App() {
                     type="text"
                     value={driveUrlInput}
                     onChange={(e) => setDriveUrlInput(e.target.value)}
-                    placeholder="Dán link chia sẻ Google Drive (Bất kỳ ai có liên kết...)"
+                    placeholder={t("Dán link chia sẻ Google Drive (Bất kỳ ai có liên kết...)")}
                     className="w-full pl-8 pr-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:border-kiot-cyan focus:ring-1 focus:ring-kiot-cyan/50 bg-white"
                   />
                   <Link className="absolute left-2.5 top-2.5 w-3.5 h-3.5 text-gray-400" />
@@ -8302,7 +8238,7 @@ export default function App() {
                   type="button"
                   onClick={() => {
                     if (!driveUrlInput.trim()) {
-                      setImportError("Vui lòng nhập đường dẫn chia sẻ từ Google Drive!");
+                      setImportError(t("Vui lòng nhập đường dẫn chia sẻ từ Google Drive!"));
                       return;
                     }
                     // Extract ID and convert 
@@ -8318,7 +8254,7 @@ export default function App() {
                     }
 
                     if (!fileId) {
-                      setImportError("Đường dẫn Google Drive không hợp lệ hoặc thiếu File ID!");
+                      setImportError(t("Đường dẫn Google Drive không hợp lệ hoặc thiếu File ID!"));
                       return;
                     }
 
@@ -8330,17 +8266,15 @@ export default function App() {
                   }}
                   className="px-4 py-1.5 bg-kiot-cyan hover:bg-sky-600 text-white text-xs font-bold rounded-lg transition shrink-0 cursor-pointer"
                 >
-                  Xác nhận
-                </button>
+                  {t("Xác nhận")}</button>
               </div>
               <div className="bg-blue-50/70 border border-blue-100 rounded-lg p-2.5 text-[10px] text-blue-900 leading-relaxed select-none">
-                <strong>📝 Hướng dẫn:</strong> Trên Google Drive của bạn, click chuột phải vào ảnh ➡️ Chọn <strong>Chia sẻ (Share)</strong> ➡️ Chuyển quyền truy cập chung thành <strong>Bất kỳ ai có liên kết (Anyone with link)</strong> ➡️ Nhấp <strong>Sao chép liên kết</strong> rồi dán vào ô trên.
-              </div>
+                <strong>{t("📝 Hướng dẫn:")}</strong> {" "+t("Trên Google Drive của bạn, click chuột phải vào ảnh ➡️ Chọn")+" "}<strong>{t("Chia sẻ (Share)")}</strong> {" "+t("➡️ Chuyển quyền truy cập chung thành")+" "}<strong>{t("Bất kỳ ai có liên kết (Anyone with link)")}</strong> {" "+t("➡️ Nhấp")+" "}<strong>{t("Sao chép liên kết")}</strong> {" "+t("rồi dán vào ô trên.")}</div>
             </div>
 
             {/* Custom Web Image Link (cần Internet: ẩn ở bản desktop offline) */}
             <div className={desktop ? "hidden" : "space-y-2 border-t border-gray-150 pt-3"}>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider text-[10px]">Cách 3: Chèn đường dẫn ảnh trực tuyến công khai (Web URL)</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider text-[10px]">{t("Cách 3: Chèn đường dẫn ảnh trực tuyến công khai (Web URL)")}</label>
               <div className="flex items-center space-x-1.5">
                 <div className="relative flex-1">
                   <input 
@@ -8356,11 +8290,11 @@ export default function App() {
                   type="button"
                   onClick={() => {
                     if (!webUrlInput.trim()) {
-                      setImportError("Vui lòng nhập đường dẫn hình ảnh!");
+                      setImportError(t("Vui lòng nhập đường dẫn hình ảnh!"));
                       return;
                     }
                     if (!webUrlInput.startsWith("http://") && !webUrlInput.startsWith("https://")) {
-                      setImportError("Đường dẫn ảnh trực tuyến phải bắt đầu bằng http:// hoặc https://");
+                      setImportError(t("Đường dẫn ảnh trực tuyến phải bắt đầu bằng http:// hoặc https://"));
                       return;
                     }
                     handleAddObject("image", webUrlInput);
@@ -8370,8 +8304,7 @@ export default function App() {
                   }}
                   className="px-4 py-1.5 bg-kiot-cyan hover:bg-sky-600 text-white text-xs font-bold rounded-lg transition shrink-0 cursor-pointer"
                 >
-                  Xác nhận
-                </button>
+                  {t("Xác nhận")}</button>
               </div>
             </div>
 
@@ -8390,8 +8323,8 @@ export default function App() {
                   <Save className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-[14px] text-slate-800 leading-tight">Lưu mẫu thiết kế</h3>
-                  <p className="text-[11px] text-slate-400 font-semibold">Chọn phương thức và đặt tên để lưu trữ</p>
+                  <h3 className="font-extrabold text-[14px] text-slate-800 leading-tight">{t("Lưu mẫu thiết kế")}</h3>
+                  <p className="text-[11px] text-slate-400 font-semibold">{t("Chọn phương thức và đặt tên để lưu trữ")}</p>
                 </div>
               </div>
               <button 
@@ -8409,8 +8342,7 @@ export default function App() {
             {/* Step 1: Destination Selection */}
             <div className="space-y-2">
               <label className="block text-[10.5px] font-extrabold text-slate-450 uppercase tracking-wider">
-                1. Chọn nơi lưu trữ thiết kế:
-              </label>
+                {t("1. Chọn nơi lưu trữ thiết kế:")}</label>
               <div className="grid grid-cols-2 gap-2.5">
                 {/* Local Storage Option */}
                 <button
@@ -8426,8 +8358,8 @@ export default function App() {
                     <Database className="w-4 h-4" />
                   </div>
                   <div>
-                    <h4 className="text-[11.5px] font-extrabold text-slate-800">Bộ nhớ duyệt web</h4>
-                    <p className="text-[9.5px] text-slate-455 font-medium leading-normal mt-0.5">Lưu trữ cục bộ, an toàn trên trình duyệt máy bạn</p>
+                    <h4 className="text-[11.5px] font-extrabold text-slate-800">{t("Bộ nhớ duyệt web")}</h4>
+                    <p className="text-[9.5px] text-slate-455 font-medium leading-normal mt-0.5">{t("Lưu trữ cục bộ, an toàn trên trình duyệt máy bạn")}</p>
                   </div>
                 </button>
 
@@ -8445,16 +8377,15 @@ export default function App() {
                     <Laptop className="w-4 h-4" />
                   </div>
                   <div>
-                    <h4 className="text-[11.5px] font-extrabold text-slate-800">Bộ nhớ thiết bị</h4>
-                    <p className="text-[9.5px] text-slate-455 font-medium leading-normal mt-0.5">Tải file cấu hình offline (.kvl) về ổ cứng</p>
+                    <h4 className="text-[11.5px] font-extrabold text-slate-800">{t("Bộ nhớ thiết bị")}</h4>
+                    <p className="text-[9.5px] text-slate-455 font-medium leading-normal mt-0.5">{t("Tải file cấu hình offline (.kvl) về ổ cứng")}</p>
                   </div>
                 </button>
               </div>
 
               {saveLocation === 'device' && typeof window !== 'undefined' && window.self !== window.top && (
                 <div className="mt-3 p-2.5 bg-amber-50 rounded-lg text-[10px] text-amber-800 leading-relaxed border border-amber-200/50 animate-fadeIn">
-                  💡 <strong>Giới hạn của Iframe:</strong> Trình duyệt chặn quyền ghi đè trực tiếp file khi trang web nằm trong khung xem thử của AI Studio. Hệ thống sẽ tự động tải file xuống qua trình duyệt. Để mở khóa tính năng <strong>tự động lưu đè trực tiếp (Ctrl + S)</strong>, bạn chỉ cần click nút <strong>"Mở tab mới"</strong> ở góc trên bên phải màn hình để chạy ứng dụng độc lập.
-                </div>
+                  💡 <strong>{t("Giới hạn của Iframe:")}</strong> {" "+t("Trình duyệt chặn quyền ghi đè trực tiếp file khi trang web nằm trong khung xem thử của AI Studio. Hệ thống sẽ tự động tải file xuống qua trình duyệt. Để mở khóa tính năng")+" "}<strong>{t("tự động lưu đè trực tiếp (Ctrl + S)")}</strong>{t(", bạn chỉ cần click nút")+" "}<strong>{t("\"Mở tab mới\"")}</strong> {" "+t("ở góc trên bên phải màn hình để chạy ứng dụng độc lập.")}</div>
               )}
             </div>
 
@@ -8463,17 +8394,15 @@ export default function App() {
               <div className="space-y-3.5 pt-3.5 border-t border-dashed border-slate-150 animate-fadeIn">
                 {/* Section title */}
                 <span className="block text-[10.5px] font-extrabold text-slate-450 uppercase tracking-wider">
-                  2. Cấu hình chi tiết:
-                </span>
+                  {t("2. Cấu hình chi tiết:")}</span>
 
                 {/* Name Input */}
                 <div className="space-y-1">
                   <label className="block text-[11px] font-bold text-slate-600">
-                    Tên mẫu nhãn dán:
-                  </label>
+                    {t("Tên mẫu nhãn dán:")}</label>
                   <input
                     type="text"
-                    placeholder="VD: Tem Giá Rẻ, Nhãn Vận Đơn..."
+                    placeholder={t("VD: Tem Giá Rẻ, Nhãn Vận Đơn...")}
                     value={saveTemplateName}
                     onChange={(e) => setSaveTemplateName(e.target.value)}
                     className="w-full px-3 py-1.5 border border-slate-200 rounded-lg focus:border-kiot-green focus:ring-1 focus:ring-kiot-green focus:outline-none font-bold text-slate-800 text-xs"
@@ -8490,12 +8419,11 @@ export default function App() {
                     }}
                     className="flex-1 py-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-xs font-bold text-slate-500 transition cursor-pointer"
                   >
-                    Hủy bỏ
-                  </button>
+                    {t("Hủy bỏ")}</button>
                   <button
                     type="button"
                     onClick={() => {
-                      const finalName = saveTemplateName.trim() || `Bản vẽ ${new Date().toLocaleDateString("vi-VN")}`;
+                      const finalName = saveTemplateName.trim() || t("Bản vẽ {v}", { v: new Date().toLocaleDateString("vi-VN") });
                       if (saveLocation === 'local') {
                         handleSaveToLocalStorage(finalName);
                         setCustomSaveName(finalName); // update state in header
@@ -8513,7 +8441,7 @@ export default function App() {
                     className="flex-1 py-1.5 bg-kiot-green hover:bg-emerald-600 text-white rounded-lg text-xs font-extrabold uppercase transition cursor-pointer shadow-md flex items-center justify-center space-x-1"
                   >
                     <Save className="w-3.5 h-3.5" />
-                    <span>Xác nhận Lưu</span>
+                    <span>{t("Xác nhận Lưu")}</span>
                   </button>
                 </div>
               </div>
